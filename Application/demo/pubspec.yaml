@@ -30,8 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # 앱 구동 시 필요한 설정을 모아놓기 위한 라이브러리
+  # 앱 구동 시 필요한 설정을 모아 놓기 위한 라이브러리
   flutter_dotenv: ^5.1.0
+  # 메세지 앱 호출을 위한 라이브러리
+  url_launcher: ^6.2.5
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -42,6 +44,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_dotenv: ^5.1.0
+  url_launcher: ^6.2.5
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MonitorPage extends StatefulWidget {
   @override
@@ -58,7 +59,9 @@ class _MonitorPageState extends State<MonitorPage> {
                         child: Column(
                           children: [
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                _launchSMS();
+                              },
                               icon: Icon(Icons.emergency_outlined, color: Colors.red,),
                               iconSize: 60,
                             ),
@@ -99,5 +102,19 @@ class _MonitorPageState extends State<MonitorPage> {
         ],
       )
     );
+  }
+}
+
+//TODO: common 항목으로 이동시킨 후, import하여 사용
+void _launchSMS() async {
+  final String phone = '112';
+  final String message = '우리집에 나쁜 놈이 들어오려고 해요! 빨리 좀 와주세요!!';
+
+  final Uri url = Uri.parse('sms:$phone?body=$message');
+
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
+  }else {
+    throw 'Could not launch $url';
   }
 }
