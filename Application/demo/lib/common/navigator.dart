@@ -124,7 +124,7 @@ class _CustomNavigatorState extends State<CustomNavigator> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.video_library, color: _selectedIndex == 1 ? Colors.blue : Colors.grey),
-            label: 'Video',
+            label: 'Monitor',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history, color: _selectedIndex == 2 ? Colors.blue : Colors.grey),

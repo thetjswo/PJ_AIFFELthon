@@ -1,5 +1,5 @@
 import 'package:demo/page/security_page.dart';
-import 'package:demo/page/video_page.dart';
+import 'package:demo/page/monitor_page.dart';
 import 'package:flutter/material.dart';
 import 'package:demo/page/history_page.dart';
 import 'package:demo/common/navigator.dart';
@@ -41,7 +41,7 @@ class _MainPageState extends State<MainPage> {
       },
       pages: [
         SecurityPage(),
-        VideoPage(),
+        MonitorPage(),
         HistoryPage(),
       ],
     );

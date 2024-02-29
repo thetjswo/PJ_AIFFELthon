@@ -1,8 +1,10 @@
 import 'package:demo/page/main_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 //TODO: 추후 main()은 splash 화면으로 대체
-void main() {
+void main() async {
+  await dotenv.load(fileName: 'config.env');
   runApp(const LoginPage());
 }
 
