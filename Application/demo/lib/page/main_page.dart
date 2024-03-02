@@ -1,10 +1,12 @@
-import 'package:demo/page/security_page.dart';
-import 'package:demo/page/monitor_page.dart';
-import 'package:flutter/material.dart';
-import 'package:demo/page/history_page.dart';
 import 'package:demo/common/navigator.dart';
+import 'package:demo/page/history_page.dart';
+import 'package:demo/page/security_page.dart';
+import 'package:demo/video_stream/video_streaming.dart';
+import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,12 +14,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainPage(),
+      home: const MainPage(),
     );
   }
 }
 
 class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -28,7 +32,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return CustomNavigator(
       titleText: _getSelectedTitle(),
       // 초기는 security page가 노출되고,
@@ -41,7 +44,8 @@ class _MainPageState extends State<MainPage> {
       },
       pages: [
         SecurityPage(),
-        MonitorPage(),
+        // MonitorPage(),    // video_stream 페이지 테스트 안하려면 이 부분 주석해제하고 VideoStream() 주석처리
+        const VideoStream(), // video_stream 페이지 테스트 하기 위해 추가
         HistoryPage(),
       ],
     );
