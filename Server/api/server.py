@@ -61,6 +61,4 @@ asyncio.get_event_loop().run_until_complete(start_server)
 # 비동기 이벤트 반복문이 계속 실행되도록 설정
 asyncio.get_event_loop().run_forever()
 
-cap.release()  # 카메라 해제
-
             
