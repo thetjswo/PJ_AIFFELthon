@@ -1,3 +1,59 @@
+# ### Flutter ###
+# # Flutter/Dart/Pub related
+# **/doc/api/
+# .dart_tool/
+# .flutter-plugins
+# .flutter-plugins-dependencies
+# .fvm/flutter_sdk
+# .packages
+
+
+### JupyterNotebooks ###
 .ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+
+### Intellij ###
 .idea
+
+
+### macOS ###
+# General
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# pyenv
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+.python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+### Key ###
+*.pem
+
+
+### Windows ###
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
