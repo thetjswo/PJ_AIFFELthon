@@ -29,7 +29,7 @@ class WebSocket {
     if (_channel != null) {
       return _channel!.stream;
     } else {
-      // 채널이 null 이면 연결이 설저되지 않았다는 예외 발생
+      // 채널이 null 이면 연결이 설정되지 않았다는 예외 발생
       throw WebSocketChannelException("The connection was not established !");
     }
   }
