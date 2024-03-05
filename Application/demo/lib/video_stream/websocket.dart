@@ -1,6 +1,6 @@
 import 'dart:async'; // 비동기 프로그래밍을 위한 라이브러리
 
-import 'package:demo/constants/constants.dart'; // 상수들이 정의된 파일
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // 상수 사용을 위한 라이브러리
 import 'package:web_socket_channel/status.dart'
     as status; // 웹소켓 연결 상태를 위한 라이브러리
 import 'package:web_socket_channel/web_socket_channel.dart'; // 웹소켓 채널을 위한 라이브러리
@@ -8,6 +8,7 @@ import 'package:web_socket_channel/web_socket_channel.dart'; // 웹소켓 채널
 class WebSocket {
   // ------------------------- 변수 선언 ------------------------- //
   late String url;
+  static String ws_url = dotenv.get('WS_URL');
   WebSocketChannel? _channel;
   StreamController<bool> streamController = StreamController<bool>.broadcast();
 
@@ -40,7 +41,7 @@ class WebSocket {
 
   // 웹소켓에 현재 애플리케이션을 연결하는 함수
   void connect() async {
-    _channel = WebSocketChannel.connect(Uri.parse(Constants.videoWebsocketURL));
+    _channel = WebSocketChannel.connect(Uri.parse(ws_url));
   }
 
   // 웹소켓에서 현재 애플리케이션을 연결 해제하는 함수

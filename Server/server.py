@@ -9,7 +9,7 @@ import cv2, base64  # OpenCV , base64 모듈
 
 #TODO: 포트 번호 확인
 # 포트 번호 설정
-port = 5000  
+port = 5000
 # 해당 포트에서 서버가 시작되었다는 문구 출력
 print("Started server on port : ", port)
 

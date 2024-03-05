@@ -2,9 +2,9 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'package:demo/constants/constants.dart';
-import 'package:demo/video_stream/styles.dart';
+import 'package:demo/common/styles.dart';
 import 'package:demo/video_stream/websocket.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,8 +17,10 @@ class VideoStream extends StatefulWidget {
 }
 
 class _VideoStreamState extends State<VideoStream> {
-  final WebSocket _socket = WebSocket(Constants.videoWebsocketURL);
+  static String ws_url = dotenv.get('WS_URL');
+  final WebSocket _socket = WebSocket(ws_url);
   bool _isConnected = false;
+
   void connect(BuildContext context) async {
     _socket.connect();
     setState(() {
