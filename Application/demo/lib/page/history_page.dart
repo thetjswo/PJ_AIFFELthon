@@ -4,17 +4,16 @@ import 'package:flutter/material.dart';
 
 class HistoryPage extends StatefulWidget {
   @override
-  _HistoryPageState createState() => _HistoryPageState();
+  HistoryPageState createState() => HistoryPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class HistoryPageState extends State<HistoryPage> {
   DateTime _selectedDate = DateTime.now(); // 선택된 날짜를 저장할 변수
-  
   // TODO : 기록 데이터 import하기
   List<Record> _records = [
-    Record('외부인 감지', DateTime(2023, 2, 29, 9, 30, 15), '카메라 1'),
-    Record('외부인 감지', DateTime(2023, 2, 29, 12, 45, 20), '카메라 2'),
-    Record('외부인 감지', DateTime(2023, 2, 29, 15, 20, 5), '카메라 3'),
+    Record("외부인 감지", DateTime(2023, 2, 29, 9, 30, 15), "카메라 1"),
+    Record("외부인 감지", DateTime(2023, 2, 29, 12, 45, 20), "카메라 2"),
+    Record("외부인 감지", DateTime(2023, 2, 29, 15, 20, 5), "카메라 3"),
   ]; // 임의로 적은 가상의 기록 데이터
 
   @override
@@ -30,7 +29,7 @@ class _HistoryPageState extends State<HistoryPage> {
               children: [
                 Expanded(
                   child: Text(
-                    '${_selectedDate.year}.${_selectedDate.month}.${_selectedDate.day}',
+                    "${_selectedDate.year}.${_selectedDate.month}.${_selectedDate.day}",
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -81,7 +80,7 @@ class _HistoryPageState extends State<HistoryPage> {
 Widget _buildRecordItem(Record record) {
   return ListTile(
     title: Text(record.event), // 이벤트 정보 표시
-    subtitle: Text('Detected at: ${record.time}, Camera: ${record.camera}'), // 시간과 카메라 정보 표시
+    subtitle: Text("Detected at: ${record.time}, Camera: ${record.camera}"), // 시간과 카메라 정보 표시
     trailing: SizedBox(
       width: 80, // 이미지 너비
       height: 48, // 이미지 높이
@@ -92,7 +91,7 @@ Widget _buildRecordItem(Record record) {
             right: 0,
             top: 0,
             child: Image.asset(
-              'assets/images/example_images/gray_box.png', // 썸네일 이미지 경로
+              "assets/images/example_images/gray_box.png", // 썸네일 이미지 경로
               width: 80, // 적절한 크기로 변경 가능
               height: 48, // 적절한 크기로 변경 가능
               fit: BoxFit.cover,
@@ -114,8 +113,6 @@ Widget _buildRecordItem(Record record) {
   );
 }
 
-
-// TODO : 데이터 모델 정의 ?
 class Record {
   final String event;
   final DateTime time;
@@ -123,5 +120,3 @@ class Record {
 
   Record(this.event, this.time, this.camera);
 }
-
-
