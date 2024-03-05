@@ -72,6 +72,7 @@ flutter:
     - assets/images/symbol/naver_symbol.png
     - assets/images/symbol/kakao_symbol.png
     - assets/images/icon/ic_security.png
+    - assets/images/example_images/gray_box.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
