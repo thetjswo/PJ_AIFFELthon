@@ -7,6 +7,10 @@ on:
 jobs:
   create_and_close_issue:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     steps:
       - name: Create and Close Issue
         uses: actions/github-script@v3
