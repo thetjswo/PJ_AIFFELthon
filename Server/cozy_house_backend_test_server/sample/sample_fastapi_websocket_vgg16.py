@@ -20,7 +20,7 @@ print(module_dir)
 sys.path.append(module_dir)
 
 # 예측 모듈 가져오기
-import vgg16_prediction_model
+from tests import vgg16_prediction_model
 
 
 
