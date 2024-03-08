@@ -13,10 +13,10 @@ from tensorflow.keras.applications.imagenet_utils import decode_predictions
 import vgg16_download
 
 # img path
-IMG_PATH = '../../Model/sample_img_classification/sample_data/cat_224x224.jpg'
+IMG_PATH = '../../../Model/sample_img_classification/sample_data/cat_224x224.jpg'
 
 # model path
-MODEL_PATH = '../../Model/sample_img_classification/vgg16.keras'
+MODEL_PATH = '../../../Model/sample_img_classification/vgg16.keras'
 
 async def prediction_model() :
     

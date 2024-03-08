@@ -8,4 +8,4 @@ model = VGG16(weights='imagenet', include_top=True)
 model.summary()
 
 #save model
-model.save('../../Model/sample_img_classification/vgg16.keras')
+model.save('../../../Model/sample_img_classification/vgg16.keras')
