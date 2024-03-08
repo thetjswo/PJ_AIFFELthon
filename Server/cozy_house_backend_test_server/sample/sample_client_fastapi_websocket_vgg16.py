@@ -3,7 +3,7 @@ import websockets
 import json
 
 async def websocket_client():
-    async with websockets.connect("ws://127.0.0.1:5000/ws") as websocket:
+    async with websockets.connect("ws://192.168.100.15:5000/ws") as websocket:
         while True:
             data = await websocket.recv()
             if data.startswith("{") and data.endswith("}"):

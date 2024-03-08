@@ -13,7 +13,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 print(current_dir)
 
 # 모듈이 위치한 디렉토리 경로 계산
-module_dir = os.path.join(current_dir, '..', '..', 'Model', 'sample_img_classification')
+module_dir = os.path.join(current_dir, '..', '..', '..', 'Model', 'sample_img_classification')
 print(module_dir)
 
 # 계산된 모듈 디렉토리를 시스템 경로에 추가
@@ -26,7 +26,7 @@ import vgg16_prediction_model
 # Create the FastAPI application
 app = FastAPI()
 
-# 웹소켓 설정 (ws://127.0.0.1:5000/ws 로 접속)?
+# 웹소켓 설정 (ws://192.168.100.159:5000/ws 로 접속)
 @app.websocket('/ws')
 async def data(websocket: WebSocket):
     print(f"Client connected: {websocket.client}")
@@ -49,6 +49,8 @@ async def data(websocket: WebSocket):
 if __name__ == "__main__":
     uvicorn.run("sample_server_fastapi_websocket_vgg16:app",
             reload= True,   # Reload the server when code changes
-            host="127.0.0.1",   # Listen on localhost 
+            # host="127.0.0.1",   # Listen on localhost of ios
+            # host="10.0.2.2",   # Listen on localhost of android -> 이건 mac에서 실행 안됨
+            host="192.168.100.159", # Listen on current IP address - 192.168.100.159 / 0.0.0.0 은 안됨
             port=5000,   # Listen on port 5000 
             )
