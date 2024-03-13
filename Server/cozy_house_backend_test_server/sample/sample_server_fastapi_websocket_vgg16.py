@@ -13,7 +13,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 print(current_dir)
 
 # 모듈이 위치한 디렉토리 경로 계산
-module_dir = os.path.join(current_dir, '..', '..', '..', 'Model', 'sample_img_classification')
+module_dir = os.path.join(current_dir, '..', 'Model', 'sample_img_classification')
 print(module_dir)
 
 # 계산된 모듈 디렉토리를 시스템 경로에 추가
@@ -54,3 +54,6 @@ if __name__ == "__main__":
             host="192.168.100.159", # Listen on current IP address - 192.168.100.159 / 0.0.0.0 은 안됨
             port=5000,   # Listen on port 5000 
             )
+
+# 실행할때 : uvicorn main:app --host <YOUR IP> --port <any port:preferably 8000> 
+# -> fastapi 실행하는 일반적인 명령어인듯! - 공식 깃헙에서도 이렇게 사용하라고 설명해둠 
