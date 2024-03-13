@@ -8,9 +8,9 @@ import 'package:web_socket_channel/web_socket_channel.dart'; // 웹소켓 채널
 class WebSocket {
   // ------------------------- 변수 선언 ------------------------- //
   late String url;
-  static String ws_url = dotenv.get('WS_URL');
+  static String wsUrl = dotenv.get('WS_URL_ALL');
   WebSocketChannel? _channel;
-  StreamController<bool> streamController = StreamController<bool>.broadcast();
+  // StreamController<bool> streamController = StreamController<bool>.broadcast();
 
   // ---------------------- Getter Setters --------------------- //
   // URL 반환하는 getter 함수
@@ -41,10 +41,10 @@ class WebSocket {
 
   // 웹소켓에 현재 애플리케이션을 연결하는 함수
   void connect() async {
-    _channel = WebSocketChannel.connect(Uri.parse(ws_url));
+    _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
   }
 
-  // 웹소켓에서 현재 애플리케이션을 연결 해제하는 함수
+  //웹소켓에서 현재 애플리케이션을 연결 해제하는 함수
   void disconnect() {
     // 채널이 null이 아니면
     if (_channel != null) {

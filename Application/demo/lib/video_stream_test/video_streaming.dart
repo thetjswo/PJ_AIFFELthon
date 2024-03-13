@@ -1,12 +1,12 @@
-/// monitor page 디자인에 video stream 기능 테스트
+// monitor page 디자인에 video stream 기능 테스트
 
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:demo/common/styles.dart';
 import 'package:demo/video_stream/websocket.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VideoStream extends StatefulWidget {
@@ -17,8 +17,8 @@ class VideoStream extends StatefulWidget {
 }
 
 class _VideoStreamState extends State<VideoStream> {
-  static String ws_url = dotenv.get('WS_URL');
-  final WebSocket _socket = WebSocket(ws_url);
+  static String wsUrl = dotenv.get('WS_URL_ALL');
+  final WebSocket _socket = WebSocket(wsUrl); // Initialize WebSocket instance
   bool _isConnected = false;
 
   void connect(BuildContext context) async {
@@ -84,7 +84,6 @@ class _VideoStreamState extends State<VideoStream> {
                           if (!snapshot.hasData) {
                             return const CircularProgressIndicator();
                           }
-
                           if (snapshot.connectionState ==
                               ConnectionState.done) {
                             return const Center(
@@ -103,17 +102,26 @@ class _VideoStreamState extends State<VideoStream> {
                           );
                         },
                       )
-                    : const Text("Initiate Connection"),
+                    : const Text(
+                        "Initiate Connection",
+                        style: Styles.textStyle,
+                      ),
+                const SizedBox(
+                  height: 10,
+                ),
                 Container(
                   margin: const EdgeInsets.only(left: 10, right: 10),
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       //TODO: 'n분 전' 동적으로 가져오는 기능 구현
-                      Text('2분 전 카메라 화면'),
+                      Text(
+                        '2분 전 카메라 화면',
+                        style: Styles.textStyle,
+                      ),
                       Text(
                         '움직임 감지',
-                        style: TextStyle(color: Colors.blue),
+                        style: Styles.textStyle,
                       )
                     ],
                   ),
@@ -138,7 +146,10 @@ class _VideoStreamState extends State<VideoStream> {
                               ),
                               iconSize: 60,
                             ),
-                            const Text('신고하기')
+                            const Text(
+                              '신고하기',
+                              style: Styles.textStyle,
+                            )
                           ],
                         ),
                       ),
@@ -153,7 +164,10 @@ class _VideoStreamState extends State<VideoStream> {
                               ),
                               iconSize: 60,
                             ),
-                            const Text('경보해제')
+                            const Text(
+                              '경보해제',
+                              style: Styles.textStyle,
+                            )
                           ],
                         ),
                       ),
@@ -168,7 +182,10 @@ class _VideoStreamState extends State<VideoStream> {
                               ),
                               iconSize: 60,
                             ),
-                            const Text('공유하기')
+                            const Text(
+                              '공유하기',
+                              style: Styles.textStyle,
+                            )
                           ],
                         ),
                       )
