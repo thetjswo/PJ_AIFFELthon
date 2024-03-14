@@ -1,0 +1,1 @@
+# TODO: 초기 데이터 삽입이 필요할 때, 여기에 'def create_initial_data():'와 같이 초기 데이터 생성 함수 작성
