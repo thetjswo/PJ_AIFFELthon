@@ -65,7 +65,7 @@ class _DataRouteScreenState extends State<DataRouteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text("Realtime Data Demo")), // App bar with a title.
+          title: const Text("Realtime Data cozy_house_client_test")), // App bar with a title.
       body: StreamBuilder<Map>(
         // Widget for building UI based on the data stream.
         stream: _streamController
@@ -101,7 +101,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Realtime Demo', // App title.
+      title: 'Realtime cozy_house_client_test', // App title.
       home: DataRouteScreen(), // Set the home screen to DataRouteScreen.
     );
   }

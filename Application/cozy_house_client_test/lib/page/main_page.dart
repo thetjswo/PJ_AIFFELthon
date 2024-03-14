@@ -1,6 +1,6 @@
-import 'package:demo/common/navigator.dart';
-import 'package:demo/page/history_page.dart';
-import 'package:demo/page/security_page.dart';
+import 'package:cozy_house_client_test/common/navigator.dart';
+import 'package:cozy_house_client_test/page/history_page.dart';
+import 'package:cozy_house_client_test/page/security_page.dart';
 import 'package:flutter/material.dart';
 
 import 'monitor_page.dart';

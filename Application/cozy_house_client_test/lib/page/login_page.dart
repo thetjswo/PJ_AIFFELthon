@@ -1,4 +1,4 @@
-import 'package:demo/page/main_page.dart';
+import 'package:cozy_house_client_test/page/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

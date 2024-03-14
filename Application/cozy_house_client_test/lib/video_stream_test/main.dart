@@ -1,4 +1,4 @@
-import 'package:demo/video_stream/video_streaming.dart';
+import 'package:cozy_house_client_test/video_stream/video_streaming.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter cozy_house_client_test',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

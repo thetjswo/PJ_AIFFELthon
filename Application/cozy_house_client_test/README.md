@@ -1,4 +1,4 @@
-# demo
+# cozy_house_client_test
 
 A new Flutter project.
 

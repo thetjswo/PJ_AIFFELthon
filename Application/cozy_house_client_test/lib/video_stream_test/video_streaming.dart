@@ -3,8 +3,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:demo/common/styles.dart';
-import 'package:demo/video_stream/websocket.dart';
+import 'package:cozy_house_client_test/common/styles.dart';
+import 'package:cozy_house_client_test/video_stream/websocket.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';

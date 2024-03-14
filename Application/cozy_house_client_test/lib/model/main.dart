@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:demo/model/websocket.dart';
+import 'package:cozy_house_client_test/model/websocket.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -15,7 +15,7 @@ class Model extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'WebSocket Model Demo',
+      title: 'WebSocket Model cozy_house_client_test',
       home: RealtimeDataScreen(),
     );
   }
@@ -47,7 +47,7 @@ class _RealtimeDataScreenState extends State<RealtimeDataScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WebSocket Model Demo'),
+        title: const Text('WebSocket Model cozy_house_client_test'),
       ),
       body: StreamBuilder<Map>(
         stream: _controller.stream,
