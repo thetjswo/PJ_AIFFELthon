@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'monitor_page.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {

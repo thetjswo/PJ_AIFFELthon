@@ -40,6 +40,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   web_socket_channel: ^2.4.0
+  # email 인증을 위한 firebase 라이브러리
+  firebase_core: ^2.27.1
+  flutter_native_splash: ^2.3.10
 
 dev_dependencies:
   flutter_test:

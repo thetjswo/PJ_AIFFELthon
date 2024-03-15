@@ -1,12 +1,6 @@
 import 'package:cozy_house_client_dev/page/main_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-//TODO: 추후 main()은 splash 화면으로 대체
-void main() async {
-  await dotenv.load(fileName: '.env');
-  runApp(const LoginPage());
-}
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -48,7 +42,7 @@ class LoginWidget extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MyApp())
+                      MaterialPageRoute(builder: (context) => const MainApp())
                     );
                   },
                   child: Row(
