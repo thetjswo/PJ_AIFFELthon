@@ -1,5 +1,8 @@
 import 'package:cozy_house_client_dev/page/main_page.dart';
 import 'package:cozy_house_client_dev/common/styles.dart';
+import 'package:cozy_house_client_dev/utils/validate.dart';
+import 'package:cozy_house_client_dev/page/signup_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
@@ -19,6 +22,9 @@ class LoginPage extends StatelessWidget {
 }
 
 class LoginWidget extends StatelessWidget {
+  FocusNode _emailFocus = new FocusNode();
+  FocusNode _passwordFocus = new FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -45,6 +51,8 @@ class LoginWidget extends StatelessWidget {
                     children: [
                       TextFormField(
                         keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        focusNode: _emailFocus,
                         decoration: InputDecoration(
                           hintText: 'example@example.com',
                           hintStyle: TextStyle(color: Colors.grey.withOpacity(0.5)),
@@ -56,18 +64,16 @@ class LoginWidget extends StatelessWidget {
                             borderSide: BorderSide(color: Colors.blue),
                           ),
                         ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return '이메일을 입력하세요';
-                          }
-                          // TODO: 이메일 형식 검사 추가
-                          return null;
-                        },
+                        validator: (value) => CheckValidate().validateEmail(_emailFocus, value!),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                       ),
                       TextFormField(
+                        obscureText: true,
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.done,
+                        focusNode: _passwordFocus,
                         decoration: InputDecoration(
-                          hintText: '비밀번호를 입력하세요...',
+                          hintText: '비밀번호를 입력하세요.',
                           hintStyle: TextStyle(color: Colors.grey.withOpacity(0.5)),
                           prefixIcon: Icon(Icons.password_rounded),
                           enabledBorder: UnderlineInputBorder(
@@ -77,13 +83,8 @@ class LoginWidget extends StatelessWidget {
                             borderSide: BorderSide(color: Colors.blue),
                           ),
                         ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return '비밀번호를 입력하세요';
-                          }
-                          // TODO: 비밀번호 형식 검사 추가
-                          return null;
-                        },
+                        validator: (value) => CheckValidate().validatePassword(_passwordFocus, value!),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                       ),
                     ],
                   ),
@@ -112,7 +113,11 @@ class LoginWidget extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-
+                          Navigator.push(
+                            context,
+                            // 메인 화면으로 이동
+                            MaterialPageRoute(builder: (context) => SignUpPage()),
+                          );
                         },
                         child: Text(
                           'Sign Up',

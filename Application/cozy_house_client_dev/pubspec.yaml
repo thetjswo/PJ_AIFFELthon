@@ -53,6 +53,7 @@ dependencies:
   logger: ^2.1.0
   # 각각의 페이지에서 데이터를 공유하기 위한 라이브러리
   provider: ^6.1.2
+  flutter_provider: ^2.1.0
   
 
 dev_dependencies:
