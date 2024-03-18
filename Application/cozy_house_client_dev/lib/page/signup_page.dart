@@ -1,12 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../common/modal_popup.dart';
 import '../common/styles.dart';
 import '../utils/formatter.dart';
 import '../utils/validate.dart';
-
-
-final formKey = GlobalKey<FormState>();
 
 
 class SignUpPage extends StatefulWidget {
@@ -17,13 +16,29 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUpPage> {
-  bool _isChecked = false; // 개인정보 동의 체크 여부
+  final formKey = GlobalKey<FormState>();
+
   final FocusNode _nameFocus = FocusNode(); // 전화번호 포커스 여부
   final FocusNode _phoneFocus = FocusNode(); // 전화번호 포커스 여부
   final FocusNode _emailFocus = FocusNode(); // 이메일 포커스 여부
   final FocusNode _passwordFocus = FocusNode(); // 비밀번호 포커스 여부
   final FocusNode _checkPasswordFocus = FocusNode(); // 비밀번호 확인 포커스 여부
-  late String? _inputPassword;
+
+  late String _userName; // 사용자 이름
+  late String _userPhoneNumber; // 사용자 전화번호
+  late String _userEmail; // 사용자 이메일
+  late String _userPassword; // 사용자 패스워드
+  late bool _consentPersonalInfo = false; // 개인정보 동의 체크 여부
+
+  @override
+  void initState() {
+    super.initState();
+    _userName = '';
+    _userPhoneNumber = '';
+    _userEmail = '';
+    _userPassword = '';
+    _consentPersonalInfo = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +76,11 @@ class _SignUpState extends State<SignUpPage> {
                       obscureText: false,
                       keyboardType: TextInputType.name, // 이름 입력을 위한 문자 키패드
                       textInputAction: TextInputAction.next, // 다음 폼으로 넘어가는 버튼
+                      onChanged: (value) {
+                        setState(() {
+                          _userName = value; // 입력 값을 상태 변수에 저장
+                        });
+                      },
                       decoration: InputDecoration(
                         labelText: '이름',
                         hintText: '이름을 입력해주세요.',
@@ -77,7 +97,6 @@ class _SignUpState extends State<SignUpPage> {
                         ),
                       ),
                       validator: (value) => CheckValidate().validateName(_nameFocus, value!), // 이름에 특수문자 입력 여부 검증
-                      autovalidateMode: AutovalidateMode.onUserInteraction, // 사용자 입력이 있을 때 자동으로 인식
                     ),
                   ),
                   Container( // 전화번호 입력 폼
@@ -91,6 +110,11 @@ class _SignUpState extends State<SignUpPage> {
                         LengthLimitingTextInputFormatter(11), // 11자리 제한
                         PhoneNumberFormatter(), // 전화번호 형식 포맷 함수 호출
                       ],
+                      onChanged: (value) {
+                        setState(() {
+                          _userPhoneNumber = value; // 입력 값을 상태 변수에 저장
+                        });
+                      },
                       decoration: InputDecoration(
                         labelText: '휴대전화',
                         hintText: '휴대전화 번호를 입력해주세요.(- 제외)',
@@ -107,7 +131,6 @@ class _SignUpState extends State<SignUpPage> {
                         ),
                       ),
                       validator: (value) => CheckValidate().validatePhone(_phoneFocus, value!), // 전화번호 입력 개수 검증
-                      autovalidateMode: AutovalidateMode.onUserInteraction, // 사용자 입력이 있을 때 자동으로 인식
                     ),
                   ),
                   Container(
@@ -116,6 +139,11 @@ class _SignUpState extends State<SignUpPage> {
                       obscureText: false,
                       keyboardType: TextInputType.emailAddress, // 이메일 주소 입력을 위한 문자 키패드
                       textInputAction: TextInputAction.next, // 다음 폼으로 넘어가는 버튼
+                      onChanged: (value) {
+                        setState(() {
+                          _userEmail = value; // 입력 값을 상태 변수에 저장
+                        });
+                      },
                       decoration: InputDecoration(
                         labelText: '이메일',
                         hintText: 'example@example.com',
@@ -132,7 +160,6 @@ class _SignUpState extends State<SignUpPage> {
                         ),
                       ),
                       validator: (value) => CheckValidate().validateEmail(_emailFocus, value!), // 이메일 형식 검증
-                      autovalidateMode: AutovalidateMode.onUserInteraction, // 사용자 입력이 있을 때 자동으로 인식
                     ),
                   ),
                   Container(
@@ -141,6 +168,11 @@ class _SignUpState extends State<SignUpPage> {
                       obscureText: true, // 비밀번호 * 처리
                       keyboardType: TextInputType.text, // 비밀번호 입력을 위한 문자 키패드
                       textInputAction: TextInputAction.next, // 다음 폼으로 넘어가는 버튼
+                      onChanged: (value) {
+                        setState(() {
+                          _userPassword = value; // 입력 값을 상태 변수에 저장
+                        });
+                      },
                       decoration: InputDecoration(
                         labelText: '비밀번호',
                         hintText: '비밀번호를 입력해주세요.',
@@ -156,12 +188,7 @@ class _SignUpState extends State<SignUpPage> {
                           borderSide: BorderSide(color: Colors.blue),
                         ),
                       ),
-                      validator: (value) {
-                        String? res = CheckValidate().validatePassword(_passwordFocus, value!);
-                        if (res == null) _inputPassword = value;
-                        return null;
-                      }, // 대소문자, 숫자, 특수문자 포함 8~15자 검증
-                      autovalidateMode: AutovalidateMode.onUserInteraction, // 사용자 입력이 있을 때 자동으로 인식
+                      validator: (value) => CheckValidate().validatePassword(_passwordFocus, value!), // 대소문자, 숫자, 특수문자 포함 8~15자 검증
                     ),
                   ),
                   Container(
@@ -185,8 +212,7 @@ class _SignUpState extends State<SignUpPage> {
                           borderSide: BorderSide(color: Colors.blue),
                         ),
                       ),
-                      validator: (value) => CheckValidate().reValidatePassword(_checkPasswordFocus, _inputPassword!, value!),
-                      autovalidateMode: AutovalidateMode.onUserInteraction, // 사용자 입력이 있을 때 자동으로 인식
+                      validator: (value) => CheckValidate().checkPassword(_checkPasswordFocus, value!),
                     ),
                   ),
                   Container(
@@ -197,10 +223,10 @@ class _SignUpState extends State<SignUpPage> {
                         Row(
                           children: [
                             Checkbox(
-                              value: _isChecked,
+                              value: _consentPersonalInfo,
                               onChanged: (value) {
                                 setState(() {
-                                  _isChecked = value!;
+                                  _consentPersonalInfo = value!;
                                 });
                               },
                             ),
@@ -241,8 +267,26 @@ class _SignUpState extends State<SignUpPage> {
                   Container(
                     margin: const EdgeInsets.only(top: 20),
                     child: ElevatedButton(
-                      onPressed: () {
-
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          // TODO: 서버 DB에 사용자 정보 저장 기능 구현
+                          try {
+                            final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                              email: _userEmail,
+                              password: _userPassword,
+                            );
+                          } on FirebaseAuthException catch (e) {
+                            if (e.code == 'weak-password') {
+                              ModalPopUp.showSignUpFailedWeakPassword(context);
+                            } else if (e.code == 'email-already-in-use') {
+                              ModalPopUp.showSignUpFailedExistAccount(context);
+                            } else {
+                              ModalPopUp.showSignUpSuccess(context);
+                            }
+                          } catch (e) {
+                            print(e);
+                          }
+                        }
                       },
                       style: Styles.buttonStyle_bg,
                       child: const Text(

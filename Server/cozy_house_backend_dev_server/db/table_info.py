@@ -19,6 +19,8 @@ class Users(SQLModel, table=True):
     phone_num: Optional[str] = None
     # 사용자 주소
     address: Optional[str] = None
+    # 개인정보 수집 동의 여부
+    is_agreed: Optional[bool] = False
     # 계정 삭제 여부
     del_fl: bool = Field(default=False, nullable=False)
     # 휴면 계정 여부
