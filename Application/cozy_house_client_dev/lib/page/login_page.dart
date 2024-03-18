@@ -1,4 +1,5 @@
 import 'package:cozy_house_client_dev/page/main_page.dart';
+import 'package:cozy_house_client_dev/common/styles.dart';
 import 'package:flutter/material.dart';
 
 
@@ -23,93 +24,106 @@ class LoginWidget extends StatelessWidget {
     return Column(
       children: [
         Container(
-          margin: EdgeInsets.only(top: 70),
+          margin: EdgeInsets.only(top: 30),
           child: Text(
-            '로그인',
+            'LOGIN',
             style: TextStyle(
-                color: Colors.black,
-                fontSize: 35,
+                color: Color(0xFFA1DEFF),
+                fontSize: 25,
                 fontWeight: FontWeight.bold
             ),
           ),
         ),
         Container(
-            margin: EdgeInsets.only(left: 70,top: 100, right: 70),
+            margin: EdgeInsets.only(left: 70, right: 70),
             child: Column(
               children: [
-                //TODO: 구글 로그인 이미지로 대체
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MainApp())
-                    );
-                  },
-                  child: Row(
+                Image.asset('assets/images/icon/ic_login_upper.png'),
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: Column(
                     children: [
-                      Image.asset(
-                        'assets/images/symbol/google_symbol.png',
-                        height: 24,
-                        width: 24,
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          hintText: 'example@example.com',
+                          hintStyle: TextStyle(color: Colors.grey.withOpacity(0.5)),
+                          prefixIcon: Icon(Icons.email),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return '이메일을 입력하세요';
+                          }
+                          // TODO: 이메일 형식 검사 추가
+                          return null;
+                        },
                       ),
-                      SizedBox(width: 20),
-                      Text('구글 로그인하기')
+                      TextFormField(
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          hintText: '비밀번호를 입력하세요...',
+                          hintStyle: TextStyle(color: Colors.grey.withOpacity(0.5)),
+                          prefixIcon: Icon(Icons.password_rounded),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return '비밀번호를 입력하세요';
+                          }
+                          // TODO: 비밀번호 형식 검사 추가
+                          return null;
+                        },
+                      ),
                     ],
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
                 ),
-                SizedBox(height: 15,),
-                //TODO: 네이버 로그인 이미지로 대체
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Row(
-                    children: [
-                      Image.asset(
-                        'assets/images/symbol/naver_symbol.png',
-                        height: 24,
-                        width: 24,
-                      ),
-                      SizedBox(width: 20),
-                      Text('네이버 로그인하기')
-                    ],
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 15,),
-                //TODO: 카카오 로그인 이미지로 대체
                 ElevatedButton(
                   onPressed: () {},
-                  child: Row(
-                    children: [
-                      Image.asset(
-                        'assets/images/symbol/kakao_symbol.png',
-                        height: 24,
-                        width: 24,
-                      ),
-                      SizedBox(width: 20),
-                      Text('카카오 로그인하기')
-                    ],
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.yellow,
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                  style: Styles.buttonStyle_bg,
+                  child: Text(
+                    'SIGN IN',
+                    style: TextStyle(
+                      color: Colors.white
                     ),
                   ),
                 ),
+                Container(
+                  margin: EdgeInsets.only(top: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Need an account?',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+
+                        },
+                        child: Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            color: Colors.blue
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )
               ],
             )
         ),

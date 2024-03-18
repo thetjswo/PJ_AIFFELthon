@@ -1,6 +1,5 @@
-// video_stream 파일에서 영상 가져오기 버튼의 디자인 파일
-
 import 'package:flutter/material.dart';
+
 
 class Styles {
   static final buttonStyle =
@@ -16,6 +15,19 @@ class Styles {
     ),
     minimumSize: const Size(200, 40),
   );
+
+  // 로그인 페이지 버튼 스타일 정의
+  static final buttonStyle_bg = ElevatedButton.styleFrom(
+    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 80),
+    backgroundColor: Color(0xFFA1DEFF),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(5),
+      ),
+    ),
+    minimumSize: const Size(200, 30),
+  );
+
 
   static const textStyle = TextStyle(
       color: Colors.blue,

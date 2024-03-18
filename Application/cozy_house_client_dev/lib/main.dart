@@ -1,14 +1,27 @@
 import 'package:cozy_house_client_dev/page/login_page.dart';
 import 'package:cozy_house_client_dev/page/main_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:http/http.dart' as http;
 
-late bool is_member;
+import 'firebase_options.dart';
+
+
+late bool IS_MEMBER;
+String SERVER_URL = dotenv.get('SERVER_URL');
+
 
 void main() async {
   // .env 환경 변수 관리 파일 load
   await dotenv.load(fileName: '.env');
+
+  // firebase 초기화
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   // splash 화면이 노출되는 동안 계정, 네트워크 유효성 검증 등의 백그라운드 처리를 위한 작업
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -39,11 +52,11 @@ class _BeforeAppStartState extends State<BeforeAppStart> {
     super.initState();
 
     // initState 메서드에서 비동기 작업 수행
-    loadData().then((_) {
+    account_inspection().then((_) {
       // 데이터 로드 완료 후 Splash 화면이 3초 간 표시된 후 화면 이동
       Future.delayed(Duration(seconds: 3), () {
         // 서버가 계정 정보를 가지고 있다면
-        if(is_member == true) {
+        if(IS_MEMBER == true) {
           // splash 종료 후,
           FlutterNativeSplash.remove();
           Navigator.pushReplacement(
@@ -66,8 +79,18 @@ class _BeforeAppStartState extends State<BeforeAppStart> {
     });
   }
 
-  Future<void> loadData() async {
-    is_member = false;
+  Future<void> account_inspection() async {
+    // TODO: 서버와 통신하여 계정 존재 여부를 확인하는 코드
+    // var url = Uri.parse(SERVER_URL + "/get_account_info");
+    // var response = await http.post(url, body: {'title': 'account inspection', 'body': 'bar'});
+    // print(response.statusCode);
+    // print(response);
+    // if (response.statusCode == 201) {
+    //   print('POST 요청 결과: ${response.body}');
+    // } else {
+    //   print('POST 요청 실패: ${response.statusCode}');
+    // }
+    IS_MEMBER = false;
   }
 
   @override

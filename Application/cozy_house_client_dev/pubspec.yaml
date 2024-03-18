@@ -42,7 +42,18 @@ dependencies:
   web_socket_channel: ^2.4.0
   # email 인증을 위한 firebase 라이브러리
   firebase_core: ^2.27.1
+  firebase_auth: ^4.17.9
+  # splash 화면 구성을 위한 라이브러리
   flutter_native_splash: ^2.3.10
+  # HTTP 통신을 위한 라이브러리
+  http: ^1.2.1
+  # 데이터를 앱 메모리에 저장하기 위한 라이브러리(앱 메모리는 휘발성이 있으므로 사용 시 주의가 필요하다.)
+  shared_preferences: ^2.2.2
+  # 로그 출력을 위한 라이브러리
+  logger: ^2.1.0
+  # 각각의 페이지에서 데이터를 공유하기 위한 라이브러리
+  provider: ^6.1.2
+  
 
 dev_dependencies:
   flutter_test:
@@ -71,9 +82,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
-    - assets/images/symbol/google_symbol.png
-    - assets/images/symbol/naver_symbol.png
-    - assets/images/symbol/kakao_symbol.png
+    - assets/images/icon/ic_login_upper.png
     - assets/images/icon/ic_security.png
     - assets/images/example_images/gray_box.png
 

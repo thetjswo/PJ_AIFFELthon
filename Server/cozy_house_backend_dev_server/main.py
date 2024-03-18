@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from core import config
 from backend_pre_start import create_db_tables, set_log_level, welcome_func
 
+import logging
+
 
 app = FastAPI()
 
@@ -18,6 +20,7 @@ async def root():
     return {"message": config.TEST_MESSAGE}
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+@app.get("/get_account_info")
+async def account_inspection():
+    logging.info('!!!!!!!!!!!!!!!')
+    return 'hello'
