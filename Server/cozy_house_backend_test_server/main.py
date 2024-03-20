@@ -1,3 +1,5 @@
+# 프로젝트의 첫 진입점
+
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 

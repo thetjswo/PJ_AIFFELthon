@@ -1,7 +1,9 @@
+# DB 설정 파일
+
 import json
 import os
 
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine, inspect    # create_engine : 데이터베이스 유형에 따라 적절한 연결 객체를 생성하고 관리하는 함수.
 from create_table import *
 
 # secrets.json 파일 경로 탐색
@@ -31,3 +33,5 @@ for table_class in table_list:
     if not inspector.has_table(table_name):
         # 해당 테이블 클래스로 테이블 생성
         table_class.metadata.create_all(engine)
+
+
