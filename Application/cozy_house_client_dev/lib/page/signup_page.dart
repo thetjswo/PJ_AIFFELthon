@@ -1,12 +1,42 @@
+import 'package:cozy_house_client_dev/api/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../common/modal_popup.dart';
 import '../common/styles.dart';
 import '../utils/formatter.dart';
+import '../utils/generate_hash.dart';
 import '../utils/validate.dart';
 
+
+class FormData {
+  final String name;
+  final String phone;
+  final String email;
+  final String password;
+  final bool agree;
+
+  FormData({
+    required this.name,
+    required this.phone,
+    required this.email,
+    required this.password,
+    required this.agree
+  });
+
+  // FormData를 JSON 형식으로 변환하는 메서드
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'phone': phone,
+      'email': email,
+      'password': password,
+      'agree': agree,
+    };
+  }
+}
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -18,7 +48,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpState extends State<SignUpPage> {
   final formKey = GlobalKey<FormState>();
 
-  final FocusNode _nameFocus = FocusNode(); // 전화번호 포커스 여부
+  final FocusNode _nameFocus = FocusNode(); // 이름 포커스 여부
   final FocusNode _phoneFocus = FocusNode(); // 전화번호 포커스 여부
   final FocusNode _emailFocus = FocusNode(); // 이메일 포커스 여부
   final FocusNode _passwordFocus = FocusNode(); // 비밀번호 포커스 여부
@@ -269,19 +299,52 @@ class _SignUpState extends State<SignUpPage> {
                     child: ElevatedButton(
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
-                          // TODO: 서버 DB에 사용자 정보 저장 기능 구현
                           try {
+                            // firebase 계정 생성
                             final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
                               email: _userEmail,
                               password: _userPassword,
                             );
+
+                            // FIXME:firebase 인증 메일 발송 안됨
+                            var acs = ActionCodeSettings(
+                              //FIXME: 아마 url이 문제일 듯 싶음
+                                url: dotenv.get('FIREBASE_REDIRECT_URL'),
+                                // This must be true
+                                handleCodeInApp: true,
+                                iOSBundleId: dotenv.get('IOS_BUNDLE_ID'),
+                                androidPackageName: dotenv.get('AOS_PACKAGE_NAME'),
+                                // installIfNotAvailable
+                                androidInstallApp: true,
+                                // minimumVersion
+                                androidMinimumVersion: '12');
+
+                            FirebaseAuth.instance.sendSignInLinkToEmail(
+                                email: _userEmail, actionCodeSettings: acs)
+                                .catchError((onError) => print('Error sending email verification $onError'))
+                                .then((value) => print('Successfully sent email verification'));
+
+                            // 비밀번호 sha256 해쉬 처리
+                            String hashedPassword = GenerateHash().generateSha256(_userPassword);
+
+                            // 회원가입 계정 정보 서버로 전송
+                            FormData formData = FormData(
+                              name: _userName,
+                              phone: _userPhoneNumber,
+                              email: _userEmail,
+                              password: hashedPassword,
+                              agree: _consentPersonalInfo
+                            );
+
+                            SignUp().sendSignUpDataToServer(formData);
+
+                            // login 화면으로 전환
+                            ModalPopUp.showSignUpSuccess(context);
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'weak-password') {
                               ModalPopUp.showSignUpFailedWeakPassword(context);
                             } else if (e.code == 'email-already-in-use') {
                               ModalPopUp.showSignUpFailedExistAccount(context);
-                            } else {
-                              ModalPopUp.showSignUpSuccess(context);
                             }
                           } catch (e) {
                             print(e);

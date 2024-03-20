@@ -1,4 +1,5 @@
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import inspect
+from db import db_connector
 from db.table_info import *
 from core import config
 import logging
@@ -10,12 +11,6 @@ def set_log_level():
     logging.info(f'Cozy House Application\'s log level is ${config.LOG_LEVEL}...')
 
 def create_db_tables():
-    # mysql 접속 url
-    database_url = config.DATABASE_URL
-
-    # mysql 접속 객체 생성
-    engine = create_engine(database_url)
-
     # 테이블 클래스 리스트
     table_list = [Users, CCTVDevices, CCTVVideos, Settings, EventLogs, ReportLogs, ShareLogs, CheckLogs, PushLogs]
 
@@ -25,13 +20,12 @@ def create_db_tables():
         table_name = table_class.__table__.name
         # 기존에 존재하는 테이블인지 확인
         logging.info('Verify that the existing table exists...')
-        inspector = inspect(engine)
+        inspector = inspect(db_connector.engine)
         # 현재 조회중인 테이블이 존재하지 않는다면,
         if not inspector.has_table(table_name):
-            logging.info('Create a new table because the existing table does not exist!!!')
+            logging.info('Create a new table because the existing table does not exist!')
             # 해당 테이블 클래스로 테이블 생성
-            table_class.metadata.create_all(engine)
-        logging.info('Skip creating a table because an existing table exists!!!')
+            table_class.metadata.create_all(db_connector.engine)
 
 
 def welcome_func():

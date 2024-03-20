@@ -1,8 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from core import config
 from backend_pre_start import create_db_tables, set_log_level, welcome_func
-
-import logging
+from api.auth import router as user_router
 
 
 app = FastAPI()
@@ -14,13 +13,13 @@ create_db_tables()
 # TODO: 배포 시, 주석 처리 필수(아마도 피카츄 저작권 문제)
 welcome_func()
 
-
 @app.get("/")
 async def root():
     return {"message": config.TEST_MESSAGE}
 
 
-@app.get("/get_account_info")
-async def account_inspection():
-    logging.info('!!!!!!!!!!!!!!!')
-    return 'hello'
+app.include_router(user_router, prefix="/auth")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -28,7 +28,9 @@ class Users(SQLModel, table=True):
     # 사용자 권한(관리자/일반 사용자)
     role_type: int = Field(default=1)
     # 사용자 기기 고유 번호
-    auth_token: Optional[str] = None
+    uuid: Optional[str] = None
+    # 마지막 접속 시간
+    last_access_time: Optional[datetime] = None
     # 생성 시간
     created_at: datetime = Field(default=datetime.now, nullable=False)
     # 갱신 시간
@@ -110,8 +112,8 @@ class EventLogs(SQLModel, table=True):
     __tablename__ = "event_logs"
     # 로우 데이터 고유 값 -> 데이터가 추가될 때마다 1씩 자동 증가
     id: Optional[int] = Field(default=None, primary_key=True)
-    # HHTP 통신 프로토콜 종류
-    method: Optional[str] = None
+    # 탐지에 사용된 모델 종류
+    model: Optional[str] = None
     # 위험 감지 타입
     type: str = Field(default='Normal', nullable=False)
     # 에러 메세지
@@ -122,8 +124,6 @@ class EventLogs(SQLModel, table=True):
     is_recorded: bool = Field(default=False, nullable=False)
     # 처리 상태
     status: Optional[int] = None
-    # ???
-    meta_data: Optional[str] = None
     # 외래키 - 사용자 정보 테이블의 ID 값
     user_id: int = Field(foreign_key='users.id')
     # 외래키 - CCTV 카메라 정보 테이블의 ID 값
