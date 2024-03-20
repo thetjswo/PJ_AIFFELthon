@@ -195,6 +195,8 @@ class AccountSettingsPage extends StatelessWidget {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _identificationNumberController = TextEditingController();
 
+
+  // TODO : 텍스트 필드에 대한 이해
   @override
   Widget build(BuildContext context) {
     // 데이터를 텍스트 필드에 할당
