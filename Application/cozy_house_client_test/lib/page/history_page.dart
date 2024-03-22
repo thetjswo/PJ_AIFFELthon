@@ -11,19 +11,6 @@ class HistoryPageState extends State<HistoryPage> {
   // TODO : 기록 데이터 import하기, 선택된 날짜의 기록 가져오기
   List<Record> _records = [
     Record("외부인 감지", DateTime(2023, 2, 29, 9, 30, 15), "카메라 1"),
-    Record("외부인 감지", DateTime(2023, 2, 29, 12, 45, 20), "카메라 2"),
-    Record("외부인 감지", DateTime(2023, 2, 29, 15, 20, 5), "카메라 3"),
-    // 임의의 더 많은 기록 데이터
-    Record("외부인 감지", DateTime(2023, 2, 29, 9, 30, 15), "카메라 4"),
-    Record("외부인 감지", DateTime(2023, 2, 29, 12, 45, 20), "카메라 5"),
-    Record("외부인 감지", DateTime(2023, 2, 29, 15, 20, 5), "카메라 6"),
-    Record("외부인 감지", DateTime(2023, 2, 29, 9, 30, 15), "카메라 7"),
-    Record("외부인 감지", DateTime(2023, 2, 29, 12, 45, 20), "카메라 8"),
-    Record("외부인 감지", DateTime(2023, 2, 29, 15, 20, 5), "카메라 9"),
-    Record("외부인 감지", DateTime(2023, 2, 29, 9, 30, 15), "카메라 10"),
-    Record("외부인 감지", DateTime(2023, 2, 29, 12, 45, 20), "카메라 11"),
-    Record("외부인 감지", DateTime(2023, 2, 29, 15, 20, 5), "카메라 12"),
-    // 필요에 따라 더 많은 기록 데이터 추가 가능
   ]; // 임의로 적은 가상의 기록 데이터
 
   // List<Record> _filteredRecords = []; // 선택된 날짜에 해당하는 기록을 저장할 리스트
@@ -93,11 +80,11 @@ class HistoryPageState extends State<HistoryPage> {
     }
   }
 }
-
+// TODO : 임의로 썸네일 이미지를 넣어둔 상태기 때문에 후에 수정 필요
 Widget _buildRecordItem(Record record) {
   return ListTile(
     title: Text(record.event), // 이벤트 정보 표시
-    subtitle: Text("Detected at: ${record.time}, Camera: ${record.camera}"), // 시간과 카메라 정보 표시
+    subtitle: Text("감지된 시간: ${record.time}, Camera: ${record.camera}"), // 시간과 카메라 정보 표시
     trailing: SizedBox(
       width: 80, // 이미지 너비
       height: 48, // 이미지 높이
@@ -139,9 +126,6 @@ class Record {
 }
 
 
-
-
-
 // 리스트 선택하고 난 후에 따라오는 Action Page
 class ActionPage extends StatefulWidget {
   @override
@@ -149,11 +133,47 @@ class ActionPage extends StatefulWidget {
 }
 
 class _ActionPageState extends State<ActionPage> {
+  void _showAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("경보를 해제합니다."),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 20),
+              Icon(
+                Icons.check_circle_outline_outlined,
+                color: Colors.green,
+                size: 80,
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
+          actions: [
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                },
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.lightGreen),
+                ),
+                // TODO : 경보 해제시 알림 꺼지는 기능 구현 필요
+                child: Text("확인"),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 앱 바
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),
         title: Text(
@@ -173,7 +193,6 @@ class _ActionPageState extends State<ActionPage> {
           ),
         ),
       ),
-      // MonitorPage와 동일한 내용 추가
       body: Center(
           child: Column(
             children: [
@@ -236,11 +255,11 @@ class _ActionPageState extends State<ActionPage> {
                             child: Column(
                               children: [
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: _showAlert,
                                   icon: Icon(Icons.check_circle_outline_outlined, color: Colors.green,),
                                   iconSize: 60,
                                 ),
-                                Text('경보해제')
+                                Text('경보 해제')
                               ],
                             ),
                           ),
@@ -267,6 +286,7 @@ class _ActionPageState extends State<ActionPage> {
       ),
     );
   }
+
 
   // _launchSMS 함수도 함께 추가
   void _launchSMS() async {

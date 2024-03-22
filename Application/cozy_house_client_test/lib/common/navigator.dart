@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:demo/page/login_page.dart';
-import 'package:demo/page/accountsettings_page.dart';
+import 'package:cozy_house_client_test/page/login_page.dart';
+
 
 
 class CustomNavigator extends StatefulWidget {
@@ -15,10 +15,10 @@ class CustomNavigator extends StatefulWidget {
 
   const CustomNavigator(
       {Key? key,
-      required this.titleText,
-      required this.selectedIndex,
-      required this.pages,
-      required this.onChanged})
+        required this.titleText,
+        required this.selectedIndex,
+        required this.pages,
+        required this.onChanged})
       : super(key: key);
 
   @override
@@ -319,7 +319,7 @@ class DeviceManagementPage extends StatelessWidget {
 }
 
 
-// TODO :서비스 이용약관 , 개인정보 처리방침 내용 추가 및 보완
+// TODO :서비스 이용약관 , 개인정보 처리방침 내용 추가 및 보완 필요
 class ServiceInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
