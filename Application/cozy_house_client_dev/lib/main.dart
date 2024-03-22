@@ -1,6 +1,7 @@
 import 'package:cozy_house_client_dev/page/login_page.dart';
 import 'package:cozy_house_client_dev/page/main_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -80,6 +81,8 @@ class _BeforeAppStartState extends State<BeforeAppStart> {
   }
 
   Future<void> account_inspection() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "BECQwp1iAkXVexnSKuFEI4z0f6fgTh-_-F32ejG1bzCE1kA5-P6VF4ViYbCdPMZ8U1BgseLuR_FPaojH5Cz4uys");
+    print('FCM TOKEN: $fcmToken');
     // TODO: 서버와 통신하여 계정 존재 여부를 확인하는 코드
     // var url = Uri.parse(SERVER_URL + "/get_account_info");
     // var response = await http.post(url, body: {'title': 'account inspection', 'body': 'bar'});

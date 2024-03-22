@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../common/firebase_authentication.dart';
 import '../common/modal_popup.dart';
 import '../common/styles.dart';
 import '../utils/formatter.dart';
@@ -301,28 +302,7 @@ class _SignUpState extends State<SignUpPage> {
                         if (formKey.currentState!.validate()) {
                           try {
                             // firebase 계정 생성
-                            final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                              email: _userEmail,
-                              password: _userPassword,
-                            );
-
-                            // FIXME:firebase 인증 메일 발송 안됨
-                            var acs = ActionCodeSettings(
-                              //FIXME: 아마 url이 문제일 듯 싶음
-                                url: dotenv.get('FIREBASE_REDIRECT_URL'),
-                                // This must be true
-                                handleCodeInApp: true,
-                                iOSBundleId: dotenv.get('IOS_BUNDLE_ID'),
-                                androidPackageName: dotenv.get('AOS_PACKAGE_NAME'),
-                                // installIfNotAvailable
-                                androidInstallApp: true,
-                                // minimumVersion
-                                androidMinimumVersion: '12');
-
-                            FirebaseAuth.instance.sendSignInLinkToEmail(
-                                email: _userEmail, actionCodeSettings: acs)
-                                .catchError((onError) => print('Error sending email verification $onError'))
-                                .then((value) => print('Successfully sent email verification'));
+                            await FirebaseAuthentication.create_account(_userEmail, _userPassword);
 
                             // 비밀번호 sha256 해쉬 처리
                             String hashedPassword = GenerateHash().generateSha256(_userPassword);
