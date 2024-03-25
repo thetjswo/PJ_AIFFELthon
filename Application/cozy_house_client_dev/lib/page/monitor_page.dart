@@ -1,125 +1,11 @@
-// import 'package:flutter/material.dart';
-// import 'package:url_launcher/url_launcher.dart';
-//
-// class MonitorPage extends StatefulWidget {
-//   @override
-//   _MonitorPageState createState() => _MonitorPageState();
-// }
-//
-// class _MonitorPageState extends State<MonitorPage> {
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Center(
-//       child: Column(
-//         children: [
-//           SizedBox(height: 100,),
-//           Container(
-//             child: Column(
-//               children: [
-//                 Container(
-//                   height: 40,
-//                   width: 350,
-//                   padding: EdgeInsets.only(left: 10, top: 5),
-//                   color: Color(0xFFD0A9F5),
-//                   child: Text(
-//                     'Camera01',
-//                     style: TextStyle(
-//                       fontSize: 20,
-//                     ),
-//                   ),
-//                 ),
-//                 Container(
-//                   height: 197,
-//                   width: 350,
-//                   color: Colors.grey,
-//                 ),
-//                 Container(
-//                   margin: EdgeInsets.only(left: 10, right: 10),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                     children: [
-//                       //TODO: 'n분 전' 동적으로 가져오는 기능 구현
-//                       Text('2분 전 카메라 화면'),
-//                       Text(
-//                         '움직임 감지',
-//                         style: TextStyle(
-//                           color: Colors.blue
-//                         ),
-//                       )
-//                     ],
-//                   ),
-//                 ),
-//                 SizedBox(height: 50,),
-//                 Container(
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                     children: [
-//                       Container(
-//                         child: Column(
-//                           children: [
-//                             IconButton(
-//                               onPressed: () {
-//                                 _launchSMS();
-//                               },
-//                               icon: Icon(Icons.emergency_outlined, color: Colors.red,),
-//                               iconSize: 60,
-//                             ),
-//                             Text('신고하기')
-//                           ],
-//                         ),
-//                       ),
-//                       Container(
-//                         child: Column(
-//                           children: [
-//                             IconButton(
-//                               onPressed: () {},
-//                               icon: Icon(Icons.check_circle_outline_outlined, color: Colors.green,),
-//                               iconSize: 60,
-//                             ),
-//                             Text('경보해제')
-//                           ],
-//                         ),
-//                       ),
-//                       Container(
-//                         child: Column(
-//                           children: [
-//                             IconButton(
-//                               onPressed: () {},
-//                               icon: Icon(Icons.share_outlined, color: Colors.yellow,),
-//                               iconSize: 60,
-//                             ),
-//                             Text('공유하기')
-//                           ],
-//                         ),
-//                       )
-//                     ],
-//                   ),
-//                 )
-//               ],
-//             ),
-//           )
-//         ],
-//       )
-//     );
-//   }
-// }
-//
-// //TODO: common 항목으로 이동시킨 후, import하여 사용
-// void _launchSMS() async {
-//   final String phone = '112';
-//   final String message = '우리집에 나쁜 놈이 들어오려고 해요! 빨리 좀 와주세요!!';
-//
-//   final Uri url = Uri.parse('sms:$phone?body=$message');
-//
-//   if (await canLaunchUrl(url)) {
-//     await launchUrl(url);
-//   }else {
-//     throw 'Could not launch $url';
-//   }
-// }
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:cozy_house_client_dev/api/websocket.dart';
+import 'package:cozy_house_client_dev/common/styles.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MonitorPage extends StatefulWidget {
@@ -128,6 +14,28 @@ class MonitorPage extends StatefulWidget {
 }
 
 class _MonitorPageState extends State<MonitorPage> {
+  static String wsUrlCctv = dotenv.get('WS_URL_CCTV');
+
+  // Initialize WebSocket instance
+  final WebSocket _socket = WebSocket(wsUrlCctv);
+  bool _isConnectd = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _socket.connect(wsUrlCctv);
+    setState(() {
+      _isConnectd = true;
+    });
+  }
+
+  void disconnect() {
+    _socket.disconnect();
+    setState(() {
+      _isConnectd = false;
+    });
+  }
+
   void _showAlert() {
     showDialog(
       context: context,
@@ -153,8 +61,10 @@ class _MonitorPageState extends State<MonitorPage> {
                   Navigator.of(context).pop(); // 다이얼로그 닫기
                 },
                 style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.lightGreen),
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.black),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.lightGreen),
                 ),
                 // TODO : 경보 해제시 알림 꺼지는 기능 구현 필요
                 child: Text("확인"),
@@ -169,96 +79,138 @@ class _MonitorPageState extends State<MonitorPage> {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Column(
-          children: [
-            SizedBox(height: 100,),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                    height: 40,
-                    width: 350,
-                    padding: EdgeInsets.only(left: 10, top: 5),
-                    color: Color(0xFFD0A9F5),
-                    child: Text(
-                      'Camera01',
-                      style: TextStyle(
-                        fontSize: 20,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 100,
+          ),
+          Container(
+            child: Column(
+              children: [
+                Container(
+                  height: 40,
+                  width: 350,
+                  padding: EdgeInsets.only(left: 10, top: 5),
+                  color: Color(0xFFD0A9F5),
+                  child: Text(
+                    'Camera01',
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                // real-time CCTV video streeaming
+                _isConnectd
+                    ? StreamBuilder(
+                        stream: _socket.stream,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const CircularProgressIndicator();
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return const Center(
+                              child: Text("connection Closed!"),
+                            );
+                          }
+                          return Image.memory(
+                            Uint8List.fromList(
+                              base64Decode(
+                                (snapshot.data),
+                              ),
+                            ),
+                            gaplessPlayback: true,
+                            excludeFromSemantics: true,
+                          );
+                        },
+                      )
+                    // TODO: 카메라 연결이 끊어졌을때 회색박스에 안내문구 출력
+                    : Container(
+                        height: 197,
+                        width: 350,
+                        color: Colors.grey,
+                        child: Text(
+                          '카메라가 꺼져있습니다',
+                          style: Styles.textStyle,
+                        ),
                       ),
-                    ),
+                Container(
+                  margin: EdgeInsets.only(left: 10, right: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //TODO: 카메라 연결상태 아닐때 문구 변경?
+                      Text('실시간 카메라 화면'),
+                      //TODO: 기능 체크
+                      Text(
+                        '움직임 감지',
+                        style: TextStyle(color: Colors.blue),
+                      )
+                    ],
                   ),
-                  Container(
-                    height: 197,
-                    width: 350,
-                    color: Colors.grey,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        //TODO: 'n분 전' 동적으로 가져오는 기능 구현
-                        Text('2분 전 카메라 화면'),
-                        Text(
-                          '움직임 감지',
-                          style: TextStyle(
-                              color: Colors.blue
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 50,),
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                          child: Column(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  _launchSMS();
-                                },
-                                icon: Icon(Icons.emergency_outlined, color: Colors.red,),
-                                iconSize: 60,
+                ),
+                SizedBox(
+                  height: 50,
+                ),
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                _launchSMS();
+                              },
+                              icon: Icon(
+                                Icons.emergency_outlined,
+                                color: Colors.red,
                               ),
-                              Text('신고하기')
-                            ],
-                          ),
+                              iconSize: 60,
+                            ),
+                            Text('신고하기')
+                          ],
                         ),
-                        Container(
-                          child: Column(
-                            children: [
-                              IconButton(
-                                onPressed: _showAlert,
-                                icon: Icon(Icons.check_circle_outline_outlined, color: Colors.green,),
-                                iconSize: 60,
+                      ),
+                      Container(
+                        child: Column(
+                          children: [
+                            IconButton(
+                              onPressed: _showAlert,
+                              icon: Icon(
+                                Icons.check_circle_outline_outlined,
+                                color: Colors.green,
                               ),
-                              Text('경보해제')
-                            ],
-                          ),
+                              iconSize: 60,
+                            ),
+                            Text('경보해제')
+                          ],
                         ),
-                        Container(
-                          child: Column(
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.share_outlined, color: Colors.yellow,),
-                                iconSize: 60,
+                      ),
+                      Container(
+                        child: Column(
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.share_outlined,
+                                color: Colors.yellow,
                               ),
-                              Text('공유하기')
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        )
+                              iconSize: 60,
+                            ),
+                            Text('공유하기')
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -272,7 +224,7 @@ void _launchSMS() async {
 
   if (await canLaunchUrl(url)) {
     await launchUrl(url);
-  }else {
+  } else {
     throw 'Could not launch $url';
   }
 }
