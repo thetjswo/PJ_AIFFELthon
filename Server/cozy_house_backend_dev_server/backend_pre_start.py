@@ -12,7 +12,7 @@ def set_log_level():
 
 def create_db_tables():
     # 테이블 클래스 리스트
-    table_list = [Users, CCTVDevices, CCTVVideos, Settings, EventLogs, ReportLogs, ShareLogs, CheckLogs, PushLogs]
+    table_list = [Users, UserDevices, CCTVDevices, CCTVVideos, Settings, EventLogs, ReportLogs, ShareLogs, CheckLogs, PushLogs]
 
     # 테이블을 순차적으로 조회
     for table_class in table_list:
