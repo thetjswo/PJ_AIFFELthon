@@ -17,7 +17,7 @@ String SERVER_URL = dotenv.get('SERVER_URL');
 
 void main() async {
   // .env 환경 변수 관리 파일 load
-  await dotenv.load(fileName: 'config.env');
+  await dotenv.load(fileName: '.env');
 
   // firebase 초기화
   await Firebase.initializeApp(
