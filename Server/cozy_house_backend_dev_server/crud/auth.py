@@ -16,8 +16,7 @@ def signup(data):
         user_pw=data.password,
         phone_num=data.phone,
         is_agreed=data.agree,
-        # TODO: 배포 시, role 제거
-        role_type=data.role,
+        uid=data.uid,
         created_at=datetime.now()
     )
 

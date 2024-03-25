@@ -126,15 +126,6 @@ class _BeforeAppStartState extends State<BeforeAppStart> {
 
   Future<void> account_inspection() async {
     // TODO: 서버와 통신하여 계정 존재 여부를 확인하는 코드
-    // var url = Uri.parse(SERVER_URL + "/get_account_info");
-    // var response = await http.post(url, body: {'title': 'account inspection', 'body': 'bar'});
-    // print(response.statusCode);
-    // print(response);
-    // if (response.statusCode == 201) {
-    //   print('POST 요청 결과: ${response.body}');
-    // } else {
-    //   print('POST 요청 실패: ${response.statusCode}');
-    // }
     // FIXME: 계정 생성 전, UI 테스트를 진행할 경우, IS_MEMBER 값을 true로 변경하면 바로 앱 메인 화면으로 이동
     IS_MEMBER = false;
   }

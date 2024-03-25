@@ -7,3 +7,4 @@ class User(BaseModel):
     email: str
     password: str
     agree: bool
+    uid: str

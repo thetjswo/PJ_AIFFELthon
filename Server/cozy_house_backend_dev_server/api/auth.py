@@ -16,6 +16,7 @@ class SignupRequest(BaseModel):
     email: str
     password: str
     agree: bool
+    uid: str
 
 
 class SignupResponse(BaseModel):
@@ -38,6 +39,8 @@ async def signup_route(request: Request):
         email=signup_request.email,
         password=signup_request.password,
         agree=signup_request.agree,
+        uid=signup_request.uid,
+
     )
 
     # Users 테이블에 사용자 정보 저장

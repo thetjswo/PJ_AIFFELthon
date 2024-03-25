@@ -21,6 +21,8 @@ class Users(SQLModel, table=True):
     address: Optional[str] = None
     # 개인정보 수집 동의 여부
     is_agreed: Optional[bool] = False
+    # 사용자 UID
+    uid: Optional[str] = None
     # 계정 삭제 여부
     del_fl: bool = Field(default=False, nullable=False)
     # 휴면 계정 여부
@@ -33,6 +35,39 @@ class Users(SQLModel, table=True):
     created_at: datetime = Field(default=datetime.now, nullable=False)
     # 갱신 시간
     updated_at: Optional[datetime] = None
+
+class UserDevices(SQLModel, table=True):
+    # 테이블 명 지정
+    __tablename__ = "user_devices"
+    # 로우 데이터 고유 값 -> 데이터가 추가될 때마다 1씩 자동 증가
+    id: Optional[int] = Field(default=None, primary_key=True)
+    # 장치 모델명
+    model_name: Optional[str] = None
+    # 운영체제 버전
+    os_version: Optional[str] = None
+    # 유심칩 슬롯 고유값
+    imei: Optional[str] = None
+    # 장치 고유 값
+    uuid: Optional[str] = None
+    # fcm 토큰 고유 값
+    push_id = Optional[str] = None
+    # 설치된 앱 버전
+    app_version: Optional[str] = None
+    # 앱 삭제 여부 확인
+    del_fl = Field(default=False, nullable=False)
+    # 외래키 - 사용자 정보 테이블의 ID 값
+    user_id: int = Field(foreign_key='users.id')
+    # 생성 시간
+    created_at: datetime = Field(default=datetime.now, nullable=False)
+    # 갱신 시간
+    updated_at: Optional[datetime] = None
+
+# Users 테이블의 유니크 키와 UserDevices 테이블의 유니크 키를 매핑
+class UserToDevices(SQLModel, table=True):
+    __tablename__ = "user_to_devices"
+    id: int = Field(primary_key=True)
+    user_uid: int = Field(foreign_key="users.uid")
+    device_uuid: int = Field(foreign_key="user_devices.uuid")
 
 # CCTV 카메라 정보 테이블
 class CCTVDevices(SQLModel, table=True):
@@ -50,12 +85,21 @@ class CCTVDevices(SQLModel, table=True):
     port: Optional[str] = None
     # 장치 연결 상태
     status: str = Field(default='Unconnected', nullable=False)
+    # 장치 고유 값
+    uuid: Optional[str] = None
     # 외래키 - 사용자 정보 테이블의 ID 값
     user_id: int = Field(foreign_key='users.id')
     # 생성 시간
     created_at: datetime = Field(default=datetime.now, nullable=False)
     # 갱신 시간
     updated_at: Optional[datetime] = None
+
+# Users 테이블의 유니크 키와 CCTVDevices 테이블의 유니크 키를 매핑
+class UserToCCTVDevices(SQLModel, table=True):
+    __tablename__ = "user_to_cctv_devices"
+    id: int = Field(primary_key=True)
+    user_uid: int = Field(foreign_key="users.uid")
+    cctv_uuid: int = Field(foreign_key="cctv_devices.uuid")
 
 
 # 촬영 영상 정보 테이블

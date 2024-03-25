@@ -18,7 +18,7 @@ class FormData {
   final String email;
   final String password;
   final bool agree;
-  final String fcmToken;
+  final String uid;
 
   FormData({
     required this.name,
@@ -26,7 +26,7 @@ class FormData {
     required this.email,
     required this.password,
     required this.agree,
-    required this.fcmToken
+    required this.uid,
   });
 
   // FormData를 JSON 형식으로 변환하는 메서드
@@ -37,7 +37,7 @@ class FormData {
       'email': email,
       'password': password,
       'agree': agree,
-      'fcmToken':fcmToken
+      'uid': uid,
     };
   }
 }
@@ -305,9 +305,8 @@ class _SignUpState extends State<SignUpPage> {
                         if (formKey.currentState!.validate()) {
                           try {
                             // firebase 계정 생성
-                            await FirebaseAuthentication.create_account(_userEmail, _userPassword);
-
-                            String fcm_token = await FirebaseAuthentication.get_push_token(dotenv.get('FIREBASE_API_KEY'));
+                            final credential = await FirebaseAuthentication.create_account(_userEmail, _userPassword);
+                            String uid = credential.user?.uid ?? "";
 
                             // 비밀번호 sha256 해쉬 처리
                             String hashedPassword = GenerateHash().generateSha256(_userPassword);
@@ -319,7 +318,7 @@ class _SignUpState extends State<SignUpPage> {
                               email: _userEmail,
                               password: hashedPassword,
                               agree: _consentPersonalInfo,
-                              fcmToken:fcm_token
+                              uid: uid
                             );
 
                             SignUp().sendSignUpDataToServer(formData);
