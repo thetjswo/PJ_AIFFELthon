@@ -38,8 +38,6 @@ async def signup_route(request: Request):
         email=signup_request.email,
         password=signup_request.password,
         agree=signup_request.agree,
-        # TODO: 배포 시, role 인수 제거
-        role=0
     )
 
     # Users 테이블에 사용자 정보 저장

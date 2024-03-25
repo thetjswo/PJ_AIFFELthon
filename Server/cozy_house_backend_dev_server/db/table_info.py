@@ -27,8 +27,6 @@ class Users(SQLModel, table=True):
     rest_fl: bool = Field(default=False, nullable=False)
     # 사용자 권한(관리자/일반 사용자)
     role_type: int = Field(default=1)
-    # 사용자 기기 고유 번호
-    uuid: Optional[str] = None
     # 마지막 접속 시간
     last_access_time: Optional[datetime] = None
     # 생성 시간

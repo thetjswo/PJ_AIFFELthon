@@ -46,6 +46,10 @@ dependencies:
   firebase_dynamic_links: ^5.4.18
   # fcm 연동을 위한 라이브러리
   firebase_messaging: ^14.7.20
+  firebase_analytics: ^10.8.10
+  firebase_crashlytics: ^3.4.19
+  # fcm 중요도 설정을 위한 로컬 푸쉬 라이브러리
+  flutter_local_notifications: ^17.0.0
   # splash 화면 구성을 위한 라이브러리
   flutter_native_splash: ^2.3.10
   # HTTP 통신을 위한 라이브러리
@@ -56,6 +60,8 @@ dependencies:
   crypto: ^3.0.3
   # 단말 고유 번호 획득을 위한 라이브러리
   device_info_plus: ^9.1.2
+
+
   
 
 dev_dependencies:

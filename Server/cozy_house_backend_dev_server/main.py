@@ -10,7 +10,6 @@ app = FastAPI()
 set_log_level()
 # DB 테이블 자동 생성
 create_db_tables()
-# TODO: 배포 시, 주석 처리 필수(아마도 피카츄 저작권 문제)
 welcome_func()
 
 @app.get("/")

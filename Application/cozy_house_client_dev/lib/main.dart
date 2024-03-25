@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:http/http.dart' as http;
 
+import 'common/fcm_setting.dart';
 import 'firebase_options.dart';
 
 
@@ -26,15 +27,58 @@ void main() async {
   // splash 화면이 노출되는 동안 계정, 네트워크 유효성 검증 등의 백그라운드 처리를 위한 작업
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  runApp(const MyApp());
+
+  fcmSetting();
+
+  runApp(const Application());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Application extends StatefulWidget {
+  const Application({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _Application();
+}
+
+class _Application extends State<Application> {
+
+  // It is assumed that all messages contain a data field with the key 'type'
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+    await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    if (message.data['type'] == 'announcement') {
+      print('Received an announcement message');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Run code required to handle interacted messages in an async function
+    // as initState() must not be async
+    setupInteractedMessage();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+
+    return const MaterialApp(
         home: BeforeAppStart(),
       );
   }
@@ -81,8 +125,6 @@ class _BeforeAppStartState extends State<BeforeAppStart> {
   }
 
   Future<void> account_inspection() async {
-    final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "BECQwp1iAkXVexnSKuFEI4z0f6fgTh-_-F32ejG1bzCE1kA5-P6VF4ViYbCdPMZ8U1BgseLuR_FPaojH5Cz4uys");
-    print('FCM TOKEN: $fcmToken');
     // TODO: 서버와 통신하여 계정 존재 여부를 확인하는 코드
     // var url = Uri.parse(SERVER_URL + "/get_account_info");
     // var response = await http.post(url, body: {'title': 'account inspection', 'body': 'bar'});

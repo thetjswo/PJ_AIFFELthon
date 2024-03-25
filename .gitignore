@@ -53,6 +53,8 @@ config.env
 
 ### Key ###
 *.pem
+# firebase auth key
+cozy-house-1ecc7-firebase-adminsdk-tcckc-eaee87736b.json
 
 
 ### Windows ###

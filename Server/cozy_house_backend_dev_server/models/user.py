@@ -7,4 +7,3 @@ class User(BaseModel):
     email: str
     password: str
     agree: bool
-    role: int
