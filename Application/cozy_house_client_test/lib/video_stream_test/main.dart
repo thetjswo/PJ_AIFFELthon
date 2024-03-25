@@ -1,4 +1,4 @@
-import 'package:cozy_house_client_test/video_stream/video_streaming.dart';
+import 'package:cozy_house_client_test/video_stream_test/video_streaming.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

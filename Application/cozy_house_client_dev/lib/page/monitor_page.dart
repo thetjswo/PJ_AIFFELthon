@@ -1,4 +1,11 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:cozy_house_client_dev/api/websocket.dart';
+import 'package:cozy_house_client_dev/common/styles.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MonitorPage extends StatefulWidget {
@@ -7,13 +14,76 @@ class MonitorPage extends StatefulWidget {
 }
 
 class _MonitorPageState extends State<MonitorPage> {
+  static String wsUrlCctv = dotenv.get('WS_URL_CCTV');
+
+  // Initialize WebSocket instance
+  final WebSocket _socket = WebSocket(wsUrlCctv);
+  bool _isConnectd = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _socket.connect(wsUrlCctv);
+    setState(() {
+      _isConnectd = true;
+    });
+  }
+
+  void disconnect() {
+    _socket.disconnect();
+    setState(() {
+      _isConnectd = false;
+    });
+  }
+
+  void _showAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("경보를 해제합니다."),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 20),
+              Icon(
+                Icons.check_circle_outline_outlined,
+                color: Colors.green,
+                size: 80,
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
+          actions: [
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                },
+                style: ButtonStyle(
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.black),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.lightGreen),
+                ),
+                // TODO : 경보 해제시 알림 꺼지는 기능 구현 필요
+                child: Text("확인"),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
         children: [
-          SizedBox(height: 100,),
+          SizedBox(
+            height: 100,
+          ),
           Container(
             child: Column(
               children: [
@@ -29,28 +99,59 @@ class _MonitorPageState extends State<MonitorPage> {
                     ),
                   ),
                 ),
-                Container(
-                  height: 197,
-                  width: 350,
-                  color: Colors.grey,
-                ),
+                // real-time CCTV video streeaming
+                _isConnectd
+                    ? StreamBuilder(
+                        stream: _socket.stream,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const CircularProgressIndicator();
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return const Center(
+                              child: Text("connection Closed!"),
+                            );
+                          }
+                          return Image.memory(
+                            Uint8List.fromList(
+                              base64Decode(
+                                (snapshot.data),
+                              ),
+                            ),
+                            gaplessPlayback: true,
+                            excludeFromSemantics: true,
+                          );
+                        },
+                      )
+                    // TODO: 카메라 연결이 끊어졌을때 회색박스에 안내문구 출력
+                    : Container(
+                        height: 197,
+                        width: 350,
+                        color: Colors.grey,
+                        child: Text(
+                          '카메라가 꺼져있습니다',
+                          style: Styles.textStyle,
+                        ),
+                      ),
                 Container(
                   margin: EdgeInsets.only(left: 10, right: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      //TODO: 'n분 전' 동적으로 가져오는 기능 구현
-                      Text('2분 전 카메라 화면'),
+                      //TODO: 카메라 연결상태 아닐때 문구 변경?
+                      Text('실시간 카메라 화면'),
+                      //TODO: 기능 체크
                       Text(
                         '움직임 감지',
-                        style: TextStyle(
-                          color: Colors.blue
-                        ),
+                        style: TextStyle(color: Colors.blue),
                       )
                     ],
                   ),
                 ),
-                SizedBox(height: 50,),
+                SizedBox(
+                  height: 50,
+                ),
                 Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -62,7 +163,10 @@ class _MonitorPageState extends State<MonitorPage> {
                               onPressed: () {
                                 _launchSMS();
                               },
-                              icon: Icon(Icons.emergency_outlined, color: Colors.red,),
+                              icon: Icon(
+                                Icons.emergency_outlined,
+                                color: Colors.red,
+                              ),
                               iconSize: 60,
                             ),
                             Text('신고하기')
@@ -73,8 +177,11 @@ class _MonitorPageState extends State<MonitorPage> {
                         child: Column(
                           children: [
                             IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.check_circle_outline_outlined, color: Colors.green,),
+                              onPressed: _showAlert,
+                              icon: Icon(
+                                Icons.check_circle_outline_outlined,
+                                color: Colors.green,
+                              ),
                               iconSize: 60,
                             ),
                             Text('경보해제')
@@ -86,7 +193,10 @@ class _MonitorPageState extends State<MonitorPage> {
                           children: [
                             IconButton(
                               onPressed: () {},
-                              icon: Icon(Icons.share_outlined, color: Colors.yellow,),
+                              icon: Icon(
+                                Icons.share_outlined,
+                                color: Colors.yellow,
+                              ),
                               iconSize: 60,
                             ),
                             Text('공유하기')
@@ -100,7 +210,7 @@ class _MonitorPageState extends State<MonitorPage> {
             ),
           )
         ],
-      )
+      ),
     );
   }
 }
@@ -114,7 +224,7 @@ void _launchSMS() async {
 
   if (await canLaunchUrl(url)) {
     await launchUrl(url);
-  }else {
+  } else {
     throw 'Could not launch $url';
   }
 }

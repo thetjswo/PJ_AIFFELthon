@@ -1,10 +1,8 @@
 // monitor page 디자인에 video stream 기능 테스트
-
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cozy_house_client_test/common/styles.dart';
-import 'package:cozy_house_client_test/video_stream/websocket.dart';
+import 'package:cozy_house_client_test/video_stream_test/websocket.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';
