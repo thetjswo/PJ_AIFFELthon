@@ -17,7 +17,7 @@ def create_db_tables():
     # 테이블을 순차적으로 조회
     for table_class in table_list:
         # 테이블 이름 추출
-        table_name = table_class.__table__.name
+        table_name = table_class.__tablename__
         # 기존에 존재하는 테이블인지 확인
         logging.info('Verify that the existing table exists...')
         inspector = inspect(db_connector.engine)

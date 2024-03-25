@@ -8,8 +8,8 @@ import '../common/firebase_authentication.dart';
 import '../common/modal_popup.dart';
 import '../common/styles.dart';
 import '../utils/formatter.dart';
-import '../utils/generate_hash.dart';
-import '../utils/validate.dart';
+import '../utils/generator.dart';
+import '../utils/validator.dart';
 
 
 class FormData {
@@ -309,7 +309,7 @@ class _SignUpState extends State<SignUpPage> {
                             String uid = credential.user?.uid ?? "";
 
                             // 비밀번호 sha256 해쉬 처리
-                            String hashedPassword = GenerateHash().generateSha256(_userPassword);
+                            String hashedPassword = GeneratorModule().generateSha256(_userPassword);
 
                             // 회원가입 계정 정보 서버로 전송
                             FormData formData = FormData(

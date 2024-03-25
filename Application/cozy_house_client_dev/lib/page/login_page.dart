@@ -1,6 +1,5 @@
 import 'package:cozy_house_client_dev/page/main_page.dart';
 import 'package:cozy_house_client_dev/common/styles.dart';
-import 'package:cozy_house_client_dev/utils/validate.dart';
 import 'package:cozy_house_client_dev/page/signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../api/signin.dart';
 import '../common/firebase_authentication.dart';
+import '../utils/validator.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -122,7 +122,7 @@ class _SignInState extends State<LoginPage> {
                                     password: _userPassword
                                 );
 
-                                await SignIn().inspect_device_info(credential);
+                                await SignIn().sendDeviceInfoToServer(credential);
 
                                 Navigator.push(
                                   context,

@@ -60,6 +60,9 @@ dependencies:
   crypto: ^3.0.3
   # 단말 고유 번호 획득을 위한 라이브러리
   device_info_plus: ^9.1.2
+  # 앱 정보 획득을 위한 라이브러리
+  package_info: ^2.0.2
+  uuid: ^4.3.3
 
 
   
