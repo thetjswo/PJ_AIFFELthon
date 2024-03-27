@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../page/login_page.dart';
+import '../page/main_page.dart';
+import '../utils/provider.dart';
 
 class ModalPopUp {
   static void showSignUpSuccess(BuildContext context) {
@@ -161,7 +166,7 @@ class ModalPopUp {
           ),
           content: const Text(
               '''이메일 인증이 완료되지 않았습니다. \
-이메일을 확인하시어 메일 인증을 완료해주세요.'''
+등록한 이메일을 확인하시어 메일 인증을 진행해주세요.'''
           ),
           actions: <Widget>[
             TextButton(
@@ -170,6 +175,99 @@ class ModalPopUp {
                 Navigator.pushReplacement( // 현재 화면을 대체하면서 이동
                   context,
                   MaterialPageRoute(builder: (context) => LoginPage()), // 로그인 페이지로 이동
+                );
+              },
+              child: Container(
+                alignment: Alignment.center,
+                child: const Text(
+                  '확인',
+                  style: TextStyle(
+                      color: Colors.blue
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  static void showSuccessToUpdateUserInfo(BuildContext context, Map<String, dynamic> user_info) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Container(
+            alignment: Alignment.center,
+            child: const Text(
+              '회원정보 수정 완료',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.blue
+              ),
+            ),
+          ),
+          content: const Text(
+              '회원 정보 수정이 완료됐습니다.'
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                String encoded_data = jsonEncode(user_info);
+                Provider.of<SharedPreferencesProvider>(context, listen: false).setData('user_info', encoded_data);
+
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => MainPage()),
+                );
+              },
+              child: Container(
+                alignment: Alignment.center,
+                child: const Text(
+                  '확인',
+                  style: TextStyle(
+                      color: Colors.blue
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  static void showSuccessToUpdateEmail(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Container(
+            alignment: Alignment.center,
+            child: const Text(
+              '회원정보 수정 완료',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.blue
+              ),
+            ),
+          ),
+          content: const Text(
+              '''회원 정보 수정이 완료됐습니다. \
+등록된 이메일을 확인 후, 메일 인증을 진행해주세요.'''
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Provider.of<SharedPreferencesProvider>(context, listen: false).deleteData();
+
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                      (Route<dynamic> route) => false,
                 );
               },
               child: Container(

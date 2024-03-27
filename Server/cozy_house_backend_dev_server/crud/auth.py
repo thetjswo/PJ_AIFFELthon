@@ -88,3 +88,10 @@ def signin(param):
         # 사용자를 찾지 못한 경우
         data['result'] = False
         return data
+
+
+def user_info(data):
+    # users 테이블에서 uid가 data.uid와 같은 데이터 조회
+    UserDAO.update_user_info(data)
+
+    logging.info('success to update about user info!')

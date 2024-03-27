@@ -5,6 +5,7 @@ import 'package:cozy_house_client_dev/page/main_page.dart';
 import 'package:cozy_house_client_dev/common/styles.dart';
 import 'package:cozy_house_client_dev/page/signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -124,6 +125,7 @@ class _SignInState extends State<LoginPage> {
                                     email: _userEmail,
                                     password: _userPassword
                                 );
+
                                 // 이메일 인증 상태 확인
                                 bool isEmailVerified = FirebaseAuth.instance.currentUser?.emailVerified ?? false;
                                 if (isEmailVerified) {

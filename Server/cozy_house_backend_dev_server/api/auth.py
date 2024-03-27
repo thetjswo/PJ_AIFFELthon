@@ -33,6 +33,15 @@ class SigninRequest(BaseModel):
     uid: str
 
 
+class UserInfoRequest(BaseModel):
+    uid: str
+    name: str
+    phone: str
+    email: str
+    password: str
+    address: str
+
+
 class SignupResponse(BaseModel):
     message: str
 
@@ -49,6 +58,9 @@ class SigninResponse(BaseModel):
     address: str
     device_uuid: str
 
+
+class UserInfoResponse(BaseModel):
+    message: str
 
 
 @router.post("/signup", response_model=SignupResponse)
@@ -119,3 +131,18 @@ async def signin_route(request: Request):
         )
 
         return response_data
+
+
+@router.post("/update/userinfo", response_model=UserInfoResponse)
+async def signin_route(request: Request):
+    try:
+        request_data = await request.json()
+        userinfo_request = UserInfoRequest(**request_data)
+    except JSONDecodeError:
+        raise HTTPException(status_code=400, detail="Invalid JSON format")
+
+    auth.user_info(userinfo_request)
+
+    response_data = UserInfoResponse(message="사용자 정보 갱신을 완료 했습니다.")
+
+    return response_data

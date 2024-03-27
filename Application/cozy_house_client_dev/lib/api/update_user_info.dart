@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-import '../page/signup_page.dart';
+import '../page/account_setting_page.dart';
 
-class SignUp {
-  Future<void> sendSignUpDataToServer(FormData data) async {
-    String server_url = '${dotenv.get('SERVER_URL')}/auth/signup';
+class UpdateUserInfo {
+  Future<void> sendUpdateDataToServer(FormData data) async {
+    String server_url = '${dotenv.get('SERVER_URL')}/auth/update/userinfo';
     final Uri url = Uri.parse(server_url);
 
     try {
@@ -24,7 +24,9 @@ class SignUp {
 
       // 응답을 확인합니다.
       if (response.statusCode == 200) {
-        print('서버로 데이터 전송 성공: ${response.body}');
+        var decoded_body = utf8.decode(response.bodyBytes);
+        var decoded_json = json.decode(decoded_body);
+        print('서버로 데이터 전송 성공: ${decoded_json}');
       } else {
         print('서버로 데이터 전송 실패: ${response.reasonPhrase}');
       }

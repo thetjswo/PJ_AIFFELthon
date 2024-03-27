@@ -42,7 +42,7 @@ class _CustomNavigatorState extends State<CustomNavigator> {
   // 드로어 -> 로그아웃 -> 로그인 창으로 이동
   // TODO: firebase logout 기능 추가
   void _logout(BuildContext context) {
-    Provider.of<SharedPreferencesProvider>(context).deleteData();
+    Provider.of<SharedPreferencesProvider>(context, listen: false).deleteData();
 
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const LoginPage()),

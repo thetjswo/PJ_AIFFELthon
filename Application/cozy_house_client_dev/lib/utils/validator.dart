@@ -74,4 +74,18 @@ class CheckValidate{
       }
     }
   }
+
+  String? validateAddess(FocusNode focusNode, String value){
+    if(value.isEmpty){
+      return '주소를 입력하세요.';
+    }else {
+      String pattern = r'^[a-zA-Z0-9가-힣\s-]*$';
+      RegExp regExp = RegExp(pattern);
+      if(!regExp.hasMatch(value)){
+        return '주소에 특수문자를 사용할 수 없습니다.(- 제외)';
+      }else{
+        return null;
+      }
+    }
+  }
 }

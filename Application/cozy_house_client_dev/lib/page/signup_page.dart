@@ -2,7 +2,6 @@ import 'package:cozy_house_client_dev/api/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../common/firebase_authentication.dart';
 import '../common/modal_popup.dart';
