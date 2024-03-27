@@ -12,7 +12,6 @@ import 'common/fcm_setting.dart';
 import 'firebase_options.dart';
 
 
-late bool IS_MEMBER;
 String SERVER_URL = dotenv.get('SERVER_URL');
 
 
@@ -108,34 +107,21 @@ class _BeforeAppStartState extends State<BeforeAppStart> {
     account_inspection().then((_) {
       // 데이터 로드 완료 후 Splash 화면이 3초 간 표시된 후 화면 이동
       Future.delayed(Duration(seconds: 3), () {
-        // 서버가 계정 정보를 가지고 있다면
-        if(IS_MEMBER == true) {
-          // splash 종료 후,
-          FlutterNativeSplash.remove();
-          Navigator.pushReplacement(
-            context,
-            // 메인 화면으로 이동
-            MaterialPageRoute(builder: (context) => const MainApp()),
-          );
-        }
-        // 서버가 계정 정보를 가지고 있지 않다면
-        else {
-          // splash 종료 후,
-          FlutterNativeSplash.remove();
-          Navigator.pushReplacement(
-            context,
-            // 로그인 화면으로 이동
-            MaterialPageRoute(builder: (context) => LoginPage()),
-          );
-        }
+        // splash 종료 후,
+        FlutterNativeSplash.remove();
+        Navigator.pushReplacement(
+          context,
+          // 로그인 화면으로 이동
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
       });
     });
   }
 
   Future<void> account_inspection() async {
-    // TODO: 서버와 통신하여 계정 존재 여부를 확인하는 코드
-    // FIXME: 계정 생성 전, UI 테스트를 진행할 경우, IS_MEMBER 값을 true로 변경하면 바로 앱 메인 화면으로 이동
-    IS_MEMBER = false;
+    // TODO: server health check
+    // TODO: JWT 인증 토큰 검증 필요
+
   }
 
   @override
