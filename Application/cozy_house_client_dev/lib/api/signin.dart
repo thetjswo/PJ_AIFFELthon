@@ -10,9 +10,12 @@ import 'package:http/http.dart' as http;
 
 import '../utils/generator.dart';
 
+
+String SERVER_URL = dotenv.get('SERVER_URL');
+
 class SignIn {
   Future<void> sendDeviceInfoToServer(UserCredential credential) async {
-    String server_url = '${dotenv.get('SERVER_URL')}/auth/deviceinfo';
+    String server_url = '${SERVER_URL}/auth/deviceinfo';
     final Uri url = Uri.parse(server_url);
     final jsonData = {};
 
@@ -59,12 +62,56 @@ class SignIn {
 
       // 응답을 확인합니다.
       if (response.statusCode == 200) {
-        print('서버로 데이터 전송 성공: ${response.body}');
+        var decoded_body = utf8.decode(response.bodyBytes);
+        print('서버로 데이터 전송 성공: ${decoded_body}');
       } else {
         print('서버로 데이터 전송 실패: ${response.reasonPhrase}');
       }
     } catch (error) {
       print('서버 요청 중 오류 발생: $error');
     }
+  }
+
+  Future<Map<String, dynamic>> sendSignInDataToServer(UserCredential credential) async {
+    String server_url = '${SERVER_URL}/auth/signin';
+    final Uri url = Uri.parse(server_url);
+
+    final uid = credential.user?.uid ?? "";
+    final jsonData = {
+      'uid': uid
+    };
+
+    Map<String, dynamic> user_info = {};
+
+    try {
+      // HTTP POST 요청
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(jsonData),
+      );
+
+      // 응답을 확인합니다.
+      if (response.statusCode == 200) {
+        var decoded_body = utf8.decode(response.bodyBytes);
+        var decoded_json = json.decode(decoded_body);
+        user_info['user_name'] = decoded_json["user_name"];
+        user_info['user_id'] = decoded_json["user_id"];
+        user_info['user_pw'] = decoded_json["user_pw"];
+        user_info['phone_num'] = decoded_json["phone_num"];
+        user_info['address'] = decoded_json["address"];
+        user_info['device_uuid'] = decoded_json["device_uuid"];
+
+        print('서버로 데이터 전송 성공: ${decoded_body}');
+      } else {
+        print('서버로 데이터 전송 실패: ${response.reasonPhrase}');
+      }
+    } catch (error) {
+      print('서버 요청 중 오류 발생: $error');
+    }
+
+    return user_info;
   }
 }

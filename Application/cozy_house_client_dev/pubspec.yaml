@@ -58,10 +58,11 @@ dependencies:
   shared_preferences: ^2.2.2
   # 패스워드 hash 처리를 위한 라이브러리
   crypto: ^3.0.3
-  # 단말 고유 번호 획득을 위한 라이브러리
+  # 단말 정보 획득을 위한 라이브러리
   device_info_plus: ^9.1.2
   # 앱 정보 획득을 위한 라이브러리
   package_info: ^2.0.2
+  # 단말기 고유 번호 획득을 위한 라이브러리
   uuid: ^4.3.3
 
 

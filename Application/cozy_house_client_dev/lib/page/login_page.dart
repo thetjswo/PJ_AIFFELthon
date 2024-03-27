@@ -1,12 +1,13 @@
+import 'dart:convert';
+
 import 'package:cozy_house_client_dev/page/main_page.dart';
 import 'package:cozy_house_client_dev/common/styles.dart';
 import 'package:cozy_house_client_dev/page/signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/signin.dart';
-import '../common/firebase_authentication.dart';
 import '../utils/validator.dart';
 
 
@@ -26,11 +27,19 @@ class _SignInState extends State<LoginPage> {
   late String _userEmail;
   late String _userPassword;
 
+  late SharedPreferences _preferences;
+
   @override
   void initState() {
     super.initState();
     _userEmail = '';
     _userPassword = '';
+
+    _initSharedPreferences();
+  }
+
+  Future<void> _initSharedPreferences() async {
+    _preferences = await SharedPreferences.getInstance();
   }
 
   @override
@@ -122,9 +131,15 @@ class _SignInState extends State<LoginPage> {
                                     password: _userPassword
                                 );
 
+                                // 기기 정보 갱신(기존 정보 없으면 추가)
                                 await SignIn().sendDeviceInfoToServer(credential);
+                                // 사용자 정보 요청
+                                Map<String, dynamic> res = await SignIn().sendSignInDataToServer(credential);
+                                String encoded_data = jsonEncode(res);
 
-                                Navigator.push(
+                                await _preferences.setString('user_info', encoded_data);
+
+                                Navigator.pushReplacement(
                                   context,
                                   // 메인 화면으로 이동
                                   MaterialPageRoute(builder: (context) => const MainApp()),
@@ -162,7 +177,7 @@ class _SignInState extends State<LoginPage> {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    // 메인 화면으로 이동
+                                    // 회원가입 화면으로 이동
                                     MaterialPageRoute(builder: (context) => SignUpPage()),
                                   );
                                 },

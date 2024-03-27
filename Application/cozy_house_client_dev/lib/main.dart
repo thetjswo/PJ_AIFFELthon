@@ -104,7 +104,7 @@ class _BeforeAppStartState extends State<BeforeAppStart> {
         if(IS_MEMBER == true) {
           // splash 종료 후,
           FlutterNativeSplash.remove();
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             // 메인 화면으로 이동
             MaterialPageRoute(builder: (context) => const MainApp()),
@@ -114,7 +114,7 @@ class _BeforeAppStartState extends State<BeforeAppStart> {
         else {
           // splash 종료 후,
           FlutterNativeSplash.remove();
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             // 로그인 화면으로 이동
             MaterialPageRoute(builder: (context) => LoginPage()),

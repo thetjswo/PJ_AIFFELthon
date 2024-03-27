@@ -3,6 +3,7 @@ from json import JSONDecodeError
 
 from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
+
 from crud import auth
 
 router = APIRouter()
@@ -28,12 +29,26 @@ class DeviceInfoRequest(BaseModel):
     app_version: str
 
 
+class SigninRequest(BaseModel):
+    uid: str
+
+
 class SignupResponse(BaseModel):
     message: str
 
 
 class DeviceInfoResponse(BaseModel):
     message: str
+
+
+class SigninResponse(BaseModel):
+    user_name: str
+    user_id: str
+    user_pw: str
+    phone_num: str
+    address: str
+    device_uuid: str
+
 
 
 @router.post("/signup", response_model=SignupResponse)
@@ -68,3 +83,36 @@ async def get_device_info_route(request: Request):
     response_data = DeviceInfoResponse(message="기기 정보 갱신을 완료 했습니다.")
 
     return response_data
+
+
+@router.post("/signin", response_model=SigninResponse)
+async def signin_route(request: Request):
+    try:
+        request_data = await request.json()
+        signin_request = SigninRequest(**request_data)
+    except JSONDecodeError:
+        raise HTTPException(status_code=400, detail="Invalid JSON format")
+
+    data = auth.signin(signin_request)
+
+    if data['result']:
+        response_data = SigninResponse(
+            user_name=data['user_name'],
+            user_id=data['user_id'],
+            user_pw=data['user_pw'],
+            phone_num=data['phone_num'],
+            address='',
+            device_uuid=data['device_uuid'],
+        )
+
+        return response_data
+    else:
+        response_data = SigninResponse(
+            user_name='',
+            user_id='',
+            user_pw='',
+            phone_num='',
+            address='',
+        )
+
+        return response_data
