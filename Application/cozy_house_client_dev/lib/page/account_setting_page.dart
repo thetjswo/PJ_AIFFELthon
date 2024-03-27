@@ -124,6 +124,7 @@ class _AccountSettingsState extends State<AccountSettingsPage> {
                       fontWeight: FontWeight.bold
                   ),
                 ),
+                centerTitle: true,
                 leading: IconButton(
                   icon: const Icon(
                     Icons.arrow_back,
