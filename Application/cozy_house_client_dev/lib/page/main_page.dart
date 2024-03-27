@@ -45,8 +45,7 @@ class _MainPageState extends State<MainPage> {
       },
       pages: [
         SecurityPage(),
-        MonitorPage(),    // video_stream 페이지 테스트 안하려면 이 부분 주석해제하고 VideoStream() 주석처리
-        // const VideoStream(), // video_stream 페이지 테스트 하기 위해 추가
+        MonitorPage(),
         HistoryPage(),
       ],
     );

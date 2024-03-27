@@ -1,11 +1,12 @@
 import 'package:cozy_house_client_dev/page/login_page.dart';
 import 'package:cozy_house_client_dev/page/main_page.dart';
+import 'package:cozy_house_client_dev/utils/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import 'common/fcm_setting.dart';
 import 'firebase_options.dart';
@@ -30,7 +31,14 @@ void main() async {
 
   fcmSetting();
 
-  runApp(const Application());
+  runApp(
+      MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => SharedPreferencesProvider()),
+          ],
+          child: Application()
+      )
+  );
 }
 
 class Application extends StatefulWidget {
@@ -132,10 +140,13 @@ class _BeforeAppStartState extends State<BeforeAppStart> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text('스플래시 화면'),
-      ),
+    return ChangeNotifierProvider(
+        create: (_) => SharedPreferencesProvider(), // SharedPreferencesProvider를 제공
+        child: Scaffold(
+          body: Center(
+            child: Text('스플래시 화면'),
+          ),
+        )
     );
   }
 }

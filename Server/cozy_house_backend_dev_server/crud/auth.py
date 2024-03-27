@@ -18,6 +18,7 @@ def signup(data):
         user_id=data.email,
         user_pw=data.password,
         phone_num=data.phone,
+        address='',
         is_agreed=data.agree,
         uid=data.uid,
         del_fl=False,
@@ -62,18 +63,19 @@ def device_info(data):
         logging.info('This device is already exist!')
 
 
-def signin(data):
+def signin(param):
     # 마지막 로그인 시간 update
-    UserDAO.update_access_time(data.uid)
+    UserDAO.update_access_time(param.uid)
     logging.info('success to update about user info!')
 
-    user = UserDAO.get_by_uid(data.uid)
+    user = UserDAO.get_by_uid(param.uid)
     device = UserDeviceDAO.get_by_user_id(user.id)
 
     data = {}
     if user is not None:
         # user 객체의 데이터를 JSON으로 변환
         data['result'] = True
+        data['uid'] = param.uid
         data['user_name'] = user.user_name
         data['user_id'] = user.user_id
         data['user_pw'] = user.user_pw

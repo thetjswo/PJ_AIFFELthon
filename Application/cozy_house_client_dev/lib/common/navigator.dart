@@ -2,7 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:cozy_house_client_dev/page/login_page.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../page/account_setting_page.dart';
+import '../utils/provider.dart';
 
 
 
@@ -34,9 +38,12 @@ class _CustomNavigatorState extends State<CustomNavigator> {
   late String user_name;
   late String user_email;
 
+
   // 드로어 -> 로그아웃 -> 로그인 창으로 이동
   // TODO: firebase logout 기능 추가
   void _logout(BuildContext context) {
+    Provider.of<SharedPreferencesProvider>(context).deleteData();
+
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const LoginPage()),
           (Route<dynamic> route) => false,
@@ -46,7 +53,7 @@ class _CustomNavigatorState extends State<CustomNavigator> {
   // 드로어 -> 계정 설정 창으로 이동
   void _openAccountSettings(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => AccountSettingsPage()),
+      MaterialPageRoute(builder: (context) => const AccountSettingsPage()),
     );
   }
 
@@ -67,18 +74,14 @@ class _CustomNavigatorState extends State<CustomNavigator> {
   @override
   void initState() {
     super.initState();
-
-    loadSharedPreferencesData();
   }
 
-  Future<void> loadSharedPreferencesData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // SharedPreferences에서 데이터 가져오기
-    String userInfoString = prefs.getString('user_info') ?? '';
+  Future<void> loadProfileData() async {
+    // 앱 메모리에서 데이터 가져오기
+    String? userInfoString = Provider.of<SharedPreferencesProvider>(context).getData('user_info');
 
     // 가져온 데이터 사용하기
-    if (userInfoString.isNotEmpty) {
+    if (userInfoString!.isNotEmpty) {
       Map<String, dynamic> userInfo = json.decode(userInfoString);
       user_name = userInfo['user_name'] ?? '';
       user_email = userInfo['user_id'] ?? '';
@@ -91,7 +94,7 @@ class _CustomNavigatorState extends State<CustomNavigator> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: loadSharedPreferencesData(),
+        future: loadProfileData(),
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // 데이터가 로드되기 전에 로딩 표시를 보여줍니다.
@@ -115,7 +118,7 @@ class _CustomNavigatorState extends State<CustomNavigator> {
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(1.0),
                   child: Container(
-                    color: const Color(0xFFD0A9F5),
+                    color: const Color(0xFFA1DEFF),
                     height: 1.0,
                   ),
                 ),
@@ -126,7 +129,7 @@ class _CustomNavigatorState extends State<CustomNavigator> {
                   children: [
                     UserAccountsDrawerHeader(
                       decoration: BoxDecoration(
-                        color: Color(0xFFD0A9F5),
+                        color: Color(0xFFA1DEFF),
                       ),
                       accountName: Text(
                         user_name ?? 'Unknown',
@@ -171,7 +174,8 @@ class _CustomNavigatorState extends State<CustomNavigator> {
                     ListTile(
                       leading: const Icon(Icons.logout_outlined),
                       title: const Text('로그아웃'),
-                      onTap: () {
+                      onTap: () async {
+                        // 앱 메모리에 저장된 사용자 정보 삭제
                         _logout(context);
                       },
                     )
@@ -215,125 +219,6 @@ class _CustomNavigatorState extends State<CustomNavigator> {
   }
 }
 
-
-class AccountSettingsPage extends StatelessWidget {
-  // 예시 데이터
-  final String userName = '이코지';
-  final String email = 'ecozy@gmail.com';
-  final String phoneNumber = '+1 (123) 456-7890';
-  final String address = '123-456 강서구, 서울특별시';
-  final String identificationNumber = '123456789';
-
-  // 텍스트 편집을 위한 컨트롤러
-  final TextEditingController _userNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _identificationNumberController = TextEditingController();
-
-
-  // TODO : 텍스트 필드에 대한 이해
-  @override
-  Widget build(BuildContext context) {
-    // 데이터를 텍스트 필드에 할당
-    _userNameController.text = userName;
-    _emailController.text = email;
-    _phoneNumberController.text = phoneNumber;
-    _addressController.text = address;
-    _identificationNumberController.text = identificationNumber;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('계정 설정'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              '사용자 이름',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: _userNameController,
-              decoration: const InputDecoration(
-                hintText: '사용자 이름',
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              '이메일',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                hintText: '이메일',
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              '전화번호',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: _phoneNumberController,
-              decoration: const InputDecoration(
-                hintText: '전화번호',
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              '주소',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: _addressController,
-              decoration: const InputDecoration(
-                hintText: '주소',
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              '식별번호',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: _identificationNumberController,
-              decoration: const InputDecoration(
-                hintText: '식별번호',
-              ),
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {
-                // 수정된 정보를 저장하고 이전 페이지로 이동
-                _saveChanges(context);
-              },
-              child: const Text('변경 사항 저장'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 변경된 정보 저장 및 이전 페이지로 이동
-  void _saveChanges(BuildContext context) {
-    final String newUserName = _userNameController.text;
-    final String newEmail = _emailController.text;
-    final String newPhoneNumber = _phoneNumberController.text;
-    final String newAddress = _addressController.text;
-    final String newIdentificationNumber = _identificationNumberController.text;
-
-    // TODO: 변경된 정보를 저장하는 로직 추가
-
-    // 변경된 정보를 저장한 후 이전 페이지로 돌아감
-    Navigator.pop(context);
-  }
-}
 
 // TODO : 장치 관리 기능 구현 필요
 class DeviceManagementPage extends StatelessWidget {

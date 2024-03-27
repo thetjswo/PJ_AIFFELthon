@@ -101,7 +101,8 @@ async def signin_route(request: Request):
             user_id=data['user_id'],
             user_pw=data['user_pw'],
             phone_num=data['phone_num'],
-            address='',
+            address=data['address'],
+            uid=data['uid'],
             device_uuid=data['device_uuid'],
         )
 
@@ -113,6 +114,8 @@ async def signin_route(request: Request):
             user_pw='',
             phone_num='',
             address='',
+            uid='',
+            device_uuid=''
         )
 
         return response_data

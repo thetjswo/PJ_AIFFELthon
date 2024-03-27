@@ -64,6 +64,8 @@ dependencies:
   package_info: ^2.0.2
   # 단말기 고유 번호 획득을 위한 라이브러리
   uuid: ^4.3.3
+  # 화면 간 데이터 공유를 위한 라이브러리
+  provider: ^6.1.2
 
 
   

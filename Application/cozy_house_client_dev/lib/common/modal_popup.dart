@@ -141,4 +141,50 @@ class ModalPopUp {
       },
     );
   }
+
+  static void showSignInFailedEmailVerification(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Container(
+            alignment: Alignment.center,
+            child: const Text(
+              '로그인 실패',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.blue
+              ),
+            ),
+          ),
+          content: const Text(
+              '''이메일 인증이 완료되지 않았습니다. \
+이메일을 확인하시어 메일 인증을 완료해주세요.'''
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement( // 현재 화면을 대체하면서 이동
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()), // 로그인 페이지로 이동
+                );
+              },
+              child: Container(
+                alignment: Alignment.center,
+                child: const Text(
+                  '확인',
+                  style: TextStyle(
+                      color: Colors.blue
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

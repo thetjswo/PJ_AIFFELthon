@@ -1,13 +1,15 @@
 import 'dart:convert';
 
+import 'package:cozy_house_client_dev/common/modal_popup.dart';
 import 'package:cozy_house_client_dev/page/main_page.dart';
 import 'package:cozy_house_client_dev/common/styles.dart';
 import 'package:cozy_house_client_dev/page/signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 import '../api/signin.dart';
+import '../utils/provider.dart';
 import '../utils/validator.dart';
 
 
@@ -27,19 +29,12 @@ class _SignInState extends State<LoginPage> {
   late String _userEmail;
   late String _userPassword;
 
-  late SharedPreferences _preferences;
 
   @override
   void initState() {
     super.initState();
     _userEmail = '';
     _userPassword = '';
-
-    _initSharedPreferences();
-  }
-
-  Future<void> _initSharedPreferences() async {
-    _preferences = await SharedPreferences.getInstance();
   }
 
   @override
@@ -121,7 +116,6 @@ class _SignInState extends State<LoginPage> {
                             ],
                           ),
                         ),
-                        // TODO: 계정 기억하기 기능 추가
                         ElevatedButton(
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
@@ -130,20 +124,25 @@ class _SignInState extends State<LoginPage> {
                                     email: _userEmail,
                                     password: _userPassword
                                 );
+                                // 이메일 인증 상태 확인
+                                bool isEmailVerified = FirebaseAuth.instance.currentUser?.emailVerified ?? false;
+                                if (isEmailVerified) {
+                                  // 기기 정보 갱신(기존 정보 없으면 추가)
+                                  await SignIn().sendDeviceInfoToServer(credential);
+                                  // 사용자 정보 요청
+                                  Map<String, dynamic> res = await SignIn().sendSignInDataToServer(credential);
+                                  String encoded_data = jsonEncode(res);
 
-                                // 기기 정보 갱신(기존 정보 없으면 추가)
-                                await SignIn().sendDeviceInfoToServer(credential);
-                                // 사용자 정보 요청
-                                Map<String, dynamic> res = await SignIn().sendSignInDataToServer(credential);
-                                String encoded_data = jsonEncode(res);
+                                  Provider.of<SharedPreferencesProvider>(context, listen: false).setData('user_info', encoded_data);
 
-                                await _preferences.setString('user_info', encoded_data);
-
-                                Navigator.pushReplacement(
-                                  context,
-                                  // 메인 화면으로 이동
-                                  MaterialPageRoute(builder: (context) => const MainApp()),
-                                );
+                                  Navigator.pushReplacement(
+                                    context,
+                                    // 메인 화면으로 이동
+                                    MaterialPageRoute(builder: (context) => const MainApp()),
+                                  );
+                                } else {
+                                  ModalPopUp.showSignInFailedEmailVerification(context);
+                                }
                               } on FirebaseAuthException catch (e) {
                                 if (e.code == 'user-not-found') {
                                   print('No user found for that email.');

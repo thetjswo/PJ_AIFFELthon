@@ -307,6 +307,7 @@ class _SignUpState extends State<SignUpPage> {
                             // firebase 계정 생성
                             final credential = await FirebaseAuthentication.create_account(_userEmail, _userPassword);
                             String uid = credential.user?.uid ?? "";
+                            await credential.user?.sendEmailVerification();
 
                             // 비밀번호 sha256 해쉬 처리
                             String hashedPassword = GeneratorModule().generateSha256(_userPassword);
