@@ -8,7 +8,6 @@ import 'package:cozy_house_client_dev/common/styles.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ActionPage extends StatefulWidget {
   final BuildContext context;
@@ -188,11 +187,10 @@ class _ActionPageState extends State<ActionPage> {
                           children: [
                             IconButton(
                               onPressed: () {
-                                // const LaunchSMS(
-                                //   phoneNumber: '112',
-                                //   message: '우리집에 나쁜 놈이 들어오려고 해요! 빨리 좀 와주세요!!',
-                                // );
-                                _launchSMS();
+                                // 사용자 정보를 받아오기 위한 객체 생성
+                                LaunchSMS launchSMS = LaunchSMS(context);
+                                // 신고 폼을 가지고 sms 앱 호출
+                                launchSMS.launchSmsWithForm();
                               },
                               icon: Icon(
                                 Icons.emergency_outlined,
@@ -244,19 +242,5 @@ class _ActionPageState extends State<ActionPage> {
         ],
       )),
     );
-  }
-}
-
-//TODO: common 항목으로 이동시킨 후, import하여 사용
-void _launchSMS() async {
-  final String phone = '112';
-  final String message = '우리집에 나쁜 놈이 들어오려고 해요! 빨리 좀 와주세요!!';
-
-  final Uri url = Uri.parse('sms:$phone?body=$message');
-
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url);
-  } else {
-    throw 'Could not launch $url';
   }
 }
