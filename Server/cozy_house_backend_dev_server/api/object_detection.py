@@ -30,10 +30,8 @@ app = FastAPI()
 8000 : saved video
 7080 : cctv
 '''
-port_cctv = 7080
-port_saved_video = 8000
 
-@app.websocket('/ws')
+@app.websocket('/ws/object-detection')
 async def object_detection_with_tracking(websocket: WebSocket):
     await websocket.accept()
     
