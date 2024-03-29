@@ -22,16 +22,17 @@ class ActionPage extends StatefulWidget {
 }
 
 class _ActionPageState extends State<ActionPage> {
-  static String wsUrlCctv = dotenv.get('WS_URL_CCTV');
+  //TODO: 저장된 영상으로 변경
+  static String wsUrlSavedVideo = dotenv.get('WS_URL_SAVED_VIDEO');
 
   // Initialize WebSocket instance
-  final WebSocket _socket = WebSocket(wsUrlCctv);
+  final WebSocket _socket = WebSocket(wsUrlSavedVideo);
   bool _isConnectd = false;
 
   @override
   void initState() {
     super.initState();
-    _socket.connect(wsUrlCctv);
+    _socket.connect(wsUrlSavedVideo);
     setState(() {
       _isConnectd = true;
     });
@@ -141,6 +142,7 @@ class _ActionPageState extends State<ActionPage> {
                               child: Text("connection Closed!"),
                             );
                           }
+                          // TODO: 저장된 영상 재생 +  일시정지, 재생, 다시재생 버튼 추가
                           return Image.memory(
                             Uint8List.fromList(
                               base64Decode(
