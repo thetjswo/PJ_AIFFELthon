@@ -51,6 +51,7 @@ env.bak/
 venv.bak/
 config.env
 
+
 ### Key ###
 *.pem
 # firebase auth key
@@ -63,3 +64,22 @@ Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
 ehthumbs_vista.db
+
+
+
+### Seul ###
+# YOLOv8 datasets
+*/yolov8_test_seul/sample_data/
+*/yolov8_test_seul/test_self_data/
+
+# flutter web debugging
+/Application/cozy_house_client_test/web
+
+# model
+*.pt
+*.keras
+
+# video test
+*/yolov8_test_seul/result/
+
+/Server/cozy_house_backend_dev_server/api/result
