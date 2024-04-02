@@ -6,6 +6,7 @@ import 'package:web_socket_channel/web_socket_channel.dart'; // 웹소켓 채널
 class WebSocket {
   // ------------------------- 변수 선언 ------------------------- //
   late String url;
+  late String data;
 
   WebSocketChannel? _channel;
 
@@ -47,5 +48,9 @@ class WebSocket {
     if (_channel != null) {
       _channel!.sink.close(status.goingAway); // 채널을 닫음
     }
+  }
+
+  void send(data) {
+    _channel?.sink.add(data);
   }
 }
