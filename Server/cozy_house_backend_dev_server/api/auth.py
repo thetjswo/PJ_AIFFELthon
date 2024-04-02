@@ -37,12 +37,6 @@ class SigninRequest(BaseModel):
     uid: str
 
 
-# 선택한 날짜의 영상 목록 요청 
-class SelectDateRequest(BaseModel):
-    uid: str
-    date: str
-
-
 # 사용자 정보 요청
 class UserInfoRequest(BaseModel):
     uid: str
@@ -72,16 +66,6 @@ class SigninResponse(BaseModel):
     phone_num: str
     address: str
     device_uuid: str
-
-
-# 선택한 날짜의 영상 목록 응답
-class SelectDateResponse(BaseModel):
-    date: str
-    file_name: str
-    is_checked: bool
-    created_at: str
-    cctv_name: str
-    type: str     # TODO: type값 DB에서 가져오는 걸로 수정하기
 
 
 # 사용자 정보 응답
@@ -165,36 +149,6 @@ async def signin_route(request: Request):
 
         return response_data
 
-
-# 선택한 날짜 영상 엔드포인트
-@router.post("/tester", response_model=SelectDateResponse)
-async def tester_route(request: Request):
-    try:
-        request_data = await request.json()
-        date_request = SelectDateRequest(**request_data)
-    except JSONDecodeError:
-        raise HTTPException(status_code=400, detail="Invalid JSON format")
-
-    data = auth.select_date(date_request)
-
-    # 날짜 선택 여부를 확인
-    # if문 : 날짜를 선택했는지 판단
-    if data['result']:
-        response_data = SelectDateResponse(
-            uid=data['uid'],
-            created_at=data['created_at'],
-        )
-
-        return response_data    # 인증 성공 시 사용자 정보(response_data)를 사용하여 SelectDateResponse 객체를 생성
-    
-    # 실패 시 빈 문자열을 가진 SelectDateResponse 객체를 생성하여 반환
-    else:
-        response_data = SelectDateResponse(
-            uid='',
-            created_at='',
-        )
-
-        return response_data
 
 # 사용자 정보 갱신 엔드포인트
 @router.post("/update/userinfo", response_model=UserInfoResponse)

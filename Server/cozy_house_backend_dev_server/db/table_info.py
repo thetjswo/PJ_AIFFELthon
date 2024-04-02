@@ -85,8 +85,10 @@ class CCTVVideos(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     # 파일 이름
     file_name = Column(String(length=255), nullable=False)
-    # 파일 저장 경로
+    # 영상 저장 경로
     file_path = Column(String(length=255), nullable=False)
+    # 썸네일 저장 경로
+    cap_path = Column(String(length=255), nullable=False)
     # 경보 해제 여부
     is_checked = Column(Boolean, default=False, nullable=False)
     # 공유 여부

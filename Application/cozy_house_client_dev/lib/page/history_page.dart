@@ -80,6 +80,7 @@ class HistoryPageState extends State<HistoryPage> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
+        print(_selectedDate);
         var requestVideoList = DetectionHistory().RequestVideoList(picked);
         print(requestVideoList);
       });

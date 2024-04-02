@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Request, HTTPException
-from firebase_admin import messaging
+from fastapi import FastAPI
 
 from core import config
 from backend_pre_start import create_db_tables, set_log_level, welcome_func
 from api.auth import router as user_router
+from api.history import router as history_router
 
 # before server start
 # 로그 레벨 지정
@@ -31,6 +31,7 @@ async def root():
 
 
 app.include_router(user_router, prefix="/auth")
+app.include_router(history_router, prefix="/history")
 
 if __name__ == "__main__":
     import uvicorn

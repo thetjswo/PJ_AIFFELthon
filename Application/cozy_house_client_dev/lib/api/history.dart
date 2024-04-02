@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class DetectionHistory{
   Future<Map<String, dynamic>> RequestVideoList(DateTime selected_date) async {
-    String serverUrl = '${SERVER_URL}/auth/tester';  // 해당 IP의 URL로 서버에 요청을 보냄.
+    String serverUrl = '${SERVER_URL}/history/selected_date';  // 해당 IP의 URL로 서버에 요청을 보냄.
     String uid = 'vhm6jFXPudVTyPzdUsjYNEE3rP43';
     String date = selected_date.toString();
     // uid, date를 json형식으로 담아서 서버로 전송
