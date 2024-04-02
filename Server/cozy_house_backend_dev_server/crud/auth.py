@@ -93,14 +93,11 @@ def signin(param):
 
 
 # 선택한 날짜 영상 조회
-def select_date(param):
-    # 마지막 영상 조회 시간 update
-    UserDAO.update_access_time(param.uid)
-    logging.info('success to update about user info!')
-    
+def select_date(param):    
     user = UserDAO.get_by_uid(param.uid)
+    logging.info(f"!!!!!${user.id}")
     device = UserDeviceDAO.get_by_user_id(user.id)
-    videos = UserDeviceDAO.get_by_cctv_id(device.id)
+    videos = UserDeviceDAO.get_by_cctv_id(device.id, param.date)
 
 # videos에 담긴 데이터를 1개씩 분리, Json 형식으로 바꾸는 작업
     data = {}

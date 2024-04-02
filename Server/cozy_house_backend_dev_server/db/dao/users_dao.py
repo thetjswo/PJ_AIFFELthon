@@ -1,5 +1,5 @@
 from . import session
-from ..table_info import Users
+from ..table_info import Users, CCTVDevices, CCTVVideos
 
 from datetime import datetime
 
