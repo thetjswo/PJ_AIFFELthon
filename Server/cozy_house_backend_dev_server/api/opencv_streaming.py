@@ -10,6 +10,7 @@ from core import config
 
 
 async def receive_and_decode_video():
+    logging.info('CHECK CALL THE METHOD')
 
     async with websockets.connect(config.WEBCAM_TO_SERVER_URL) as websocket:
         try:

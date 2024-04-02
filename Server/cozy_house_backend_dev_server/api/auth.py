@@ -198,7 +198,7 @@ async def tester_route(request: Request):
 
 # 사용자 정보 갱신 엔드포인트
 @router.post("/update/userinfo", response_model=UserInfoResponse)
-async def signin_route(request: Request):
+async def userinfo_route(request: Request):
     try:
         request_data = await request.json()
         userinfo_request = UserInfoRequest(**request_data)

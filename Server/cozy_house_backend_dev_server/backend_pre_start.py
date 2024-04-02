@@ -1,3 +1,6 @@
+import firebase_admin
+from fastapi import HTTPException
+from firebase_admin import credentials
 from sqlalchemy import inspect
 from db import db_connector
 from db.table_info import *
@@ -26,6 +29,7 @@ def create_db_tables():
             logging.info('Create a new table because the existing table does not exist!')
             # 해당 테이블 클래스로 테이블 생성
             table_class.metadata.create_all(db_connector.engine)
+
 
 
 def welcome_func():

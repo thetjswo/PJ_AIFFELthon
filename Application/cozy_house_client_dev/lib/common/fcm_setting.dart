@@ -48,9 +48,12 @@ Future<String?> fcmSetting() async {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
+    print(notification);
+    print(android);
 
     print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
+    print('Message data!: ${message.data}');
+
 
     if (message.notification != null && android != null) {
       flutterLocalNotificationsPlugin.show(
@@ -70,6 +73,34 @@ Future<String?> fcmSetting() async {
       print('Message also contained a notification: ${message.notification}');
     }
   });
+
+
+  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) {
+  //   if (message != null) {
+  //     print('Got a message whilst in the background!');
+  //     print('Message data!: ${message.data}');
+  //
+  //     if (message.notification != null) {
+  //       print(message.notification!.title);
+  //       print(message.notification!.body);
+  //       print(message.data["click_action"]);
+  //     }
+  //   }
+  // });
+  //
+  // FirebaseMessaging.instance
+  //     .getInitialMessage()
+  //     .then((RemoteMessage? message) {
+  //   if (message != null) {
+  //     print('Got a message whilst in the terminated!');
+  //     print('Message data!: ${message.data}');
+  //     if (message.notification != null) {
+  //       print(message.notification!.title);
+  //       print(message.notification!.body);
+  //       print(message.data["click_action"]);
+  //     }
+  //   }
+  // });
 
   String? firebaseToken = await messaging.getToken();
 
