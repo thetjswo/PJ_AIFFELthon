@@ -18,7 +18,7 @@ async def send_saved_video(websocket: WebSocket):
         # Open the saved video file
         # TODO: DB의 저장된 경로로 수정 - 현재는 object_detection.py 파일 실행하면 저장되는 파일 경로
         # TODO: 앱에서 요청한 정보의 영상을 가져오기 구현 : 특정 날짜 + 시간의 영상
-        video_path = './result/sample_video.mp4'
+        video_path = '../resources/videos/sample_video.mp4'
         cap = cv2.VideoCapture(video_path)
 
         # Get video properties
