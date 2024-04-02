@@ -50,6 +50,7 @@ class WebSocket {
     }
   }
 
+  //웹소켓으로 데이터 전송하는 함수
   void send(data) {
     _channel?.sink.add(data);
   }
