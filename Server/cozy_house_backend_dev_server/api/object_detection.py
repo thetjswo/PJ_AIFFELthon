@@ -9,8 +9,8 @@ from ultralytics.utils.plotting import Annotator, colors
 import math
 
 import base64
-import uvicorn  # pip install uvicorn
-from fastapi import FastAPI  # pip install fastapi
+import uvicorn   # pip install uvicorn 
+from fastapi import FastAPI   # pip install fastapi 
 from fastapi import WebSocket, WebSocketDisconnect, WebSocketException  # 웹소켓 라이브러리
 import asyncio
 import logging
@@ -78,37 +78,23 @@ async def object_detection_with_tracking(websocket: WebSocket):
                 print("====Start Object Detection====")
                 results = model(frame, stream=True)
         
-        while True:
-            if object_detection_running == True:          
-                # 비디오의 각 프레임마다 객체 추적을 수행
-                ret, frame = cap.read()
-                
-                # 예외처리 : 카메라 연결 안된 경우
-                if not ret :
-                    print("ret is not here!")
-                    break
-                
-                # 실시간 객체 탐지
-                print("====Start Object Detection====")
-                results = model(frame, stream=True)
-
                 # 사람 tracking
                 human_tracking = model.track(frame, persist=True, verbose=False, classes=0)
                 boxes = human_tracking[0].boxes.xyxy.cpu()
-
+        
                 # 사람이 감지되면
                 if human_tracking[0].boxes.id is not None:
                     print("Human detected!")
-
+        
                     # 사람이 처음 감지되었다면, 녹화 시작
                     if not human_detected:
                         human_detected = True
                         current_time = datetime.now().strftime("%d_%H%M%S")
                         file_name = f"real_time_detec_{current_time}.mp4"
                         video_saving = cv2.VideoWriter(os.path.join(folder_path, file_name),
-                                                       cv2.VideoWriter_fourcc(*'mp4v'),
-                                                       fps,
-                                                       (w, h))
+                                                cv2.VideoWriter_fourcc(*'mp4v'),
+                                                fps,
+                                                (w, h))
                         human_disappeared_time = None
                         
                         # excetpion handling : VideoWriter 파일이 안 열린경우
@@ -118,23 +104,22 @@ async def object_detection_with_tracking(websocket: WebSocket):
                             sys.exit()
 
                     # Extract prediction results
-                    clss = human_tracking[0].boxes.cls.cpu().tolist()  # 추적된 객체의 class label
-                    track_ids = human_tracking[0].boxes.id.int().cpu().tolist()  # 추적된 객체의 id
-                    confs = human_tracking[0].boxes.conf.float().cpu().tolist()  # 추적된 객체의 신뢰도 점수 (정확성)
-
+                    clss = human_tracking[0].boxes.cls.cpu().tolist()   # 추적된 객체의 class label
+                    track_ids = human_tracking[0].boxes.id.int().cpu().tolist()   # 추적된 객체의 id
+                    confs = human_tracking[0].boxes.conf.float().cpu().tolist()   # 추적된 객체의 신뢰도 점수 (정확성)
+        
                     # Annotator Init
                     annotator = Annotator(frame, line_width=2)
-
+        
                     for box, cls, track_id in zip(boxes, clss, track_ids):
                         # 현재 시각을 해당 객체 인식 시작 시각으로 업데이트
                         if track_id not in recognition_start_time:
                             recognition_start_time[track_id] = time()
-                        annotator.box_label(box, color=colors(int(cls), True), label=names[int(cls)])  # 프레임에 BBox 그리기.
-
+                        annotator.box_label(box, color=colors(int(cls), True), label=names[int(cls)])    # 프레임에 BBox 그리기.
+        
                         # 해당 객체의 추적 이력을 저장
-                        track = track_history[track_id]  # track_history 딕셔너리에서 해당 객체의 추적 이력을 가져오기
-                        track.append((int((box[0] + box[2]) / 2), int((box[1] + box[
-                            3]) / 2)))  # 추적 이력에 현재 객체의 중심점 좌표를 추가. 중심점 좌표는 상자의 네 꼭짓점 좌표를 사용하여 계산.
+                        track = track_history[track_id]    # track_history 딕셔너리에서 해당 객체의 추적 이력을 가져오기
+                        track.append((int((box[0] + box[2]) / 2), int((box[1] + box[3]) / 2)))     # 추적 이력에 현재 객체의 중심점 좌표를 추가. 중심점 좌표는 상자의 네 꼭짓점 좌표를 사용하여 계산.
                         if len(track) > 30:
                             track.pop(0)     # 추적 이력의 길이가 30보다 크다면, 가장 오래된 추적 이력을 제거. (= 각 객체에 대해 최근 30프레임 동안의 이동 경로를 추적하고 기록한다)
 
@@ -142,22 +127,22 @@ async def object_detection_with_tracking(websocket: WebSocket):
                     for track_id in recognition_start_time:
                         if track_id in track_ids:
                             recognition_duration = time() - recognition_start_time[track_id]
-
+        
                         # 20초 이상 탐지되는 객체의 id 출력
                         if recognition_duration >= 20:
                             print(f"Object with track ID {track_id} recognized for {recognition_duration} seconds.")
                             # TODO: push 메세지 요청
-
+        
                     # 사람이 감지되면 프레임을 비디오에 쓰기
                     video_saving.write(frame)
-
+        
                 # 사람이 사라지면 사라진 시간(human_disappeared_time) 기록, human_detected 변수 False로 수정
                 else:
                     if human_detected:
                         print("Human disappered!")
                         human_disappeared_time = time()
                         human_detected = False
-
+        
                 # 사람이 사라지고 10초가 지난뒤에 저장객체 해제, 사람 사라진 시간 변수(human_disappeared_time) 초기화
                 if human_disappeared_time and (time() - human_disappeared_time >= 5):
                     video_saving.release()
@@ -191,4 +176,3 @@ async def object_detection_with_tracking(websocket: WebSocket):
         websocket_recieve_loop(),
         object_detection_loop(),
     )
-    
