@@ -2,6 +2,8 @@ import 'package:cozy_house_client_dev/page/action_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../api/history.dart';
+
 class HistoryPage extends StatefulWidget {
   @override
   HistoryPageState createState() => HistoryPageState();
@@ -14,7 +16,7 @@ class HistoryPageState extends State<HistoryPage> {
     Record("외부인 감지", DateTime(2023, 2, 29, 9, 30, 15), "카메라 1"),
   ]; // 임의로 적은 가상의 기록 데이터
 
-  // List<Record> _filteredRecords = []; // 선택된 날짜에 해당하는 기록을 저장할 리스트
+  List<Record> _filteredRecords = []; // 선택된 날짜에 해당하는 기록을 저장할 리스트
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +69,7 @@ class HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  // _selectDate : 사용자가 날짜를 선택하도록 하는 함수
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -77,6 +80,8 @@ class HistoryPageState extends State<HistoryPage> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
+        var requestVideoList = DetectionHistory().RequestVideoList(picked);
+        print(requestVideoList);
       });
     }
   }
