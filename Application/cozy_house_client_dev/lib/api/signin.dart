@@ -107,7 +107,7 @@ class SignIn {
         user_info['address'] = decoded_json["address"];
         user_info['device_uuid'] = decoded_json["device_uuid"];
 
-        print('서버로 데이터 전송 성공: ${decoded_json}');
+        print('서버로 데이터 전송 성공: ${user_info}');
       } else {
         print('서버로 데이터 전송 실패: ${response.reasonPhrase}');
       }

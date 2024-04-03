@@ -133,11 +133,11 @@ class _SignInState extends State<LoginPage> {
                                   await SignIn().sendDeviceInfoToServer(credential);
                                   // 사용자 정보 요청
                                   Map<String, dynamic> res = await SignIn().sendSignInDataToServer(credential);
-                                  String encoded_data = jsonEncode(res);
+                                  String encoded_data = await jsonEncode(res);
 
-                                  Provider.of<SharedPreferencesProvider>(context, listen: false).setData('user_info', encoded_data);
+                                  await Provider.of<SharedPreferencesProvider>(context, listen: false).setData('user_info', encoded_data);
 
-                                  Navigator.pushReplacement(
+                                  await Navigator.pushReplacement(
                                     context,
                                     // 메인 화면으로 이동
                                     MaterialPageRoute(builder: (context) => const MainApp()),

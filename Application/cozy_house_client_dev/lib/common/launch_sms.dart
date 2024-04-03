@@ -16,7 +16,7 @@ class LaunchSMS {
   LaunchSMS(context) {
     String? userInfoString = Provider.of<SharedPreferencesProvider>(context, listen: false).getData('user_info');
 
-    if (userInfoString!.isNotEmpty) {
+    if (userInfoString != null) {
       Map<String, dynamic> userInfo = json.decode(userInfoString);
       name = userInfo['user_name'] ?? '';
       phone = userInfo['phone_num'] ?? '';

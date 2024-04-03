@@ -31,7 +31,7 @@ class HistoryPageState extends State<HistoryPage> {
     var generator = GeneratorModule();
 
     // 가져온 데이터 사용하기
-    if (userInfoString!.isNotEmpty) {
+    if (userInfoString != null) {
       Map<String, dynamic> userInfo = json.decode(userInfoString);
       uid = userInfo['uid'] ?? '';
     } else {
