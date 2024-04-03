@@ -2,13 +2,19 @@
 
 import 'dart:convert';
 
+import 'package:provider/provider.dart';
+
 import '../main.dart';
 import 'package:http/http.dart' as http;
 
+import '../utils/formatter.dart';
+import '../utils/provider.dart';
+
 class DetectionHistory{
-  Future<Map<String, dynamic>> RequestVideoList(DateTime selected_date) async {
+  var formatter = JsonFormatter();
+
+  Future<Map<String, dynamic>> RequestVideoList(String uid, DateTime selected_date) async {
     String serverUrl = '${SERVER_URL}/history/selected_date';  // 해당 IP의 URL로 서버에 요청을 보냄.
-    String uid = 'vhm6jFXPudVTyPzdUsjYNEE3rP43';
     String date = selected_date.toString();
     // uid, date를 json형식으로 담아서 서버로 전송
     // json 데이터 생성
@@ -18,7 +24,7 @@ class DetectionHistory{
     };
 
     // json 데이터를 문자열로 인코딩 : Map을 json String으로 바꾸기
-    String requestBody = json.encode(jsonVideoInfo);
+    String requestBody = formatter.request_formatter(jsonVideoInfo);
 
     // HTTP POST 요청 보내기
     var response = await http.post( // http패키지의 post함수를 사용하여 POST요청을 보냄
@@ -34,8 +40,13 @@ class DetectionHistory{
 
     // 응답 확인
     if (response.statusCode == 200) {
-      // 서버로부터 받은 데이터 디코딩하여 변환
-      return json.decode(response.body);
+      var decoded_json = formatter.response_formatter(response.bodyBytes);
+
+      Map<String, dynamic> cam_with_event = decoded_json['response_data'];
+
+      print('서버로 데이터 전송 성공: ${cam_with_event}');
+
+      return cam_with_event;
     } else {
       // 실패 시 예외 발생
       throw Exception('Failed to load data');

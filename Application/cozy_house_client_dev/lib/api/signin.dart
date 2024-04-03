@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cozy_house_client_dev/utils/formatter.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -14,6 +15,8 @@ import '../utils/generator.dart';
 String SERVER_URL = dotenv.get('SERVER_URL');
 
 class SignIn {
+  var formatter = JsonFormatter();
+
   Future<void> sendDeviceInfoToServer(UserCredential credential) async {
     String server_url = '${SERVER_URL}/auth/deviceinfo';
     final Uri url = Uri.parse(server_url);
@@ -62,7 +65,7 @@ class SignIn {
 
       // 응답을 확인합니다.
       if (response.statusCode == 200) {
-        var decoded_body = utf8.decode(response.bodyBytes);
+        var decoded_body = formatter.response_formatter(response.bodyBytes);
         print('서버로 데이터 전송 성공: ${decoded_body}');
       } else {
         print('서버로 데이터 전송 실패: ${response.reasonPhrase}');
@@ -95,8 +98,8 @@ class SignIn {
 
       // 응답을 확인합니다.
       if (response.statusCode == 200) {
-        var decoded_body = utf8.decode(response.bodyBytes);
-        var decoded_json = json.decode(decoded_body);
+        var decoded_json = formatter.response_formatter(response.bodyBytes);
+        user_info['uid'] = uid;
         user_info['user_name'] = decoded_json["user_name"];
         user_info['user_id'] = decoded_json["user_id"];
         user_info['user_pw'] = decoded_json["user_pw"];
@@ -104,7 +107,7 @@ class SignIn {
         user_info['address'] = decoded_json["address"];
         user_info['device_uuid'] = decoded_json["device_uuid"];
 
-        print('서버로 데이터 전송 성공: ${decoded_body}');
+        print('서버로 데이터 전송 성공: ${decoded_json}');
       } else {
         print('서버로 데이터 전송 실패: ${response.reasonPhrase}');
       }

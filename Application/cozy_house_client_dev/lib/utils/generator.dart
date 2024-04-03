@@ -25,4 +25,10 @@ class GeneratorModule {
 
     return customUUID;
   }
+
+  DateTime generateCurrentTime() {
+    DateTime now = DateTime.now();
+
+    return now;
+  }
 }

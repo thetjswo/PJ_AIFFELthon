@@ -349,6 +349,7 @@ class _AccountSettingsState extends State<AccountSettingsPage> {
                                       await credential.updatePassword(_userPassword);
 
                                       Map<String, dynamic> user_info = {
+                                        'uid': credential!.uid,
                                         'user_name': _userName,
                                         'user_id': _userEmail,
                                         'user_pw': hashedPassword,

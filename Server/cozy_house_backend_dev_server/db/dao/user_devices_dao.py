@@ -11,5 +11,5 @@ def insert_new_device(device) -> bool:
 
 # 단말기 정보 조회 쿼리 by user_id
 # TODO: 복수 개의 단말기를 가지고 있는 케이스 고려
-def get_by_user_id(id) -> UserDevices:
-    return session.query(UserDevices).filter(UserDevices.user_id == id).first()
+def get_by_user_id(user_id) -> UserDevices:
+    return session.query(UserDevices).filter(UserDevices.user_id == user_id).first()

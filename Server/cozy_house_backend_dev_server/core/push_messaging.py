@@ -24,6 +24,7 @@ class PushMessaging:
         return cls._default_app
 
 
+    # TODO: body 내용은 event log의 message 값 가져오기
     def normal_push(self, fcm_token):
 
         if not fcm_token:
@@ -33,11 +34,11 @@ class PushMessaging:
         message = messaging.Message(
             data={
                 'title': '포근한 집',
-                'body': '낮선 이가 집 근처를 배회하고 있습니다.\n앱을 실행한 뒤, 저장된 영상을 확인하세요.',
+                'body': '낯선 이가 집 근처를 배회하고 있습니다.\n앱을 실행한 뒤, 저장된 영상을 확인하세요.',
             },
             notification=messaging.Notification(
                 title='포근한 집',
-                body='낮선 이가 집 근처를 배회하고 있습니다.\n앱을 실행한 뒤, 저장된 영상을 확인하세요.',
+                body='낯선 이가 집 근처를 배회하고 있습니다.\n앱을 실행한 뒤, 저장된 영상을 확인하세요.',
             ),
             token=fcm_token,
         )
@@ -62,11 +63,11 @@ class PushMessaging:
         message = messaging.Message(
             data={
                 'title': '포근한 집',
-                'body': '낮선 이가 집 근처에서 수상한 행동을 하고 있습니다.\n앱을 실행한 뒤, 저장된 영상을 확인하세요.',
+                'body': '낯선 이가 집 근처에서 수상한 행동을 하고 있습니다.\n앱을 실행한 뒤, 저장된 영상을 확인하세요.',
             },
             notification=messaging.Notification(
                 title='포근한 집',
-                body='낮선 이가 집 근처에서 수상한 행동을 하고 있습니다.\n앱을 실행한 뒤, 저장된 영상을 확인하세요.',
+                body='낯선 이가 집 근처에서 수상한 행동을 하고 있습니다.\n앱을 실행한 뒤, 저장된 영상을 확인하세요.',
             ),
             token=fcm_token,
         )
@@ -91,11 +92,11 @@ class PushMessaging:
         message = messaging.Message(
             data={
                 'title': '포근한 집',
-                'body': '낮선 이가 주거침입을 시도하고 있습니다.\n저장된 영상을 확인한 뒤, 경찰에 신고하세요.',
+                'body': '낯선 이가 주거침입을 시도하고 있습니다.\n저장된 영상을 확인한 뒤, 경찰에 신고하세요.',
             },
             notification=messaging.Notification(
                 title='포근한 집',
-                body='낮선 이가 주거침입을 시도하고 있습니다.\n저장된 영상을 확인한 뒤, 경찰에 신고하세요.',
+                body='낯선 이가 주거침입을 시도하고 있습니다.\n저장된 영상을 확인한 뒤, 경찰에 신고하세요.',
             ),
             token=fcm_token,
         )

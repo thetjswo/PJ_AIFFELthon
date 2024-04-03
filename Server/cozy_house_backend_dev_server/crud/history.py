@@ -1,33 +1,45 @@
+import json
 import logging
+from datetime import datetime
 
-from db.dao.cctv_videos_dao import get_by_user_id
+from db.dao.event_logs_dao import get_by_user_id
 from db.dao.users_dao import get_only_user_id
 
 
 # 선택한 날짜 영상 조회
 def selected_date(param):
-    selected_datatime = param.date
-    selected_date = selected_datatime.date()
-    logging.info(f'!!!!!!!!!${selected_date}')
+    # String 타입의 날짜 데이터를 datetime 형식으로 변환한 후, 시간 값 제거
+    selected_date_str = param.date
+    selected_datetime = datetime.strptime(selected_date_str, '%Y-%m-%d %H:%M:%S.%f')
+    selected_date = selected_datetime.date()
 
     user_id = get_only_user_id(param.uid)
-    videos = get_by_user_id(user_id, selected_date)
+    event_logs = get_by_user_id(user_id, selected_date)
 
-    # videos에 담긴 데이터를 1개씩 분리, Json 형식으로 바꾸는 작업
     data = {}
-    if videos is not None:
-        # # user 객체의 데이터를 JSON으로 변환
-        # data['result'] = True
-        # data['uid'] = param.uid
-        # data['cctv_name'] = device.cctv_name
-        # data['is_checked'] = videos.is_checked
-        # data['file_name'] = videos.file_name
-        # data['file_path'] = videos.file_path
-        # data['cctv_id'] = videos.cctv_id
-        # data['type'] = 'Dangerous'    # TODO: type값 DB에서 가져오는 걸로 수정하기 => event_logs.type
+    for log_tuple in event_logs:
+        log = log_tuple[0]  # 튜플의 첫 번째 요소는 EventLogs 객체
+        cctv_name = log_tuple[1]  # 튜플의 두 번째 요소는 CCTV 장치 이름
 
-        return data
-    else:
-        # 사용자를 찾지 못한 경우
-        data['result'] = False
-        return data
+        # 딕셔너리에 CCTV 이름이 이미 있는지 확인하고 없으면 빈 리스트로 초기화
+        if cctv_name not in data:
+            data[cctv_name] = []
+
+        # 딕셔너리에 CCTV 이름에 해당하는 로그 추가
+        data[cctv_name].append(serialize(log))
+
+    # 결과 출력
+    logging.info(f'list of event logs: ${data}')
+
+    for camera in data:
+        for log in data[camera]:
+            # created_at 값에 .strftime() 처리
+            log["created_at"] = log["created_at"].strftime("%Y-%m-%d %H:%M:%S")
+
+    return data
+
+
+def serialize(obj):
+    if hasattr(obj, '__dict__'):
+        return {k: v for k, v in obj.__dict__.items() if k != '_sa_instance_state'}
+    return obj

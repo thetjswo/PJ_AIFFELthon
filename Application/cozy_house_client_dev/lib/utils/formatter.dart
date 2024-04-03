@@ -1,4 +1,6 @@
 // 전화번호 입력 시, 한국 번호 형식인 010-xxxx-xxxx 형식으로 고정
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 
 class PhoneNumberFormatter extends TextInputFormatter {
@@ -40,5 +42,20 @@ class PhoneNumberFormatter extends TextInputFormatter {
   // 입력에서 숫자가 아닌 문자를 제거하는 메서드
   String _cleanPhoneNumber(String value) {
     return value.replaceAll(RegExp(r'[-\s]'), '');
+  }
+}
+
+class JsonFormatter {
+  request_formatter(obj) {
+    String requestBody = json.encode(obj);
+
+    return requestBody;
+  }
+
+  response_formatter(obj) {
+    var decoded_body = utf8.decode(obj);
+    var decoded_json = json.decode(decoded_body);
+
+    return decoded_json;
   }
 }
