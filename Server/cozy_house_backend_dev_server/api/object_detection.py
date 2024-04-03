@@ -114,7 +114,7 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         human_disappeared_time = None
 
                         # thumbnail 저장 위치 생성
-                        save_image_path = os.path.join(thumbnail_folder_path, f"frame_{file_name}.jpg")
+                        save_image_path = os.path.join(thumbnail_folder_path, f"{file_name}.jpg")
                         
                         # 사람 감지되자마자 첫프레임 저장
                         cv2.imwrite(save_image_path, frame)
