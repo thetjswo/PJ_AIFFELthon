@@ -132,10 +132,15 @@ class _SignInState extends State<LoginPage> {
                                   // 기기 정보 갱신(기존 정보 없으면 추가)
                                   await SignIn().sendDeviceInfoToServer(credential);
                                   // 사용자 정보 요청
-                                  Map<String, dynamic> res = await SignIn().sendSignInDataToServer(credential);
-                                  String encoded_data = await jsonEncode(res);
+                                  var result = await SignIn().sendSignInDataToServer(credential);
+                                  Map<String, dynamic> user_info = result[0];
+                                  Map<String, dynamic> settings = result[1];
 
-                                  await Provider.of<SharedPreferencesProvider>(context, listen: false).setData('user_info', encoded_data);
+                                  String encoded_users = await jsonEncode(user_info);
+                                  String encoded_settings = await jsonEncode(settings);
+
+                                  await Provider.of<SharedPreferencesProvider>(context, listen: false).setData('user_info', encoded_users);
+                                  await Provider.of<SharedPreferencesProvider>(context, listen: false).setData('setting_info', encoded_settings);
 
                                   await Navigator.pushReplacement(
                                     context,

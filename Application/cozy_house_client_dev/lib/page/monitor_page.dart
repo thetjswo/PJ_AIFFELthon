@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cozy_house_client_dev/api/websocket.dart';
+import 'package:cozy_house_client_dev/common/modal_popup.dart';
 import 'package:cozy_house_client_dev/common/styles.dart';
 
 import 'package:flutter/material.dart';
@@ -47,45 +48,6 @@ class _MonitorPageState extends State<MonitorPage> {
     });
   }
 
-  void _showAlert() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("경보를 해제합니다."),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 20),
-              Icon(
-                Icons.check_circle_outline_outlined,
-                color: Colors.green,
-                size: 80,
-              ),
-              SizedBox(height: 20),
-            ],
-          ),
-          actions: [
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // 다이얼로그 닫기
-                },
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.black),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.lightGreen),
-                ),
-                // TODO : 경보 해제시 알림 꺼지는 기능 구현 필요
-                child: Text("확인"),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   // 공유하기 ui 실행 위젯
   void captureAndShare() async {
@@ -215,7 +177,9 @@ class _MonitorPageState extends State<MonitorPage> {
                         child: Column(
                           children: [
                             IconButton(
-                              onPressed: _showAlert,
+                              onPressed: () {
+                                ModalPopUp.showCheckVideoDialog(context);
+                              },
                               icon: Icon(
                                 Icons.check_circle_outline_outlined,
                                 color: Colors.green,

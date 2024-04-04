@@ -75,7 +75,7 @@ class SignIn {
     }
   }
 
-  Future<Map<String, dynamic>> sendSignInDataToServer(UserCredential credential) async {
+  Future<List<Map<String, dynamic>>> sendSignInDataToServer(UserCredential credential) async {
     String server_url = '${SERVER_URL}/auth/signin';
     final Uri url = Uri.parse(server_url);
 
@@ -85,6 +85,7 @@ class SignIn {
     };
 
     Map<String, dynamic> user_info = {};
+    Map<String, dynamic> settings = {};
 
     try {
       // HTTP POST 요청
@@ -106,8 +107,13 @@ class SignIn {
         user_info['phone_num'] = decoded_json["phone_num"];
         user_info['address'] = decoded_json["address"];
         user_info['device_uuid'] = decoded_json["device_uuid"];
+        settings['record_yn']=decoded_json["record_yn"];
+        settings['detection_yn']=decoded_json["detection_yn"];
+        settings['detection_time']=decoded_json["detection_time"];
+        settings['detection_area']=decoded_json["detection_area"];
 
-        print('서버로 데이터 전송 성공: ${user_info}');
+        print('서버로 데이터 요청/응답 성공: ${user_info}');
+        print('서버로 데이터 요청/응답 성공: ${settings}');
       } else {
         print('서버로 데이터 전송 실패: ${response.reasonPhrase}');
       }
@@ -115,6 +121,6 @@ class SignIn {
       print('서버 요청 중 오류 발생: $error');
     }
 
-    return user_info;
+    return [user_info, settings];
   }
 }

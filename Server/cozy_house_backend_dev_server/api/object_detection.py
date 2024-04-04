@@ -53,7 +53,7 @@ async def object_detection_with_tracking(websocket: WebSocket):
         
         # TODO: DAQ 연결
         # webcam 사용
-        cap = cv2.VideoCapture(1)     # 사용할 camera index 사용 - 0 : 랩탑 카메라, 1 : 핸드폰 연결 카메라(슬 경우)
+        cap = cv2.VideoCapture(0)     # 사용할 camera index 사용 - 0 : 랩탑 카메라, 1 : 핸드폰 연결 카메라(슬 경우)
 
         # webcam 예외처리
         if not cap.isOpened():

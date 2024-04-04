@@ -66,6 +66,10 @@ class SigninResponse(BaseModel):
     phone_num: str
     address: str
     device_uuid: str
+    record_yn: bool
+    detection_yn: bool
+    detection_time: int
+    detection_area: int
 
 
 # 사용자 정보 응답
@@ -131,6 +135,10 @@ async def signin_route(request: Request):
             address=data['address'],
             uid=data['uid'],
             device_uuid=data['device_uuid'],
+            record_yn=data['record_yn'],
+            detection_yn=data['detection_yn'],
+            detection_time=data['detection_time'],
+            detection_area=data['detection_area'],
         )
 
         return response_data    # 인증 성공 시 사용자 정보(response_data)를 사용하여 SigninResponse 객체를 생성
@@ -145,6 +153,10 @@ async def signin_route(request: Request):
             address='',
             uid='',
             device_uuid='',
+            record_yn='',
+            detection_yn='',
+            detection_time='',
+            detection_area='',
         )
 
         return response_data

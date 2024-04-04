@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 
+from db.dao.settings_dao import get_user_settings_info
 from db.dao.user_devices_dao import get_by_user_id, insert_new_device
 from db.dao.users_dao import get_by_uid, insert_new_user, update_access_time, update_user_info
 from db.table_info import Users, UserDevices
@@ -64,6 +65,7 @@ def signin(param):
 
     user = get_by_uid(param.uid)
     device = get_by_user_id(user.id)
+    settings = get_user_settings_info(user.id)
 
 # videos에 담긴 데이터를 1개씩 분리, Json 형식으로 바꾸는 작업
 
@@ -78,6 +80,10 @@ def signin(param):
         data['phone_num'] = user.phone_num
         data['address'] = user.address
         data['device_uuid'] = device.uuid
+        data['record_yn'] = settings.record_yn
+        data['detection_yn'] = settings.detection_yn
+        data['detection_time'] = settings.detection_time
+        data['detection_area'] = settings.detection_area
 
         return data
     else:

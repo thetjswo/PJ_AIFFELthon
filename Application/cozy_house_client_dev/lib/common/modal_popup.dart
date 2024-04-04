@@ -285,4 +285,44 @@ class ModalPopUp {
       },
     );
   }
+
+  static void showCheckVideoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("경보를 해제합니다."),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 20),
+              Icon(
+                Icons.check_circle_outline_outlined,
+                color: Colors.green,
+                size: 80,
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
+          actions: [
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                },
+                style: ButtonStyle(
+                  foregroundColor:
+                  MaterialStateProperty.all<Color>(Colors.black),
+                  backgroundColor:
+                  MaterialStateProperty.all<Color>(Colors.lightGreen),
+                ),
+                // TODO : 경보 해제시 알림 꺼지는 기능 구현 필요
+                child: Text("확인"),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
