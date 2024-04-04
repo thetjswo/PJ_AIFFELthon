@@ -86,7 +86,7 @@ class _AccountSettingsState extends State<AccountSettingsPage> {
     String? userInfoString = Provider.of<SharedPreferencesProvider>(context).getData('user_info');
 
     // 가져온 데이터 사용하기
-    if (userInfoString!.isNotEmpty) {
+    if (userInfoString != null) {
       Map<String, dynamic> userInfo = json.decode(userInfoString);
 
       _userName = userInfo['user_name'] ?? '';
@@ -349,6 +349,7 @@ class _AccountSettingsState extends State<AccountSettingsPage> {
                                       await credential.updatePassword(_userPassword);
 
                                       Map<String, dynamic> user_info = {
+                                        'uid': credential!.uid,
                                         'user_name': _userName,
                                         'user_id': _userEmail,
                                         'user_pw': hashedPassword,

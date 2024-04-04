@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:cozy_house_client_dev/common/navigator.dart';
 import 'package:cozy_house_client_dev/page/history_page.dart';
 import 'package:cozy_house_client_dev/page/security_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../utils/provider.dart';
 import 'monitor_page.dart';
 
 class MainApp extends StatelessWidget {
@@ -30,6 +34,34 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   // 탭 라벨 인덱스 - 초깃값 0
   int _selectedIndex = 0;
+  String user_name = '';
+  String user_email = '';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loadProfileData();
+  }
+
+  loadProfileData(){
+    // 앱 메모리에서 데이터 가져오기
+    String? userInfoString = Provider.of<SharedPreferencesProvider>(context).getData('user_info');
+
+    // 가져온 데이터 사용하기
+    if (userInfoString != null) {
+      Map<String, dynamic> userInfo = json.decode(userInfoString);
+      user_name = userInfo['user_name'];
+      user_email = userInfo['user_id'];
+    } else {
+      // 데이터가 존재하지 않을 경우 처리
+      print('저장된 데이터가 없습니다.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +75,8 @@ class _MainPageState extends State<MainPage> {
           _selectedIndex = index;
         });
       },
+      user_name: user_name,
+      user_email: user_email,
       pages: [
         SecurityPage(),
         MonitorPage(),

@@ -1,22 +1,61 @@
+import 'dart:convert';
+
 import 'package:cozy_house_client_dev/page/action_page.dart';
+import 'package:cozy_house_client_dev/utils/generator.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 
 import '../api/history.dart';
+import '../utils/provider.dart';
+
 
 class HistoryPage extends StatefulWidget {
+  const HistoryPage({super.key});
+
   @override
   HistoryPageState createState() => HistoryPageState();
 }
 
 class HistoryPageState extends State<HistoryPage> {
+  late String uid;
   DateTime _selectedDate = DateTime.now(); // 선택된 날짜를 저장할 변수
-  // TODO : 기록 데이터 import하기, 선택된 날짜의 기록 가져오기
-  List<Record> _records = [
-    Record("외부인 감지", DateTime(2023, 2, 29, 9, 30, 15), "카메라 1"),
-  ]; // 임의로 적은 가상의 기록 데이터
 
-  List<Record> _filteredRecords = []; // 선택된 날짜에 해당하는 기록을 저장할 리스트
+  List<Record> _records = []; // 임의로 적은 가상의 기록 데이터
+
+  @override
+  void initState() {
+    super.initState();
+
+    String? userInfoString = Provider.of<SharedPreferencesProvider>(context, listen: false).getData('user_info');
+
+    var generator = GeneratorModule();
+
+    // 가져온 데이터 사용하기
+    if (userInfoString != null) {
+      Map<String, dynamic> userInfo = json.decode(userInfoString);
+      uid = userInfo['uid'] ?? '';
+    } else {
+      // 데이터가 존재하지 않을 경우 처리
+      print('저장된 데이터가 없습니다.');
+    }
+
+    getCurrentHistory(generator);
+  }
+
+  getCurrentHistory(generator) async {
+    final responseVideoList = DetectionHistory().RequestVideoList(uid, generator.generateCurrentTime());
+    final event_info = await responseVideoList;
+
+    setState(() {
+      event_info.forEach((cameraName, logs) {
+        for (var log in logs) {
+          var record = Record(log['message'], DateTime.parse(log['created_at']), cameraName, log['type']);
+          _records.add(record);
+        }
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +117,21 @@ class HistoryPageState extends State<HistoryPage> {
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != _selectedDate) {
+      final responseVideoList = DetectionHistory().RequestVideoList(uid, picked);
+      final event_info = await responseVideoList;
+
+      // 리스트 초기화
+      _records = [];
+
       setState(() {
         _selectedDate = picked;
-        print(_selectedDate);
-        var requestVideoList = DetectionHistory().RequestVideoList(picked);
-        print(requestVideoList);
+
+        event_info.forEach((cameraName, logs) {
+          for (var log in logs) {
+            var record = Record(log['message'], DateTime.parse(log['created_at']), cameraName, log['type']);
+            _records.add(record);
+          }
+        });
       });
     }
   }
@@ -93,7 +142,7 @@ Widget _buildRecordItem(Record record) {
   return ListTile(
     title: Text(record.event), // 이벤트 정보 표시
     subtitle: Text(
-        "감지된 시간: ${record.time}, Camera: ${record.camera}"), // 시간과 카메라 정보 표시
+        "감지된 시간: ${record.time}, 장치 이름: ${record.camera}"), // 시간과 카메라 정보 표시
     trailing: SizedBox(
       width: 80, // 이미지 너비
       height: 48, // 이미지 높이
@@ -116,7 +165,7 @@ Widget _buildRecordItem(Record record) {
             top: 3,
             child: Icon(
               Icons.security,
-              color: Colors.blue, // 적절한 색상으로 변경 가능
+              color: getIconColor(record.type), // 적절한 색상으로 변경 가능
               size: 16, // 적절한 크기로 변경 가능
             ),
           ),
@@ -126,10 +175,25 @@ Widget _buildRecordItem(Record record) {
   );
 }
 
+// 경보 등급에 따라 아이콘 색상 지정
+Color getIconColor(String type) {
+  switch (type) {
+    case 'Dangerous':
+      return Colors.red;
+    case 'Caution':
+      return Colors.yellow;
+    case 'Normal':
+      return Colors.blue;
+    default:
+      return Colors.grey;
+  }
+}
+
 class Record {
   final String event;
   final DateTime time;
   final String camera;
+  final String type;
 
-  Record(this.event, this.time, this.camera);
+  Record(this.event, this.time, this.camera, this.type);
 }

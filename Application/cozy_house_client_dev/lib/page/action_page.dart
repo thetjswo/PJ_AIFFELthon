@@ -197,7 +197,7 @@ class _ActionPageState extends State<ActionPage> {
                         child: Column(
                           children: [
                             IconButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 // 사용자 정보를 받아오기 위한 객체 생성
                                 LaunchSMS launchSMS = LaunchSMS(context);
                                 // 신고 폼을 가지고 sms 앱 호출
