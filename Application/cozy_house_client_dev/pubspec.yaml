@@ -43,18 +43,18 @@ dependencies:
   flutter_local_notifications: ^17.0.0
   flutter_native_splash: ^2.3.10
   http: ^1.2.1
+  logger: ^2.2.0
   package_info: ^2.0.2
+  path_provider: ^2.1.2  # 폴더 경로 가져오는 패키지
   provider: ^6.1.2
+  screenshot: ^2.3.0     # 위젯 스크린샷 패키지
+  share_plus: ^8.0.2     # 공유하기 기능 패키지
   shared_preferences: ^2.2.2
   url_launcher: ^6.2.5
   uuid: ^4.3.3
   web_socket_channel: ^2.4.0
-  logger: ^2.2.0
-  share_plus: ^8.0.2    # 공유하기 기능 패키지
-  path_provider: ^2.0.2   # 폴더 경로 가져오는 패키지
-#  kakao_flutter_sdk_user: ^1.9.1+2   # 추후 구현 : 카카오 로그인 API 패키지 - 카톡으로 공유하기 기능
-#  kakao_flutter_sdk_share: ^1.9.1+2  # 추후 구현 : 카카오톡 공유 API 패키지 - 카톡으로 공유하기 기능
-
+  # kakao_flutter_sdk_user: ^1.9.1+2   # 추후 구현 : 카카오 로그인 API 패키지 - 카톡으로 공유하기 기능
+  # kakao_flutter_sdk_share: ^1.9.1+2  # 추후 구현 : 카카오톡 공유 API 패키지 - 카톡으로 공유하기 기능
 
 dev_dependencies:
   flutter_test:
