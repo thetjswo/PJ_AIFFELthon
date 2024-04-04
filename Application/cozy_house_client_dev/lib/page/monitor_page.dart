@@ -1,31 +1,22 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cozy_house_client_dev/api/websocket.dart';
 import 'package:cozy_house_client_dev/common/styles.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../common/launch_sms.dart';
 
 class MonitorPage extends StatefulWidget {
-  const MonitorPage({super.key});
-
   @override
   _MonitorPageState createState() => _MonitorPageState();
 }
 
 class _MonitorPageState extends State<MonitorPage> {
   static String wsUrlCctv = dotenv.get('WS_URL_CCTV');
-
-  ScreenshotController screenshotController = ScreenshotController();
-  late Uint8List _image;
 
   // Initialize WebSocket instance
   final WebSocket _socket = WebSocket(wsUrlCctv);
@@ -87,28 +78,6 @@ class _MonitorPageState extends State<MonitorPage> {
     );
   }
 
-  // 공유하기 ui 실행 위젯
-  void captureAndShare() async {
-    await screenshotController.capture().then((img) async {
-      _image = img!; // image is of type of Uint8List
-      final directory = (await getApplicationDocumentsDirectory()).path;
-      final imagePath = await File('$directory/screenshot.png').create();
-      await imagePath.writeAsBytes(_image);
-
-      // 핸드폰 ui로 공유하기 
-      await Share.shareXFiles(
-        [XFile(imagePath.path)],
-        text: '<포근한집>에서 실시간 화면을 공유합니다.',
-      );
-      
-      // 공유한 후에 캡처한 스크린샷 삭제
-      await imagePath.delete();
-
-    }).catchError((onError) {
-      print(onError);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -133,43 +102,40 @@ class _MonitorPageState extends State<MonitorPage> {
                   ),
                 ),
                 // real-time CCTV video streeaming
-                Screenshot(
-                  controller: screenshotController,
-                  child: _isConnectd
-                      ? StreamBuilder(
-                          stream: _socket.stream,
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return const CircularProgressIndicator();
-                            }
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              return const Center(
-                                child: Text("connection Closed!"),
-                              );
-                            }
-                            return Image.memory(
-                              Uint8List.fromList(
-                                base64Decode(
-                                  (snapshot.data),
-                                ),
-                              ),
-                              gaplessPlayback: true,
-                              excludeFromSemantics: true,
+                _isConnectd
+                    ? StreamBuilder(
+                        stream: _socket.stream,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const CircularProgressIndicator();
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return const Center(
+                              child: Text("connection Closed!"),
                             );
-                          },
-                        )
-                      // TODO: 카메라 연결이 끊어졌을때 회색박스에 안내문구 출력
-                      : Container(
-                          height: 197,
-                          width: 350,
-                          color: Colors.grey,
-                          child: Text(
-                            '카메라가 꺼져있습니다',
-                            style: Styles.textStyle,
-                          ),
+                          }
+                          return Image.memory(
+                            Uint8List.fromList(
+                              base64Decode(
+                                (snapshot.data),
+                              ),
+                            ),
+                            gaplessPlayback: true,
+                            excludeFromSemantics: true,
+                          );
+                        },
+                      )
+                    // TODO: 카메라 연결이 끊어졌을때 회색박스에 안내문구 출력
+                    : Container(
+                        height: 197,
+                        width: 350,
+                        color: Colors.grey,
+                        child: Text(
+                          '카메라가 꺼져있습니다',
+                          style: Styles.textStyle,
                         ),
-                ),
+                      ),
                 Container(
                   margin: EdgeInsets.only(left: 10, right: 10),
                   child: Row(
@@ -231,7 +197,7 @@ class _MonitorPageState extends State<MonitorPage> {
                         child: Column(
                           children: [
                             IconButton(
-                              onPressed: captureAndShare, // 버튼 누르면 캡처하기 함수 실행
+                              onPressed: () {},
                               icon: Icon(
                                 Icons.share_outlined,
                                 color: Colors.yellow,
