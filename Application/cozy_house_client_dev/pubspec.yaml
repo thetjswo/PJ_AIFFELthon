@@ -52,6 +52,7 @@ dependencies:
   logger: ^2.2.0
   share_plus: ^8.0.2    # 공유하기 기능 패키지
   path_provider: ^2.0.2   # 폴더 경로 가져오는 패키지
+  screenshot: ^2.3.0
 #  kakao_flutter_sdk_user: ^1.9.1+2   # 추후 구현 : 카카오 로그인 API 패키지 - 카톡으로 공유하기 기능
 #  kakao_flutter_sdk_share: ^1.9.1+2  # 추후 구현 : 카카오톡 공유 API 패키지 - 카톡으로 공유하기 기능
 
