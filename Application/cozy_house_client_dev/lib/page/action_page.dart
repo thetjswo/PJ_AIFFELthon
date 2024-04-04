@@ -1,16 +1,18 @@
 // 리스트 선택하고 난 후에 따라오는 Action Page
 import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:cozy_house_client_dev/api/websocket.dart';
 import 'package:cozy_house_client_dev/common/launch_sms.dart';
 import 'package:cozy_house_client_dev/common/styles.dart';
 
-import 'package:flutter/material.dart';        // flutter 패키지 임포트: Flutter UI 프레임워크
+import 'package:flutter/material.dart'; // flutter 패키지 임포트: Flutter UI 프레임워크
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 
-import 'package:share_plus/share_plus.dart';     // share_plus : 파일 공유 기능을 제공하는 패키지 임포트
-import 'package:path_provider/path_provider.dart';   // path_provider : 폴더 경로 가져오는 패키지 임포트
+import 'package:share_plus/share_plus.dart'; // share_plus : 파일 공유 기능을 제공하는 패키지 임포트
+import 'package:path_provider/path_provider.dart'; // path_provider : 폴더 경로 가져오는 패키지 임포트
 
 class ActionPage extends StatefulWidget {
   final BuildContext context;
@@ -32,6 +34,14 @@ class _ActionPageState extends State<ActionPage> {
   final WebSocket _socket = WebSocket(wsUrlSavedVideo);
   bool _isConnectd = false;
 
+  // TODO: DB 섬네일 url로 변경
+  String imageUrl =
+      'https://attach.choroc.com/web/goods/1/img1/016262_20230314115443.jpg';
+
+  // // TODO: DB 비디오 url 공유 기능 구현
+  // String videoUrl =
+  //     'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+
   @override
   void initState() {
     super.initState();
@@ -48,7 +58,8 @@ class _ActionPageState extends State<ActionPage> {
     });
   }
 
-  void _showAlert() { // 경보해제 버튼 클릭 시 팝업
+  void _showAlert() {
+    // 경보해제 버튼 클릭 시 팝업
     showDialog(
       context: widget.context,
       builder: (BuildContext context) {
@@ -89,9 +100,24 @@ class _ActionPageState extends State<ActionPage> {
   }
 
   // 공유하기 버튼 클릭 시 썸네일과 도움 요청 텍스트를 전송하는 함수
-  void _shareFiles() {
-    final List<XFile> files = [XFile('../../../Server/cozy_house_backend_dev_server/resources/invasion_sample.jpeg')];  // TODO: 이미지 경로 실제 영상 썸네일로 변경 필요
-    Share.shareXFiles(files, text: "도와주세요! 위험 상황이 발생했습니다.");
+  void _shareFiles() async {
+    // url 이미지 공유
+    final http.Response responseData = await http.get(Uri.parse(imageUrl));
+    var uint8list = responseData.bodyBytes;
+    var buffer = uint8list.buffer;
+    ByteData byteData = ByteData.view(buffer);
+    final directory = (await getApplicationDocumentsDirectory()).path;
+    File file = await File('$directory/thumbnail.jpg').writeAsBytes(
+        buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+
+    // 핸드폰 share ui로 공유하기
+    await Share.shareXFiles(
+      [XFile(file.path)],
+      text: "도와주세요! 위험 상황이 발생했습니다.",
+    );
+
+    // 공유한 후에 캡처한 스크린샷 삭제
+    await file.delete();
   }
 
   @override
@@ -163,7 +189,7 @@ class _ActionPageState extends State<ActionPage> {
                           );
                         },
                       )
-                    // TODO: 카메라 연결이 끊어졌을때 회색박스에 안내문구 출력
+                    // TODO: 로직체크 : 현재 - 저장된 영상을 불러오지 못할때 회색박스에 안내문구 출력
                     : Container(
                         height: 197,
                         width: 350,
