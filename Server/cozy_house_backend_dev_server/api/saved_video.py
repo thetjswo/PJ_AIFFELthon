@@ -1,4 +1,4 @@
-# 저장된 영상 송출 : uvicorn saved_video:app --host <IP주소> --port 8000
+# 저장된 영상 송출 : uvicorn saved_video:app --host <IP주소> --port 7070
 
 import cv2
 import base64

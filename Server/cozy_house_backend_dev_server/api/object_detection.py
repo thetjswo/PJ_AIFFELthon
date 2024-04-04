@@ -1,4 +1,4 @@
-# 실시간 영상 송출 : uvicorn object_detection:app --host <IP주소> --port 7080 #TODO : detection port 번호 확인
+# 실시간 영상 송출 : uvicorn object_detection:app --host <IP주소> --port 7090
 
 import cv2
 from ultralytics import YOLO
