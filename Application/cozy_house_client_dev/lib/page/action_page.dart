@@ -6,8 +6,11 @@ import 'package:cozy_house_client_dev/api/websocket.dart';
 import 'package:cozy_house_client_dev/common/launch_sms.dart';
 import 'package:cozy_house_client_dev/common/styles.dart';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';        // flutter 패키지 임포트: Flutter UI 프레임워크
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'package:share_plus/share_plus.dart';     // share_plus : 파일 공유 기능을 제공하는 패키지 임포트
+import 'package:path_provider/path_provider.dart';   // path_provider : 폴더 경로 가져오는 패키지 임포트
 
 class ActionPage extends StatefulWidget {
   final BuildContext context;
@@ -22,7 +25,7 @@ class ActionPage extends StatefulWidget {
 }
 
 class _ActionPageState extends State<ActionPage> {
-  //TODO: 저장된 영상으로 변경
+  //TODO: DB에 저장된 영상으로 변경
   static String wsUrlSavedVideo = dotenv.get('WS_URL_SAVED_VIDEO');
 
   // Initialize WebSocket instance
@@ -45,7 +48,7 @@ class _ActionPageState extends State<ActionPage> {
     });
   }
 
-  void _showAlert() {
+  void _showAlert() { // 경보해제 버튼 클릭 시 팝업
     showDialog(
       context: widget.context,
       builder: (BuildContext context) {
@@ -83,6 +86,12 @@ class _ActionPageState extends State<ActionPage> {
         );
       },
     );
+  }
+
+  // 공유하기 버튼 클릭 시 썸네일과 도움 요청 텍스트를 전송하는 함수
+  void _shareFiles() {
+    final List<XFile> files = [XFile('../../../Server/cozy_house_backend_dev_server/resources/invasion_sample.jpeg')];  // TODO: 이미지 경로 실제 영상 썸네일로 변경 필요
+    Share.shareXFiles(files, text: "도와주세요! 위험 상황이 발생했습니다.");
   }
 
   @override
@@ -223,8 +232,8 @@ class _ActionPageState extends State<ActionPage> {
                         child: Column(
                           children: [
                             IconButton(
-                              // TODO: 공유하기 페이지 작업
-                              onPressed: () {},
+                              // TODO: 공유하기 페이지 양희 함수 추가
+                              onPressed: _shareFiles,
                               icon: Icon(
                                 Icons.share_outlined,
                                 color: Colors.yellow,
