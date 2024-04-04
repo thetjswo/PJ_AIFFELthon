@@ -86,41 +86,6 @@ class _SecurityPageState extends State<SecurityPage>
           },
         ),
       ),
-      // child: Column(
-      //   mainAxisAlignment: MainAxisAlignment.center,
-      //   children: [
-      //     Container(
-      //       padding: EdgeInsets.all(100),
-      //       child: GestureDetector(
-      //         onTap: _toggleImage,
-      //         child: AnimatedBuilder(
-      //           animation: _animation,
-      //           builder: (context, child) {
-      //             return CustomPaint(
-      //               size: Size(220, 220), // 원 크기를 조절
-      //               painter:
-      //                   MyPainter(_animation.value, 220, _firstToggle), // 크기 조절
-      //               child: Center(),
-      //             );
-      //           },
-      //         ),
-      //       ),
-      //     ),
-      //     const SizedBox(
-      //       height: 50,
-      //     ),
-      //     ElevatedButton(
-      //       onPressed: () => connect(context),
-      //       style: Styles.buttonStyle,
-      //       child: const Text("ON"),
-      //     ),
-      //     ElevatedButton(
-      //       onPressed: disconnect,
-      //       style: Styles.buttonStyle,
-      //       child: const Text("OFF"),
-      //     ),
-      //   ],
-      // ),
     );
   }
 
