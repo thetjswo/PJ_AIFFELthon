@@ -254,8 +254,8 @@ class MyPainter extends CustomPainter {
     stream.addListener(
         ImageStreamListener((ImageInfo info, bool synchronousCall) {
       // 이미지의 원래 너비와 높이
-      double imageWidth = info.image.width.toDouble();
-      double imageHeight = info.image.height.toDouble();
+      double imageWidth = info.image!.width.toDouble();
+      double imageHeight = info.image!.height.toDouble();
 
       // 이미지의 원하는 너비 (현재 캔버스의 너비의 절반)
       final double desiredWidth = size.width * 0.5;
@@ -265,7 +265,7 @@ class MyPainter extends CustomPainter {
 
       // 이미지 크기 조정
       canvas.drawImageRect(
-        info.image,
+        info.image!,
         Rect.fromLTRB(0, 0, imageWidth, imageHeight), // 원본 이미지 크기 지정
         Rect.fromCenter(
           center:
