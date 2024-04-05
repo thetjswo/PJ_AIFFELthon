@@ -70,7 +70,12 @@ flutter:
     - assets/images/icon/ic_security.png
     - assets/images/icon/shield_4_red.png
     - assets/images/icon/shield_4_green.png
-    - assets/images/example_images/gray_box.png
+    - assets/images/icon/camera_img.png
+    - assets/images/icon/camera_img2.png
+    - assets/images/icon/security_img_red.png
+    - assets/images/icon/security_img_green.png
+    - assets/images/icon/security_img_lock_green.png
+    - assets/images/icon/security_img_lock_red.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see
