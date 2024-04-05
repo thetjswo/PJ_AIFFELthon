@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-
 class Styles {
+  late final Color textColor;
+
   static final buttonStyle =
       ElevatedButton.styleFrom(fixedSize: const Size(120.0, 10.0));
 
@@ -28,12 +29,15 @@ class Styles {
     minimumSize: const Size(200, 30),
   );
 
-
-  static const textStyle = TextStyle(
-      color: Colors.blue,
-      fontFamily: 'Kalam',
-      fontSize: 20,
-      fontWeight: FontWeight.bold);
-
-
+  static TextStyle textStyle({
+    Color? color,
+    double? fontSize,
+    FontWeight? fontWeight,
+  }) {
+    return TextStyle(
+        color: color ?? Colors.black,
+        fontFamily: 'Kalam',
+        fontSize: fontSize ?? 20,
+        fontWeight: fontWeight ?? FontWeight.normal);
+  }
 }

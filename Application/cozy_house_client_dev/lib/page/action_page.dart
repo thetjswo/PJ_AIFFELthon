@@ -153,12 +153,12 @@ class _ActionPageState extends State<ActionPage> {
               children: [
                 Container(
                   height: 40,
-                  width: 350,
+                  width: MediaQuery.of(context).size.width, // screen 너비에 맞춤
                   padding: EdgeInsets.only(left: 10, top: 5),
                   color: Color(0xFFD0A9F5),
                   child: Text(
                     'Camera01',
-                    style: TextStyle(
+                    style: Styles.textStyle(
                       fontSize: 20,
                     ),
                   ),
@@ -169,12 +169,22 @@ class _ActionPageState extends State<ActionPage> {
                         stream: _socket.stream,
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
-                            return const CircularProgressIndicator();
+                            return Padding(
+                              padding: const EdgeInsets.all(100.0),
+                              child: const CircularProgressIndicator(),
+                            );
                           }
                           if (snapshot.connectionState ==
                               ConnectionState.done) {
-                            return const Center(
-                              child: Text("connection Closed!"),
+                            return Container(
+                              alignment: Alignment.center,
+                              height: 197,
+                              width: MediaQuery.of(context).size.width,
+                              color: Colors.grey,
+                              child: Text(
+                                '카메라와의 연결이 끊어졌습니다',
+                                style: Styles.textStyle(),
+                              ),
                             );
                           }
                           // TODO: 저장된 영상 재생 +  일시정지, 재생, 다시재생 버튼 추가
@@ -191,29 +201,45 @@ class _ActionPageState extends State<ActionPage> {
                       )
                     // TODO: 로직체크 : 현재 - 저장된 영상을 불러오지 못할때 회색박스에 안내문구 출력
                     : Container(
+                        alignment: Alignment.center,
                         height: 197,
-                        width: 350,
+                        width: MediaQuery.of(context).size.width,
                         color: Colors.grey,
                         child: Text(
                           '카메라가 꺼져있습니다',
-                          style: Styles.textStyle,
+                          style: Styles.textStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
+                SizedBox(
+                  height: 10,
+                ),
                 Container(
                   margin: EdgeInsets.only(left: 10, right: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('2분 전 카메라 화면'),
+                      //TODO: DB상의 시간 값 가져오기
+                      Text(
+                        '2분 전 카메라 화면',
+                        style: Styles.textStyle(fontSize: 15),
+                      ),
                       Text(
                         '움직임 감지',
-                        style: TextStyle(color: Colors.blue),
-                      )
+                        style: Styles.textStyle(
+                          fontSize: 15,
+                          color: Colors.red[600],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 SizedBox(
-                  height: 50,
+                  height: 40,
                 ),
                 Container(
                   child: Row(
@@ -233,24 +259,14 @@ class _ActionPageState extends State<ActionPage> {
                                 Icons.emergency_outlined,
                                 color: Colors.red,
                               ),
-                              iconSize: 60,
+                              iconSize: 70,
                             ),
-                            Text('신고하기')
-                          ],
-                        ),
-                      ),
-                      Container(
-                        child: Column(
-                          children: [
-                            IconButton(
-                              onPressed: _showAlert,
-                              icon: Icon(
-                                Icons.check_circle_outline_outlined,
-                                color: Colors.green,
+                            Text(
+                              '신고하기',
+                              style: Styles.textStyle(
+                                fontSize: 20,
                               ),
-                              iconSize: 60,
                             ),
-                            Text('경보 해제')
                           ],
                         ),
                       ),
@@ -258,15 +274,19 @@ class _ActionPageState extends State<ActionPage> {
                         child: Column(
                           children: [
                             IconButton(
-                              // TODO: 공유하기 페이지 양희 함수 추가
                               onPressed: _shareFiles,
                               icon: Icon(
                                 Icons.share_outlined,
-                                color: Colors.yellow,
+                                color: Colors.amber,
                               ),
-                              iconSize: 60,
+                              iconSize: 70,
                             ),
-                            Text('공유하기')
+                            Text(
+                              '공유하기',
+                              style: Styles.textStyle(
+                                fontSize: 20,
+                              ),
+                            ),
                           ],
                         ),
                       )
