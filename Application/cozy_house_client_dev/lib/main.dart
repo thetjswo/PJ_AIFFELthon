@@ -11,9 +11,7 @@ import 'package:provider/provider.dart';
 import 'common/fcm_setting.dart';
 import 'firebase_options.dart';
 
-
 String SERVER_URL = dotenv.get('SERVER_URL');
-
 
 void main() async {
   // .env 환경 변수 관리 파일 load
@@ -30,14 +28,9 @@ void main() async {
 
   fcmSetting();
 
-  runApp(
-      MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => SharedPreferencesProvider()),
-          ],
-          child: Application()
-      )
-  );
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => SharedPreferencesProvider()),
+  ], child: Application()));
 }
 
 class Application extends StatefulWidget {
@@ -48,13 +41,12 @@ class Application extends StatefulWidget {
 }
 
 class _Application extends State<Application> {
-
   // It is assumed that all messages contain a data field with the key 'type'
   Future<void> setupInteractedMessage() async {
     // Get any messages which caused the application to open from
     // a terminated state.
     RemoteMessage? initialMessage =
-    await FirebaseMessaging.instance.getInitialMessage();
+        await FirebaseMessaging.instance.getInitialMessage();
 
     // If the message also contains a data property with a "type" of "chat",
     // navigate to a chat screen
@@ -84,10 +76,10 @@ class _Application extends State<Application> {
 
   @override
   Widget build(BuildContext context) {
-
     return const MaterialApp(
-        home: BeforeAppStart(),
-      );
+      debugShowCheckedModeBanner: false,
+      home: BeforeAppStart(),
+    );
   }
 }
 
@@ -121,18 +113,17 @@ class _BeforeAppStartState extends State<BeforeAppStart> {
   Future<void> account_inspection() async {
     // TODO: server health check
     // TODO: JWT 인증 토큰 검증 필요
-
   }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (_) => SharedPreferencesProvider(), // SharedPreferencesProvider를 제공
+        create: (_) =>
+            SharedPreferencesProvider(), // SharedPreferencesProvider를 제공
         child: Scaffold(
           body: Center(
             child: Text('스플래시 화면'),
           ),
-        )
-    );
+        ));
   }
 }

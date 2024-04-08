@@ -15,6 +15,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Cozy House',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -48,9 +49,10 @@ class _MainPageState extends State<MainPage> {
     loadProfileData();
   }
 
-  loadProfileData(){
+  loadProfileData() {
     // 앱 메모리에서 데이터 가져오기
-    String? userInfoString = Provider.of<SharedPreferencesProvider>(context).getData('user_info');
+    String? userInfoString =
+        Provider.of<SharedPreferencesProvider>(context).getData('user_info');
 
     // 가져온 데이터 사용하기
     if (userInfoString != null) {
