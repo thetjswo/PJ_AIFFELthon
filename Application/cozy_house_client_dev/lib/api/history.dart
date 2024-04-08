@@ -16,7 +16,7 @@ class DetectionHistory {
   Future<Map<String, dynamic>?> requestVideoList(
       String uid, DateTime selectedDate) async {
     // 해당 IP의 URL로 서버에 요청을 보냄.
-    String serverUrl = '$SERVER_URL/history/selectedDate';
+    String serverUrl = '$SERVER_URL/history/selected_date';
     String date = selectedDate.toString();
     // uid, date를 json형식으로 담아서 서버로 전송
     // json 데이터 생성
@@ -55,8 +55,12 @@ class DetectionHistory {
       if (response.statusCode == 404) {
         return null;
       } else {
-        // 실패 시 예외 발생
-        throw Exception('Failed to load data');
+        // 모든 경우가 아닌 경우 해당 에러메세지 출력 & return null
+        String errorMessage =
+            'Failed to load data. Status code: ${response.statusCode}, Body: ${response.body}';
+        print(errorMessage);
+        return null;
+        // throw Exception('Failed to load data');
       }
     }
   }
