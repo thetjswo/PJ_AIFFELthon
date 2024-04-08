@@ -10,12 +10,14 @@ import 'package:http/http.dart' as http;
 import '../utils/formatter.dart';
 import '../utils/provider.dart';
 
-class DetectionHistory{
+class DetectionHistory {
   var formatter = JsonFormatter();
 
-  Future<Map<String, dynamic>> RequestVideoList(String uid, DateTime selected_date) async {
-    String serverUrl = '${SERVER_URL}/history/selected_date';  // 해당 IP의 URL로 서버에 요청을 보냄.
-    String date = selected_date.toString();
+  Future<Map<String, dynamic>?> requestVideoList(
+      String uid, DateTime selectedDate) async {
+    // 해당 IP의 URL로 서버에 요청을 보냄.
+    String serverUrl = '$SERVER_URL/history/selectedDate';
+    String date = selectedDate.toString();
     // uid, date를 json형식으로 담아서 서버로 전송
     // json 데이터 생성
     Map<String, dynamic> jsonVideoInfo = {
@@ -27,30 +29,35 @@ class DetectionHistory{
     String requestBody = formatter.request_formatter(jsonVideoInfo);
 
     // HTTP POST 요청 보내기
-    var response = await http.post( // http패키지의 post함수를 사용하여 POST요청을 보냄
+    var response = await http.post(
+      // http패키지의 post함수를 사용하여 POST요청을 보냄
       // http.post는 비동기 함수이므로 await 사용
       // 요청에 대한 응답은 response 변수에 저장됨
-      Uri.parse(serverUrl),  // serverUrl 변수에 저장된 문자열을 URI로 파싱 = 서버의 URL
+      Uri.parse(serverUrl), // serverUrl 변수에 저장된 문자열을 URI로 파싱 = 서버의 URL
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         // HTTP요청의 헤더를 설정 : Content-Type 헤더를 설정하여 요청의 본문이 JSON 형식임을 서버에 알려줌
       },
-      body: requestBody,  // 요청의 본문
+      body: requestBody, // 요청의 본문
     );
 
     // 응답 확인
     if (response.statusCode == 200) {
-      var decoded_json = formatter.response_formatter(response.bodyBytes);
+      var decodedJson = formatter.response_formatter(response.bodyBytes);
 
-      Map<String, dynamic> cam_with_event = decoded_json['response_data'];
+      Map<String, dynamic> camWithEvent = decodedJson['response_data'];
 
-      print('서버로 데이터 전송 성공: ${cam_with_event}');
+      print('서버로 데이터 전송 성공: $camWithEvent');
 
-      return cam_with_event;
+      return camWithEvent;
     } else {
-      // 실패 시 예외 발생
-      throw Exception('Failed to load data');
+      // 해당 날짜에 데이터가 없는 경우
+      if (response.statusCode == 404) {
+        return null;
+      } else {
+        // 실패 시 예외 발생
+        throw Exception('Failed to load data');
+      }
     }
   }
 }
-

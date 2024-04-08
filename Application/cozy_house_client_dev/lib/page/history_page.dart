@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../api/history.dart';
 import '../utils/provider.dart';
 
-
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
 
@@ -26,7 +25,9 @@ class HistoryPageState extends State<HistoryPage> {
   void initState() {
     super.initState();
 
-    String? userInfoString = Provider.of<SharedPreferencesProvider>(context, listen: false).getData('user_info');
+    String? userInfoString =
+        Provider.of<SharedPreferencesProvider>(context, listen: false)
+            .getData('user_info');
 
     var generator = GeneratorModule();
 
@@ -43,19 +44,31 @@ class HistoryPageState extends State<HistoryPage> {
   }
 
   getCurrentHistory(generator) async {
-    final responseVideoList = DetectionHistory().RequestVideoList(uid, generator.generateCurrentTime());
-    final event_info = await responseVideoList;
+    final responseVideoList = DetectionHistory()
+        .requestVideoList(uid, generator.generateCurrentTime());
+    final eventInfo = await responseVideoList;
 
-    setState(() {
-      event_info.forEach((cameraName, logs) {
-        for (var log in logs) {
-          var record = Record(log['message'], DateTime.parse(log['created_at']), cameraName, log['type']);
-          _records.add(record);
-        }
+    if (eventInfo != null && eventInfo.isNotEmpty) {
+      setState(() {
+        eventInfo.forEach((cameraName, logs) {
+          for (var log in logs) {
+            var record = Record(log['message'],
+                DateTime.parse(log['created_at']), cameraName, log['type']);
+            _records.add(record);
+          }
+        });
       });
-    });
+    } else {
+      // 오늘 날짜에 데이터가 없는 경우
+      setState(() {});
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('해당 날짜에 저장된 영상이 없습니다.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +106,9 @@ class HistoryPageState extends State<HistoryPage> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ActionPage(context: context)),
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ActionPage(context: context)),
                         );
                       },
                       child: _buildRecordItem(record),
@@ -117,22 +132,39 @@ class HistoryPageState extends State<HistoryPage> {
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != _selectedDate) {
-      final responseVideoList = DetectionHistory().RequestVideoList(uid, picked);
-      final event_info = await responseVideoList;
+      final responseVideoList =
+          DetectionHistory().requestVideoList(uid, picked);
+      final eventInfo = await responseVideoList;
 
-      // 리스트 초기화
-      _records = [];
+      // 선택한 날짜에 데이터가 있는 경우
+      if (eventInfo != null && eventInfo.isNotEmpty) {
+        // 리스트 초기화
+        _records = [];
 
-      setState(() {
-        _selectedDate = picked;
+        setState(() {
+          _selectedDate = picked;
 
-        event_info.forEach((cameraName, logs) {
-          for (var log in logs) {
-            var record = Record(log['message'], DateTime.parse(log['created_at']), cameraName, log['type']);
-            _records.add(record);
-          }
+          eventInfo.forEach((cameraName, logs) {
+            for (var log in logs) {
+              var record = Record(log['message'],
+                  DateTime.parse(log['created_at']), cameraName, log['type']);
+              _records.add(record);
+            }
+          });
         });
-      });
+      } else {
+        // 선택한 날짜에 데이터가 없는 경우
+        setState(() {
+          _selectedDate = picked;
+          _records = [];
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('선택한 날짜에 저장된 영상이 없습니다.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 }
