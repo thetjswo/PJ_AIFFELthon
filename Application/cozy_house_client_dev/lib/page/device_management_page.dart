@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-const List<String> list = <String>['5초', '10초', '15초', '20초'];
+const List<String> list = <String>['20초', '15초', '10초', '5초'];
 
 class DetectTimes extends StatefulWidget {
   const DetectTimes({super.key});
