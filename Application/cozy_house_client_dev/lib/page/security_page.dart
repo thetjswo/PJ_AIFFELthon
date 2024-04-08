@@ -17,7 +17,8 @@ class _SecurityPageState extends State<SecurityPage>
   late Animation<double> _animation;
 
   bool _toggleState = false;
-  bool _firstToggle = true; // 첫 번째 토글 여부를 추적
+  bool _defaultState = true; // DB에 데이터 없는 상태(앱 첫 실행 상태)
+  bool _firstToggle = false; // 첫 번째 토글 여부를 추적
 
   static String wsUrlDetection = dotenv.get('WS_URL_DETECT');
 
@@ -62,10 +63,12 @@ class _SecurityPageState extends State<SecurityPage>
       if (_toggleState) {
         _controller.forward(from: 0.0);
         _firstToggle = true; // 토글 ON
+        _defaultState = false; // 토글 누르면 무조건 false
         connect(context);
       } else {
         _controller.reverse(from: 1.0);
         _firstToggle = false; // 토글 OFF
+        _defaultState = false; // 토글 누르면 무조건 false
         disconnect();
       }
     });
@@ -203,7 +206,11 @@ class _SecurityPageState extends State<SecurityPage>
                       return CustomPaint(
                         size: Size(170, 170), // 원 크기를 조절
                         painter: MyPainter(
-                            _animation.value, 170, _firstToggle), // 크기 조절
+                          _animation.value,
+                          170,
+                          _firstToggle,
+                          _defaultState,
+                        ), // 크기 조절
                       );
                     },
                   ),
@@ -238,15 +245,23 @@ class MyPainter extends CustomPainter {
   final double animationValue;
   final double circleSize; // 원의 크기를 나타내는 변수 추가
   final bool firstToggle; // 첫 번째 토글 여부를 나타내는 변수 추가
+  final bool defaultState; // 앱 첫 실행 상태를 나타내는 변수
 
-  MyPainter(this.animationValue, this.circleSize, this.firstToggle);
+  MyPainter(
+    this.animationValue,
+    this.circleSize,
+    this.firstToggle,
+    this.defaultState,
+  );
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      ..color = firstToggle
-          ? Color(0xFFC8E6C9).withOpacity(0.3) // 토글 ON 시 초록색
-          : Color(0xFFFFCDD2).withOpacity(0.3) // 토글 OFF 시 빨간색
+      ..color = defaultState
+          ? Colors.grey // 기본 회색 상태
+          : firstToggle
+              ? Color(0xFFC8E6C9).withOpacity(0.3) // 토글 ON 시 초록색
+              : Color(0xFFFFCDD2).withOpacity(0.3) // 토글 OFF 시 빨간색
       ..strokeWidth = 5.0
       ..style = PaintingStyle.fill; // 원 내부 채우기
 
@@ -258,9 +273,11 @@ class MyPainter extends CustomPainter {
     );
 
     // 테두리 그리기
-    paint.color = firstToggle
-        ? Color(0xFFAED581)
-        : Color(0xFFEF9A9A); // 토글 ON 시 초록색, OFF 시 빨간색
+    paint.color = defaultState
+        ? Colors.grey
+        : firstToggle
+            ? Color(0xFFAED581)
+            : Color(0xFFEF9A9A); // 토글 ON 시 초록색, OFF 시 빨간색
     paint.style = PaintingStyle.stroke;
     paint.maskFilter = MaskFilter.blur(BlurStyle.normal, 5); // 번짐 효과 추가
 
