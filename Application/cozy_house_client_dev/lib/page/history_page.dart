@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cozy_house_client_dev/common/styles.dart';
 import 'package:cozy_house_client_dev/page/action_page.dart';
 import 'package:cozy_house_client_dev/utils/generator.dart';
 import 'package:flutter/material.dart';
@@ -159,7 +160,7 @@ class HistoryPageState extends State<HistoryPage> {
           _records = [];
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('선택한 날짜에 저장된 영상이 없습니다.'),
             duration: Duration(seconds: 3),
           ),
@@ -172,12 +173,18 @@ class HistoryPageState extends State<HistoryPage> {
 // TODO : 임의로 썸네일 이미지를 넣어둔 상태기 때문에 후에 수정 필요
 Widget _buildRecordItem(Record record) {
   return ListTile(
-    title: Text(record.event), // 이벤트 정보 표시
+    title: Text(
+      record.event,
+      style: Styles.textStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+    ), // 이벤트 정보 표시
     subtitle: Text(
-        "감지된 시간: ${record.time}, 장치 이름: ${record.camera}"), // 시간과 카메라 정보 표시
+        "감지된 시간:\n  ${record.time},\n장치 이름: ${record.camera}"), // 시간과 카메라 정보 표시
     trailing: SizedBox(
-      width: 80, // 이미지 너비
-      height: 48, // 이미지 높이
+      width: 90, // 이미지 너비
+      height: 80, // 이미지 높이
       child: Stack(
         children: [
           // 썸네일 이미지
@@ -186,8 +193,8 @@ Widget _buildRecordItem(Record record) {
             top: 0,
             child: Image.asset(
               "assets/images/example_images/gray_box.png", // 썸네일 이미지 경로
-              width: 80, // 적절한 크기로 변경 가능
-              height: 48, // 적절한 크기로 변경 가능
+              width: 90, // 적절한 크기로 변경 가능
+              height: 80, // 적절한 크기로 변경 가능
               fit: BoxFit.cover,
             ),
           ),
