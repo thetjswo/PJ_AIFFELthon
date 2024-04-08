@@ -91,7 +91,7 @@ class _SecurityPageState extends State<SecurityPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                flex: 4, // 비율에 따른 section 배정
+                flex: 5, // 비율에 따른 section 배정
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -116,35 +116,73 @@ class _SecurityPageState extends State<SecurityPage>
                         TextSpan(
                           children: [
                             TextSpan(
-                              text: '실시간 모니터링은 항상 진행 중입니다. \n ',
+                              text: '외부인이 감지되면 푸시 알람을 전송합니다.',
                               style: Styles.textStyle(
                                 fontSize: 14,
                               ),
-                            ),
+                            )
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 5), // 4번과 5번 사이의 줄간 간격
+                      Text.rich(
+                        TextSpan(
+                          children: [
                             TextSpan(
-                              text: '객체 감지 기능을 ',
+                              text: '외부인 감지 기능을 ',
                               style: Styles.textStyle(
-                                fontSize: 14,
+                                fontSize: 15,
                               ),
                             ),
                             TextSpan(
-                              text: 'On/Off ',
+                              text: 'ON / OFF ',
                               style: Styles.textStyle(
-                                fontSize: 14,
+                                fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             TextSpan(
                               text: '하려면 ',
                               style: Styles.textStyle(
-                                fontSize: 14,
+                                fontSize: 15,
                               ),
                             ),
                             TextSpan(
-                              text: '버튼을 누르세요.',
+                              text: '버튼을 누르세요.\n',
+                              style: Styles.textStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '(감지 기능이 ',
+                              style: Styles.textStyle(
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'OFF',
                               style: Styles.textStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '되면 ',
+                              style: Styles.textStyle(
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '푸시알람이 전송되지 않습니다.)',
+                              style: Styles.textStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54,
                               ),
                             ),
                           ],
