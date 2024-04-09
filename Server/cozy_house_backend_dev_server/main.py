@@ -4,6 +4,9 @@ from core import config
 from backend_pre_start import create_db_tables, set_log_level, welcome_func
 from api.auth import router as user_router
 from api.history import router as history_router
+from api.policy import router as policy_router
+from api.monitor import router as monitor_router
+
 
 # before server start
 # 로그 레벨 지정
@@ -30,8 +33,11 @@ async def root():
     return {"message": config.TEST_MESSAGE}
 
 
+# HTTP protocol
 app.include_router(user_router, prefix="/auth")
 app.include_router(history_router, prefix="/history")
+app.include_router(policy_router, prefix="/policy")
+app.include_router(monitor_router, prefix="/monitor")
 
 if __name__ == "__main__":
     import uvicorn

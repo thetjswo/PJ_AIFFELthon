@@ -82,24 +82,13 @@ class _AccountSettingsState extends State<AccountSettingsPage> {
 
   Future<void> loadUserInfoData() async {
     // 앱 메모리에서 데이터 가져오기
-    String? userInfoString =
-        Provider.of<SharedPreferencesProvider>(context).getData('user_info');
+    _userName = Provider.of<SharedPreferencesProvider>(context).getData('user_name')!;
+    _userPhoneNumber = Provider.of<SharedPreferencesProvider>(context).getData('phone_num')!;
+    _userEmail = Provider.of<SharedPreferencesProvider>(context).getData('user_id')!;
+    _userAddress = Provider.of<SharedPreferencesProvider>(context).getData('address')!;
 
-    // 가져온 데이터 사용하기
-    if (userInfoString != null) {
-      Map<String, dynamic> userInfo = json.decode(userInfoString);
-
-      _userName = userInfo['user_name'] ?? '';
-      _userPhoneNumber = userInfo['phone_num'] ?? '';
-      _userEmail = userInfo['user_id'] ?? '';
-      _userAddress = userInfo['address'] ?? '';
-
-      verifyEmail = userInfo['user_id'] ?? '';
-      device_uuid = userInfo['device_uuid'] ?? '';
-    } else {
-      // 데이터가 존재하지 않을 경우 처리
-      print('저장된 데이터가 없습니다.');
-    }
+    verifyEmail = Provider.of<SharedPreferencesProvider>(context).getData('user_id')!;
+    device_uuid = Provider.of<SharedPreferencesProvider>(context).getData('device_uuid')!;
   }
 
   @override

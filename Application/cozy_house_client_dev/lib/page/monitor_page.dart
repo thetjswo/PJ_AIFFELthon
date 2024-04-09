@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -12,9 +13,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
 import '../common/launch_sms.dart';
+
+
+String WS_URL = dotenv.get('WS_URL');
 
 class MonitorPage extends StatefulWidget {
   const MonitorPage({super.key});
@@ -24,22 +28,31 @@ class MonitorPage extends StatefulWidget {
 }
 
 class _MonitorPageState extends State<MonitorPage> {
-  static String wsUrlCctv = dotenv.get('WS_URL_CCTV');
+  // static String wsUrlCctv = dotenv.get('WS_URL');
+  // static String server_url = '${WS_URL}/monitor/realtime_stream';
+  static String server_url = '${WS_URL}/monitor/realtime_stream';
 
   ScreenshotController screenshotController = ScreenshotController();
   late Uint8List _image;
 
   // Initialize WebSocket instance
-  final WebSocket _socket = WebSocket(wsUrlCctv);
+  final WebSocket _socket = WebSocket(server_url);
   bool _isConnectd = false;
 
   @override
   void initState() {
     super.initState();
-    _socket.connect(wsUrlCctv);
+
+    _socket.connect(server_url);
     setState(() {
       _isConnectd = true;
     });
+  }
+
+  @override
+  void dispose() {
+    disconnect();
+    super.dispose();
   }
 
   void disconnect() {
@@ -100,6 +113,7 @@ class _MonitorPageState extends State<MonitorPage> {
                       ? StreamBuilder(
                           stream: _socket.stream,
                           builder: (context, snapshot) {
+                            print(snapshot);
                             if (!snapshot.hasData) {
                               return Padding(
                                 padding: const EdgeInsets.all(100.0),

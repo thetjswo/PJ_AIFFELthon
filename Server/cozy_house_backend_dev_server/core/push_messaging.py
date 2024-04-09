@@ -24,7 +24,7 @@ class PushMessaging:
         return cls._default_app
 
 
-    # TODO: body 내용은 event log의 message 값 가져오기
+
     def normal_push(self, fcm_token):
 
         if not fcm_token:

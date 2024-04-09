@@ -8,30 +8,22 @@ import '../utils/provider.dart';
 
 
 class LaunchSMS {
-  late String address;
-  late String phone;
-  late String name;
+  late String _address;
+  late String _phone;
+  late String _name;
 
   // 기본 생성자
   LaunchSMS(context) {
-    String? userInfoString = Provider.of<SharedPreferencesProvider>(context, listen: false).getData('user_info');
-
-    if (userInfoString != null) {
-      Map<String, dynamic> userInfo = json.decode(userInfoString);
-      name = userInfo['user_name'] ?? '';
-      phone = userInfo['phone_num'] ?? '';
-      address = userInfo['address'] ?? '';
-    } else {
-      // 데이터가 존재하지 않을 경우 처리
-      print('저장된 데이터가 없습니다.');
-    }
+    _address = Provider.of<SharedPreferencesProvider>(context, listen: false).getData('address')!;
+    _phone = Provider.of<SharedPreferencesProvider>(context, listen: false).getData('phone_num')!;
+    _name = Provider.of<SharedPreferencesProvider>(context, listen: false).getData('user_name')!;
   }
 
   void launchSmsWithForm() async {
     late Uri url;
 
     final String police_num = '112';
-    final String message = '안녕하세요.\n현관 CCTV에 수상한 사람이 주거침입을 시도하고 있는 영상이 확인되어 신고합니다.\n$address 주소 확인 부탁드립니다.\n관련 영상 확인은 아래의 연락처로 연락바랍니다.\n신고자 성명: $name\n신고자 연락처: $phone';
+    final String message = '안녕하세요.\n현관 CCTV에 수상한 사람이 주거침입을 시도하고 있는 영상이 확인되어 신고합니다.\n$_address 주소 확인 부탁드립니다.\n관련 영상 확인은 아래의 연락처로 연락바랍니다.\n신고자 성명: $_name\n신고자 연락처: $_phone';
 
     // TODO: report_log에 컬럼 추가 기능 구현
 

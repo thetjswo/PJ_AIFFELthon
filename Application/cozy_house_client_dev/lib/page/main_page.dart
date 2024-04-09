@@ -51,18 +51,8 @@ class _MainPageState extends State<MainPage> {
 
   loadProfileData() {
     // 앱 메모리에서 데이터 가져오기
-    String? userInfoString =
-        Provider.of<SharedPreferencesProvider>(context).getData('user_info');
-
-    // 가져온 데이터 사용하기
-    if (userInfoString != null) {
-      Map<String, dynamic> userInfo = json.decode(userInfoString);
-      user_name = userInfo['user_name'];
-      user_email = userInfo['user_id'];
-    } else {
-      // 데이터가 존재하지 않을 경우 처리
-      print('저장된 데이터가 없습니다.');
-    }
+    user_name = Provider.of<SharedPreferencesProvider>(context).getData('user_name')!;
+    user_email = Provider.of<SharedPreferencesProvider>(context).getData('user_id')!;
   }
 
   @override
@@ -79,7 +69,7 @@ class _MainPageState extends State<MainPage> {
       },
       user_name: user_name,
       user_email: user_email,
-      pages: [
+      pages: const [
         SecurityPage(),
         MonitorPage(),
         HistoryPage(),

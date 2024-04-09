@@ -1,8 +1,13 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:cozy_house_client_dev/api/websocket.dart';
-import 'package:cozy_house_client_dev/common/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+
+import '../api/security_policy.dart';
+import '../common/styles.dart';
+import '../utils/provider.dart';
 
 class SecurityPage extends StatefulWidget {
   const SecurityPage({super.key});
@@ -20,15 +25,17 @@ class _SecurityPageState extends State<SecurityPage>
   bool _defaultState = true; // DB에 데이터 없는 상태(앱 첫 실행 상태)
   bool _firstToggle = false; // 첫 번째 토글 여부를 추적
 
-  static String wsUrlDetection = dotenv.get('WS_URL_DETECT');
-
-  // Initialize WebSocket instance
-  final WebSocket _socket = WebSocket(wsUrlDetection);
-  bool _isConnected = false;
+  late String _uid;
 
   @override
   void initState() {
     super.initState();
+
+    _uid = Provider.of<SharedPreferencesProvider>(context, listen: false).getData('uid')!;
+
+    if (Provider.of<SharedPreferencesProvider>(context, listen: false).getData('detection_yn') == 'true') _firstToggle = true;
+    else _firstToggle = false;
+
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1000),
@@ -39,38 +46,50 @@ class _SecurityPageState extends State<SecurityPage>
     ).animate(_controller);
   }
 
-  void connect(BuildContext context) async {
-    _socket.connect(wsUrlDetection);
-    _socket.send('on');
-    print('send data: on');
-    setState(() {
-      _isConnected = true;
-    });
-  }
+  // void connect(BuildContext context) async {
+  //   _socket.connect(wsUrlDetection);
+  //   _socket.send('on');
+  //   print('Security Policy on');
+  //   setState(() {
+  //     _isConnected = true;
+  //   });
+  // }
+  //
+  // void disconnect() {
+  //   _socket.send('off');
+  //   print('Security Policy off');
+  //   _socket.disconnect();
+  //   setState(() {
+  //     _isConnected = false;
+  //   });
+  // }
 
-  void disconnect() {
-    _socket.send('off');
-    print('send data: off');
-    _socket.disconnect();
-    setState(() {
-      _isConnected = false;
-    });
-  }
+  Future<void> _toggleImage() async {
+    bool result = await SecurityPolicy().changeSecurityPolicyFlag(_uid);
 
-  void _toggleImage() {
     setState(() {
-      _toggleState = !_toggleState;
-      if (_toggleState) {
+      // _toggleState = result;
+      if (result) {
         _controller.forward(from: 0.0);
         _firstToggle = true; // 토글 ON
         _defaultState = false; // 토글 누르면 무조건 false
-        connect(context);
+        Provider.of<SharedPreferencesProvider>(context, listen: false).setData('detection_yn', _firstToggle.toString());
+        // connect(context);
       } else {
         _controller.reverse(from: 1.0);
         _firstToggle = false; // 토글 OFF
         _defaultState = false; // 토글 누르면 무조건 false
-        disconnect();
+        // disconnect();
+        _firstToggle = result; // 토글 ON
+        Provider.of<SharedPreferencesProvider>(context, listen: false).setData('detection_yn', _firstToggle.toString());
+        // connect(context);
       }
+      // else {
+      //   _controller.reverse(from: 1.0);
+      //   _firstToggle = result; // 토글 OFF
+      //   Provider.of<SharedPreferencesProvider>(context, listen: false).setData('detection_yn', _firstToggle.toString());
+      //   // disconnect();
+      // }
     });
   }
 

@@ -75,7 +75,7 @@ class SignIn {
     }
   }
 
-  Future<List<Map<String, dynamic>>> sendSignInDataToServer(UserCredential credential) async {
+  Future<Map<String, dynamic>> sendSignInDataToServer(UserCredential credential) async {
     String server_url = '${SERVER_URL}/auth/signin';
     final Uri url = Uri.parse(server_url);
 
@@ -84,8 +84,7 @@ class SignIn {
       'uid': uid
     };
 
-    Map<String, dynamic> user_info = {};
-    Map<String, dynamic> settings = {};
+    Map<String, dynamic> data = {};
 
     try {
       // HTTP POST 요청
@@ -100,20 +99,19 @@ class SignIn {
       // 응답을 확인합니다.
       if (response.statusCode == 200) {
         var decoded_json = formatter.response_formatter(response.bodyBytes);
-        user_info['uid'] = uid;
-        user_info['user_name'] = decoded_json["user_name"];
-        user_info['user_id'] = decoded_json["user_id"];
-        user_info['user_pw'] = decoded_json["user_pw"];
-        user_info['phone_num'] = decoded_json["phone_num"];
-        user_info['address'] = decoded_json["address"];
-        user_info['device_uuid'] = decoded_json["device_uuid"];
-        settings['record_yn']=decoded_json["record_yn"];
-        settings['detection_yn']=decoded_json["detection_yn"];
-        settings['detection_time']=decoded_json["detection_time"];
-        settings['detection_area']=decoded_json["detection_area"];
+        data['uid'] = uid;
+        data['user_name'] = decoded_json["user_name"];
+        data['user_id'] = decoded_json["user_id"];
+        data['user_pw'] = decoded_json["user_pw"];
+        data['phone_num'] = decoded_json["phone_num"];
+        data['address'] = decoded_json["address"];
+        data['device_uuid'] = decoded_json["device_uuid"];
+        data['record_yn']=decoded_json["record_yn"];
+        data['detection_yn']=decoded_json["detection_yn"];
+        data['detection_time']=decoded_json["detection_time"];
+        data['detection_area']=decoded_json["detection_area"];
 
-        print('서버로 데이터 요청/응답 성공: ${user_info}');
-        print('서버로 데이터 요청/응답 성공: ${settings}');
+        print('서버로 데이터 요청/응답 성공: ${data}');
       } else {
         print('서버로 데이터 전송 실패: ${response.reasonPhrase}');
       }
@@ -121,6 +119,6 @@ class SignIn {
       print('서버 요청 중 오류 발생: $error');
     }
 
-    return [user_info, settings];
+    return data;
   }
 }
