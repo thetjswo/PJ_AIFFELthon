@@ -1,4 +1,5 @@
 # 실시간 영상 송출 : uvicorn object_detection:app --host <IP주소> --port 7090
+import json
 
 import cv2
 from ultralytics import YOLO
@@ -22,6 +23,9 @@ import sys
 
 
 # Create the FastAPI application
+from core.push_messaging import PushMessaging
+from db.dao.users_dao import get_push_id
+
 app = FastAPI()
 
 @app.websocket('/ws/object-detection')
@@ -30,10 +34,12 @@ async def object_detection_with_tracking(websocket: WebSocket):
     
     # 상태 변수
     object_detection_running = False
+    current_user_uid = ''
     
     # 객체 감지 루프
     async def object_detection_loop():
         nonlocal object_detection_running  # global 변수 사용 설정
+        nonlocal current_user_uid
         
         # Load the YOLOv8 model - object detection
         model = YOLO('yolov8n.pt')
@@ -160,6 +166,10 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         if recognition_duration >= 20:
                             print(f"Object with track ID {track_id} recognized for {recognition_duration} seconds.")
                             # TODO: push 메세지 요청
+                            # uid를 통해 해당 사용자의 fcm 토큰 조회
+                            user_push_id = get_push_id(current_user_uid)
+                            # fcm 토큰에 해당하는 단말기로 푸쉬 알림 전송 (일단 주의 푸쉬 전송)
+                            PushMessaging.caution_push(user_push_id)
 
                     # 사람이 감지되면 프레임을 비디오에 쓰기
                     video_saving.write(frame)
@@ -184,13 +194,18 @@ async def object_detection_with_tracking(websocket: WebSocket):
     # app에서 데이터 받는 루프
     async def websocket_recieve_loop():
         nonlocal object_detection_running  # global 변수 사용 설정
+        nonlocal current_user_uid
         while True:
             try:
                 data = await websocket.receive_text()
-                if data == 'on':
+                json_data = json.loads(data)
+
+                current_user_uid = json_data['uid']
+
+                if json_data['message'] == 'on':
                     object_detection_running = True
                     print("==Object detection started==")
-                elif data == 'off':
+                elif json_data['message'] == 'off':
                     object_detection_running = False
                     print("==Object detection stopped==")
                     

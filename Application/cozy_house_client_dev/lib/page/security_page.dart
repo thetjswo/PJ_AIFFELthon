@@ -25,6 +25,13 @@ class _SecurityPageState extends State<SecurityPage>
   bool _defaultState = true; // DB에 데이터 없는 상태(앱 첫 실행 상태)
   bool _firstToggle = false; // 첫 번째 토글 여부를 추적
 
+  static String wsUrlDetection = dotenv.get('WS_URL_DETECT');
+  // static String wsUrlDetection = dotenv.get('WS_URL_DETECT');
+
+  // Initialize WebSocket instance
+  final WebSocket _socket = WebSocket(wsUrlDetection);
+  bool _isConnected = true;
+
   late String _uid;
 
   @override
@@ -46,23 +53,36 @@ class _SecurityPageState extends State<SecurityPage>
     ).animate(_controller);
   }
 
-  // void connect(BuildContext context) async {
-  //   _socket.connect(wsUrlDetection);
-  //   _socket.send('on');
-  //   print('Security Policy on');
-  //   setState(() {
-  //     _isConnected = true;
-  //   });
-  // }
-  //
-  // void disconnect() {
-  //   _socket.send('off');
-  //   print('Security Policy off');
-  //   _socket.disconnect();
-  //   setState(() {
-  //     _isConnected = false;
-  //   });
-  // }
+  void connect(BuildContext context) async {
+    _socket.connect(wsUrlDetection);
+    final Map<String, dynamic> data = {
+      'uid': _uid,
+      'message': 'on',
+    };
+
+    final String jsonData = jsonEncode(data);
+
+    _socket.send(jsonData);
+    print('Security Policy on');
+    setState(() {
+      _isConnected = true;
+    });
+  }
+
+  void disconnect() {
+    final Map<String, dynamic> data = {
+      'uid': _uid,
+      'message': 'off',
+    };
+
+    final String jsonData = jsonEncode(data);
+    _socket.send(jsonData);
+    print('Security Policy off');
+    _socket.disconnect();
+    setState(() {
+      _isConnected = false;
+    });
+  }
 
   Future<void> _toggleImage() async {
     bool result = await SecurityPolicy().changeSecurityPolicyFlag(_uid);
@@ -71,25 +91,17 @@ class _SecurityPageState extends State<SecurityPage>
       // _toggleState = result;
       if (result) {
         _controller.forward(from: 0.0);
-        _firstToggle = true; // 토글 ON
-        _defaultState = false; // 토글 누르면 무조건 false
-        Provider.of<SharedPreferencesProvider>(context, listen: false).setData('detection_yn', _firstToggle.toString());
-        // connect(context);
-      } else {
-        _controller.reverse(from: 1.0);
-        _firstToggle = false; // 토글 OFF
-        _defaultState = false; // 토글 누르면 무조건 false
-        // disconnect();
+        // _defaultState = false; // 토글 누르면 무조건 false
         _firstToggle = result; // 토글 ON
         Provider.of<SharedPreferencesProvider>(context, listen: false).setData('detection_yn', _firstToggle.toString());
-        // connect(context);
+        connect(context);
+      } else {
+        _controller.reverse(from: 1.0);
+        // _defaultState = false; // 토글 누르면 무조건 false
+        _firstToggle = result; // 토글 OFF
+        Provider.of<SharedPreferencesProvider>(context, listen: false).setData('detection_yn', _firstToggle.toString());
+        disconnect();
       }
-      // else {
-      //   _controller.reverse(from: 1.0);
-      //   _firstToggle = result; // 토글 OFF
-      //   Provider.of<SharedPreferencesProvider>(context, listen: false).setData('detection_yn', _firstToggle.toString());
-      //   // disconnect();
-      // }
     });
   }
 
@@ -323,7 +335,8 @@ class MyPainter extends CustomPainter {
   }
 
   void drawImage(Canvas canvas, Size size, String imagePath) {
-    final ImageStream stream = AssetImage(imagePath).resolve(ImageConfiguration.empty);
+    final ImageStream stream =
+        AssetImage(imagePath).resolve(ImageConfiguration.empty);
     stream.addListener(
         ImageStreamListener((ImageInfo info, bool synchronousCall) {
       // 이미지의 원래 너비와 높이
