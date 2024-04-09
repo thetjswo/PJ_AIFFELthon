@@ -323,8 +323,7 @@ class MyPainter extends CustomPainter {
   }
 
   void drawImage(Canvas canvas, Size size, String imagePath) {
-    final ImageStream stream =
-        AssetImage(imagePath).resolve(ImageConfiguration.empty);
+    final ImageStream stream = AssetImage(imagePath).resolve(ImageConfiguration.empty);
     stream.addListener(
         ImageStreamListener((ImageInfo info, bool synchronousCall) {
       // 이미지의 원래 너비와 높이

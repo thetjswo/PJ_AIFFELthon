@@ -17,7 +17,7 @@ class HistoryPage extends StatefulWidget {
 }
 
 class HistoryPageState extends State<HistoryPage> {
-  late String uid;
+  late String _uid;
   DateTime _selectedDate = DateTime.now(); // 선택된 날짜를 저장할 변수
 
   List<Record> _records = []; // 임의로 적은 가상의 기록 데이터
@@ -26,27 +26,16 @@ class HistoryPageState extends State<HistoryPage> {
   void initState() {
     super.initState();
 
-    String? userInfoString =
-        Provider.of<SharedPreferencesProvider>(context, listen: false)
-            .getData('user_info');
+    _uid = Provider.of<SharedPreferencesProvider>(context, listen: false).getData('uid')!;
 
     var generator = GeneratorModule();
-
-    // 가져온 데이터 사용하기
-    if (userInfoString != null) {
-      Map<String, dynamic> userInfo = json.decode(userInfoString);
-      uid = userInfo['uid'] ?? '';
-    } else {
-      // 데이터가 존재하지 않을 경우 처리
-      print('저장된 데이터가 없습니다.');
-    }
 
     getCurrentHistory(generator);
   }
 
   getCurrentHistory(generator) async {
     final responseVideoList = DetectionHistory()
-        .requestVideoList(uid, generator.generateCurrentTime());
+        .requestVideoList(_uid, generator.generateCurrentTime());
     final eventInfo = await responseVideoList;
 
     if (eventInfo != null && eventInfo.isNotEmpty) {
@@ -134,7 +123,7 @@ class HistoryPageState extends State<HistoryPage> {
     );
     if (picked != null && picked != _selectedDate) {
       final responseVideoList =
-          DetectionHistory().requestVideoList(uid, picked);
+          DetectionHistory().requestVideoList(_uid, picked);
       final eventInfo = await responseVideoList;
 
       // 선택한 날짜에 데이터가 있는 경우
