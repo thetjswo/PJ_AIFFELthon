@@ -31,7 +31,7 @@ async def userinfo_route(request: Request):
 
     response_data = PolicyFlagResponse(detection_yn=result)
 
-    # task = asyncio.create_task(object_detection_with_tracking(result, policy_request.uid))
+    task = asyncio.create_task(object_detection_with_tracking(result, policy_request.uid))
 
     return response_data
 

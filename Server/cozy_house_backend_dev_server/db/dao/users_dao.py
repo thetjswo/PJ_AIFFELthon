@@ -37,3 +37,7 @@ def update_user_info(user):
 
 def get_only_user_id(uid) -> int:
     return session.query(Users.id).filter(Users.uid == uid).scalar()
+
+
+def get_push_id(uid):
+    return session.query(Users.push_id).filter(Users.uid == uid).scalar()
