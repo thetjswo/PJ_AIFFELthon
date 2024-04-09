@@ -59,7 +59,7 @@ async def object_detection_with_tracking(websocket: WebSocket):
         
         # TODO: DAQ 연결
         # webcam 사용
-        cap = cv2.VideoCapture(0)     # 사용할 camera index 사용 - 0 : 랩탑 카메라, 1 : 핸드폰 연결 카메라(슬 경우)
+        cap = cv2.VideoCapture(1)     # 사용할 camera index 사용 - 0 : 랩탑 카메라, 1 : 핸드폰 연결 카메라(슬 경우)
 
         # webcam 예외처리
         if not cap.isOpened():
@@ -126,7 +126,7 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         cv2.imwrite(save_image_path, frame)
                         print('saved first frame to thumbnail!')
                         
-                        # # 3초 뒤 프레임 섬네일로 저장 기능 구현중
+                        # TODO : 3초 뒤 프레임 섬네일로 저장 기능 구현
                         # if human_frame_count == 3:
                         #     print('saved 3rd frame to thumbnail!')
                         #     cv2.imwrite(save_image_path, frame)
@@ -182,7 +182,7 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         human_detected = False           # human_detected 변수 False로 수정
                         human_frame_count = 0            # 프레임 카운트 초기화
         
-                # 사람이 사라지고 2가 지난뒤에  
+                # 사람이 사라지고 2초가 지난뒤에  
                 if human_disappeared_time and (time.time() - human_disappeared_time >= 2):
                     video_saving.release() # 영상 저장객체 해제
                     human_disappeared_time = None # 사람 사라진 시간 변수(human_disappeared_time) 초기화

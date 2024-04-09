@@ -20,6 +20,11 @@ class _SecurityPageState extends State<SecurityPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  static String wsUrlDetection = dotenv.get('WS_URL_DETECT');
+
+  // Initialize WebSocket instance
+  final WebSocket _socket = WebSocket(wsUrlDetection);
+  bool _isConnected = false;
 
   bool _toggleState = false;
   bool _defaultState = true; // DB에 데이터 없는 상태(앱 첫 실행 상태)
@@ -38,10 +43,15 @@ class _SecurityPageState extends State<SecurityPage>
   void initState() {
     super.initState();
 
-    _uid = Provider.of<SharedPreferencesProvider>(context, listen: false).getData('uid')!;
+    _uid = Provider.of<SharedPreferencesProvider>(context, listen: false)
+        .getData('uid')!;
 
-    if (Provider.of<SharedPreferencesProvider>(context, listen: false).getData('detection_yn') == 'true') _firstToggle = true;
-    else _firstToggle = false;
+    if (Provider.of<SharedPreferencesProvider>(context, listen: false)
+            .getData('detection_yn') ==
+        'true')
+      _firstToggle = true;
+    else
+      _firstToggle = false;
 
     _controller = AnimationController(
       vsync: this,
@@ -288,13 +298,17 @@ class MyPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      ..color = defaultState
-          ? Colors.grey // 기본 회색 상태
-          : firstToggle
-              ? Color(0xFFC8E6C9).withOpacity(0.3) // 토글 ON 시 초록색
-              : Color(0xFFFFCDD2).withOpacity(0.3) // 토글 OFF 시 빨간색
       ..strokeWidth = 5.0
       ..style = PaintingStyle.fill; // 원 내부 채우기
+
+    // 앱 첫 실행이면 grey
+    if (defaultState) {
+      paint.color = Colors.grey.withOpacity(0.3);
+    } else {
+      paint.color = firstToggle
+          ? Color(0xFFC8E6C9).withOpacity(0.3) // Toggled ON, 초록색
+          : Color(0xFFFFCDD2).withOpacity(0.3); // Toggled OFF, 빨간색
+    }
 
     // 원 그리기
     canvas.drawCircle(
@@ -304,11 +318,9 @@ class MyPainter extends CustomPainter {
     );
 
     // 테두리 그리기
-    paint.color = defaultState
-        ? Colors.grey
-        : firstToggle
-            ? Color(0xFFAED581)
-            : Color(0xFFEF9A9A); // 토글 ON 시 초록색, OFF 시 빨간색
+    paint.color = firstToggle
+        ? Color(0xFFAED581)
+        : Color(0xFFEF9A9A); // 토글 ON 시 초록색, OFF 시 빨간색
     paint.style = PaintingStyle.stroke;
     paint.maskFilter = MaskFilter.blur(BlurStyle.normal, 5); // 번짐 효과 추가
 
@@ -326,12 +338,12 @@ class MyPainter extends CustomPainter {
       paint,
     );
 
-    // 원 내부 이미지 추가
-    if (firstToggle) {
-      drawImage(canvas, size, 'assets/images/icon/security_img_green.png');
-    } else {
-      drawImage(canvas, size, 'assets/images/icon/security_img_red.png');
-    }
+    // // 원 내부 이미지 추가
+    // if (firstToggle) {
+    //   drawImage(canvas, size, 'assets/images/icon/security_img_green.png');
+    // } else {
+    //   drawImage(canvas, size, 'assets/images/icon/security_img_red.png');
+    // }
   }
 
   void drawImage(Canvas canvas, Size size, String imagePath) {
