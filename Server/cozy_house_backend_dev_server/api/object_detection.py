@@ -53,7 +53,7 @@ async def object_detection_with_tracking(websocket: WebSocket):
         
         # TODO: DAQ 연결
         # webcam 사용
-        cap = cv2.VideoCapture(0)     # 사용할 camera index 사용 - 0 : 랩탑 카메라, 1 : 핸드폰 연결 카메라(슬 경우)
+        cap = cv2.VideoCapture(1)     # 사용할 camera index 사용 - 0 : 랩탑 카메라, 1 : 핸드폰 연결 카메라(슬 경우)
 
         # webcam 예외처리
         if not cap.isOpened():
@@ -120,7 +120,7 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         cv2.imwrite(save_image_path, frame)
                         print('saved first frame to thumbnail!')
                         
-                        # # 3초 뒤 프레임 섬네일로 저장 기능 구현중
+                        # TODO : 3초 뒤 프레임 섬네일로 저장 기능 구현
                         # if human_frame_count == 3:
                         #     print('saved 3rd frame to thumbnail!')
                         #     cv2.imwrite(save_image_path, frame)
@@ -159,7 +159,11 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         # 20초 이상 탐지되는 객체의 id 출력
                         if recognition_duration >= 20:
                             print(f"Object with track ID {track_id} recognized for {recognition_duration} seconds.")
-                            # TODO: push 메세지 요청
+                            # # TODO: push 메세지 요청
+                            # # uid를 통해 해당 사용자의 fcm 토큰 조회
+                            # user_push_id = get_push_id(uid)
+                            # # fcm 토큰에 해당하는 단말기로 푸쉬 알림 전송 (일단 주의 푸쉬 전송)
+                            # PushMessaging.caution_push(user_push_id)
 
                     # 사람이 감지되면 프레임을 비디오에 쓰기
                     video_saving.write(frame)
@@ -172,7 +176,7 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         human_detected = False           # human_detected 변수 False로 수정
                         human_frame_count = 0            # 프레임 카운트 초기화
         
-                # 사람이 사라지고 2가 지난뒤에  
+                # 사람이 사라지고 2초가 지난뒤에  
                 if human_disappeared_time and (time.time() - human_disappeared_time >= 2):
                     video_saving.release() # 영상 저장객체 해제
                     human_disappeared_time = None # 사람 사라진 시간 변수(human_disappeared_time) 초기화

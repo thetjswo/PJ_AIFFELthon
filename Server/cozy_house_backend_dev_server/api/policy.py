@@ -31,7 +31,8 @@ async def userinfo_route(request: Request):
 
     response_data = PolicyFlagResponse(detection_yn=result)
 
-    task = asyncio.create_task(object_detection_with_tracking(policy_request.uid))
+    # video_handler.py로 object detection 하는 경우 주석 해제
+    # task = asyncio.create_task(object_detection_with_tracking(policy_request.uid))
 
     return response_data
 
