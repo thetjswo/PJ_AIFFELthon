@@ -21,12 +21,23 @@ import os  # 폴더 생성을 위해 추가
 import re
 import sys
 
+sys.path.append('/Users/seullee/Documents/STUDY-AI/AIFFEL/Aiffelthon/R_PJ_AIFFELthon/Server/cozy_house_backend_dev_server/')
+
+from core.push_messaging import PushMessaging
+from db.dao.users_dao import get_only_user_id
+from db.dao.user_devices_dao import get_push_id
+
 
 # Create the FastAPI application
-from core.push_messaging import PushMessaging
-from db.dao.users_dao import get_push_id
-
 app = FastAPI()
+
+# after server start
+# push 메세지 클래스 객체 생성
+init_firebase = PushMessaging()
+# fcm 연결 인증서 읽어오기
+init_firebase.get_credentials()
+# 가져온 인증서로 firebase sdk 초기화
+init_firebase.get_default_app()
 
 @app.websocket('/ws/object-detection')
 async def object_detection_with_tracking(websocket: WebSocket):
@@ -163,13 +174,17 @@ async def object_detection_with_tracking(websocket: WebSocket):
                             recognition_duration = time.time() - recognition_start_time[track_id]
         
                         # 20초 이상 탐지되는 객체의 id 출력
-                        if recognition_duration >= 20:
+                        if recognition_duration >= 15:
                             print(f"Object with track ID {track_id} recognized for {recognition_duration} seconds.")
                             # TODO: push 메세지 요청
                             # uid를 통해 해당 사용자의 fcm 토큰 조회
-                            user_push_id = get_push_id(current_user_uid)
+                            user_id = get_only_user_id(current_user_uid)
+                            user_push_id = get_push_id(user_id)
+                            # user_push_id = 'cEpmmWVlSS6CXSBtylOWFS:APA91bGn-95vS_KDQHMQb8bjV_h60NU3TNUU-W2UbHFGSpl42_QpQM-c6mtx0if6F0NnygWhyLANxD7AAHzlisAqPcnXle5pvC7U8OVrtWqUzolK3zIrQJ8RinXE7L4e41HtXjiPxju4'
                             # fcm 토큰에 해당하는 단말기로 푸쉬 알림 전송 (일단 주의 푸쉬 전송)
-                            PushMessaging.caution_push(user_push_id)
+                            # print(user_push_id)
+                            push = PushMessaging()
+                            push.caution_push(user_push_id)
 
                     # 사람이 감지되면 프레임을 비디오에 쓰기
                     video_saving.write(frame)

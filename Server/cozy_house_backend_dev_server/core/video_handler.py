@@ -1,10 +1,3 @@
-import os
-
-from core.push_messaging import PushMessaging
-from db.dao.users_dao import get_push_id
-
-os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
-
 import cv2
 from ultralytics import YOLO
 import time
@@ -20,7 +13,11 @@ import sys
 
 from cctv_server import camera_module
 from crud.policy import get_policy_flag
+from core.push_messaging import PushMessaging
+from db.dao.user_devices_dao import get_push_id
 
+# 다음 에러 방지용 : "interrupted by signal 11: SIGSEGV"
+# os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 # 객체 감지 루프
 async def object_detection_with_tracking(uid):

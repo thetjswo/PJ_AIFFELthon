@@ -12,8 +12,9 @@ class PushMessaging:
     @classmethod
     def get_credentials(cls):
         if cls._credentials is None:
+            # TODO: 로컬 환경에 맞게 절대주소로 변경
             cls._credentials = credentials.Certificate(
-                './resources/certs/cozy-house-1ecc7-firebase-adminsdk-tcckc-6f8d4bb07f.json')
+                '/Users/seullee/Documents/STUDY-AI/AIFFEL/Aiffelthon/R_PJ_AIFFELthon/Server/cozy_house_backend_dev_server/resources/certs/cozy-house-1ecc7-firebase-adminsdk-tcckc-6f8d4bb07f.json')
         return cls._credentials
 
     @classmethod
@@ -72,15 +73,20 @@ class PushMessaging:
             token=fcm_token,
         )
 
-        try:
-            # 푸시 알림 전송
-            response = messaging.send(message)
-            # TODO: push log 테이블에 데이터 추가
-            return {"success": True, "message_id": response}
-        except messaging.FirebaseMessagingError as e:
-            # 오류 처리
-            # TODO: push log 테이블에 데이터 추가
-            raise HTTPException(status_code=500, detail=str(e))
+        # 푸시 알림 전송
+        response = messaging.send(message)
+        # TODO: push log 테이블에 데이터 추가
+        return {"success": True, "message_id": response}
+        
+        # try:
+        #     # 푸시 알림 전송
+        #     response = messaging.send(message)
+        #     # TODO: push log 테이블에 데이터 추가
+        #     return {"success": True, "message_id": response}
+        # except messaging.FirebaseMessagingError as e:
+        #     # 오류 처리
+        #     # TODO: push log 테이블에 데이터 추가
+        #     raise HTTPException(status_code=500, detail=str(e))
 
 
     def dangerous_push(self, fcm_token):

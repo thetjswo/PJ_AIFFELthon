@@ -30,13 +30,6 @@ class _SecurityPageState extends State<SecurityPage>
   bool _defaultState = true; // DB에 데이터 없는 상태(앱 첫 실행 상태)
   bool _firstToggle = false; // 첫 번째 토글 여부를 추적
 
-  static String wsUrlDetection = dotenv.get('WS_URL_DETECT');
-  // static String wsUrlDetection = dotenv.get('WS_URL_DETECT');
-
-  // Initialize WebSocket instance
-  final WebSocket _socket = WebSocket(wsUrlDetection);
-  bool _isConnected = true;
-
   late String _uid;
 
   @override
@@ -103,13 +96,15 @@ class _SecurityPageState extends State<SecurityPage>
         _controller.forward(from: 0.0);
         // _defaultState = false; // 토글 누르면 무조건 false
         _firstToggle = result; // 토글 ON
-        Provider.of<SharedPreferencesProvider>(context, listen: false).setData('detection_yn', _firstToggle.toString());
+        Provider.of<SharedPreferencesProvider>(context, listen: false)
+            .setData('detection_yn', _firstToggle.toString());
         connect(context);
       } else {
         _controller.reverse(from: 1.0);
         // _defaultState = false; // 토글 누르면 무조건 false
         _firstToggle = result; // 토글 OFF
-        Provider.of<SharedPreferencesProvider>(context, listen: false).setData('detection_yn', _firstToggle.toString());
+        Provider.of<SharedPreferencesProvider>(context, listen: false)
+            .setData('detection_yn', _firstToggle.toString());
         disconnect();
       }
     });
@@ -299,16 +294,10 @@ class MyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
       ..strokeWidth = 5.0
-      ..style = PaintingStyle.fill; // 원 내부 채우기
-
-    // 앱 첫 실행이면 grey
-    if (defaultState) {
-      paint.color = Colors.grey.withOpacity(0.3);
-    } else {
-      paint.color = firstToggle
+      ..style = PaintingStyle.fill // 원 내부 채우기
+      ..color = firstToggle
           ? Color(0xFFC8E6C9).withOpacity(0.3) // Toggled ON, 초록색
           : Color(0xFFFFCDD2).withOpacity(0.3); // Toggled OFF, 빨간색
-    }
 
     // 원 그리기
     canvas.drawCircle(
