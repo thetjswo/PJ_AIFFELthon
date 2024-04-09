@@ -46,11 +46,13 @@ async def object_detection_with_tracking(websocket: WebSocket):
     # 상태 변수
     object_detection_running = False
     current_user_uid = ''
+    push_yn = False
     
     # 객체 감지 루프
     async def object_detection_loop():
         nonlocal object_detection_running  # global 변수 사용 설정
         nonlocal current_user_uid
+        nonlocal push_yn
         
         # Load the YOLOv8 model - object detection
         model = YOLO('yolov8n.pt')
@@ -174,17 +176,20 @@ async def object_detection_with_tracking(websocket: WebSocket):
                             recognition_duration = time.time() - recognition_start_time[track_id]
         
                         # 20초 이상 탐지되는 객체의 id 출력
-                        if recognition_duration >= 15:
+                        if recognition_duration >= 20:
                             print(f"Object with track ID {track_id} recognized for {recognition_duration} seconds.")
+                            
                             # TODO: push 메세지 요청
-                            # uid를 통해 해당 사용자의 fcm 토큰 조회
-                            user_id = get_only_user_id(current_user_uid)
-                            user_push_id = get_push_id(user_id)
-                            # user_push_id = 'cEpmmWVlSS6CXSBtylOWFS:APA91bGn-95vS_KDQHMQb8bjV_h60NU3TNUU-W2UbHFGSpl42_QpQM-c6mtx0if6F0NnygWhyLANxD7AAHzlisAqPcnXle5pvC7U8OVrtWqUzolK3zIrQJ8RinXE7L4e41HtXjiPxju4'
-                            # fcm 토큰에 해당하는 단말기로 푸쉬 알림 전송 (일단 주의 푸쉬 전송)
-                            # print(user_push_id)
-                            push = PushMessaging()
-                            push.caution_push(user_push_id)
+                            # 해당 사람에 대한 푸시 알림 전송
+                            if push_yn == False:
+                                # uid를 통해 해당 사용자의 fcm 토큰 조회
+                                user_id = get_only_user_id(current_user_uid)
+                                user_push_id = get_push_id(user_id)
+                                
+                                # fcm 토큰에 해당하는 단말기로 푸쉬 알림 전송 (일단 Caution 상태 푸시 전송)
+                                push = PushMessaging()
+                                push.caution_push(user_push_id)
+                                push_yn = True
 
                     # 사람이 감지되면 프레임을 비디오에 쓰기
                     video_saving.write(frame)
@@ -201,6 +206,7 @@ async def object_detection_with_tracking(websocket: WebSocket):
                 if human_disappeared_time and (time.time() - human_disappeared_time >= 2):
                     video_saving.release() # 영상 저장객체 해제
                     human_disappeared_time = None # 사람 사라진 시간 변수(human_disappeared_time) 초기화
+                    push_yn = False # 푸시알림 변수 초기화
 
             await asyncio.sleep(0.001)  # 다른 작업에 CPU 리소스를 할당하기 위해 잠시 대기
         
