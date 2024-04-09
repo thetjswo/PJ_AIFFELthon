@@ -27,8 +27,8 @@ names = model.model.names   # YOLO 모델에서 사용된 클래스의 이름을
 # cap = cv2.VideoCapture(0)
 
 # Open the video file
-video_path = "./test_self_data/IMG_4970.mp4"
-# video_path = "./sample_data/sample_video.mp4"
+# video_path = "./test_self_data/IMG_4970.mp4"
+video_path = "../../Server/cozy_house_backend_dev_server/resources/videos/sample_video.mp4"
 
 cap = cv2.VideoCapture(video_path)
 # assert cap.isOpened(), "Error reading video file"
