@@ -1,6 +1,7 @@
 # 사람만 탐지하기, 20초 이상 탐지 조건
 
-
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 import cv2
 from ultralytics import YOLO
 import numpy as np
@@ -28,6 +29,7 @@ names = model.model.names   # YOLO 모델에서 사용된 클래스의 이름을
 
 # Open the video file
 # video_path = "./test_self_data/IMG_4970.mp4"
+# video_path = "./sample_data/sample_video.mp4"
 video_path = "../../Server/cozy_house_backend_dev_server/resources/videos/sample_video.mp4"
 
 cap = cv2.VideoCapture(video_path)
