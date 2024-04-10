@@ -85,6 +85,7 @@ flutter:
     - .env
     - assets/images/icon/ic_login_upper.png
     - assets/images/icon/ic_security.png
+    - assets/images/icon/ic_splash.png
     - assets/images/example_images/gray_box.png
     - assets/images/icon/security_img_green.png
     - assets/images/icon/security_img_red.png
