@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cozy_house_client_dev/api/websocket.dart';
@@ -17,9 +15,6 @@ import 'package:http/http.dart' as http;
 
 import '../common/launch_sms.dart';
 
-
-String WS_URL = dotenv.get('WS_URL');
-
 class MonitorPage extends StatefulWidget {
   const MonitorPage({super.key});
 
@@ -28,9 +23,8 @@ class MonitorPage extends StatefulWidget {
 }
 
 class _MonitorPageState extends State<MonitorPage> {
-  // static String wsUrlCctv = dotenv.get('WS_URL');
-  // static String server_url = '${WS_URL}/monitor/realtime_stream';
-  static String server_url = '${WS_URL}/monitor/realtime_stream';
+  static String WS_URL = dotenv.get('WS_URL');
+  static String server_url = '$WS_URL/monitor/realtime_stream';
 
   ScreenshotController screenshotController = ScreenshotController();
   late Uint8List _image;
@@ -47,12 +41,6 @@ class _MonitorPageState extends State<MonitorPage> {
     setState(() {
       _isConnectd = true;
     });
-  }
-
-  @override
-  void dispose() {
-    disconnect();
-    super.dispose();
   }
 
   void disconnect() {
@@ -250,4 +238,10 @@ class _MonitorPageState extends State<MonitorPage> {
       ),
     );
   }
+
+  // @override
+  // void dispose() {
+  //   disconnect();
+  //   super.dispose();
+  // }
 }
