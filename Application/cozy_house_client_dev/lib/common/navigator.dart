@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cozy_house_client_dev/common/styles.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cozy_house_client_dev/page/login_page.dart';
 import 'package:flutter/widgets.dart';
@@ -179,8 +180,6 @@ class _CustomNavigatorState extends State<CustomNavigator> {
                     _openServiceInfo(context);
                   },
                 ),
-                // 위 ListTile 3개와 아래 '로그아웃' 사이에 공백 생성
-                Expanded(child: SizedBox.shrink()),
               ],
             ),
             // '로그아웃' 바닥에 고정
