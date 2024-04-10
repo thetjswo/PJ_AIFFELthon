@@ -4,7 +4,6 @@ from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
 from json import JSONDecodeError
 
-from core.video_handler import object_detection_with_tracking
 from crud import policy
 
 

@@ -123,8 +123,8 @@ async def object_detection_with_tracking(websocket: WebSocket):
                     if not human_detected:
                         human_detected = True
                         current_time = datetime.now().strftime("%d_%H%M%S")
-                        file_name = f"real_time_detec_{current_time}.mp4"
-                        video_saving = cv2.VideoWriter(os.path.join(video_folder_path, file_name),
+                        file_name = f"real_time_detec_{current_time}"
+                        video_saving = cv2.VideoWriter(os.path.join(video_folder_path, f'{file_name}.mp4'),
                                                 cv2.VideoWriter_fourcc(*'mp4v'),
                                                 fps,
                                                 (w, h))

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:cozy_house_client_dev/common/styles.dart';
 import 'package:cozy_house_client_dev/page/action_page.dart';
@@ -41,9 +42,11 @@ class HistoryPageState extends State<HistoryPage> {
     if (eventInfo != null && eventInfo.isNotEmpty) {
       setState(() {
         eventInfo.forEach((cameraName, logs) {
-          for (var log in logs) {
-            var record = Record(log['message'],
-                DateTime.parse(log['created_at']), cameraName, log['type']);
+          for (var logPair in logs) {
+            var log = logPair['log']; // 이미지 및 로그 데이터가 들어있는 로그 딕셔너리
+
+            var record = Record(log['message'], DateTime.parse(log['created_at']), cameraName, log['type'], logPair['image']);
+            // 이미지 데이터와 함께 Record 객체를 생성하여 _records 리스트에 추가
             _records.add(record);
           }
         });
@@ -135,9 +138,11 @@ class HistoryPageState extends State<HistoryPage> {
           _selectedDate = picked;
 
           eventInfo.forEach((cameraName, logs) {
-            for (var log in logs) {
-              var record = Record(log['message'],
-                  DateTime.parse(log['created_at']), cameraName, log['type']);
+            for (var logPair in logs) {
+              var log = logPair['log']; // 이미지 및 로그 데이터가 들어있는 로그 딕셔너리
+
+              var record = Record(log['message'], DateTime.parse(log['created_at']), cameraName, log['type'], logPair['image']);
+              // 이미지 데이터와 함께 Record 객체를 생성하여 _records 리스트에 추가
               _records.add(record);
             }
           });
@@ -180,8 +185,8 @@ Widget _buildRecordItem(Record record) {
           Positioned(
             right: 0,
             top: 0,
-            child: Image.asset(
-              "assets/images/example_images/gray_box.png", // 썸네일 이미지 경로
+            child:  Image.memory(
+              Uint8List.fromList(base64Decode(record.image)), // 디코딩된 이미지 데이터를 사용하여 이미지 위젯 생성
               width: 90, // 적절한 크기로 변경 가능
               height: 80, // 적절한 크기로 변경 가능
               fit: BoxFit.cover,
@@ -222,6 +227,7 @@ class Record {
   final DateTime time;
   final String camera;
   final String type;
+  final String image;
 
-  Record(this.event, this.time, this.camera, this.type);
+  Record(this.event, this.time, this.camera, this.type, this.image);
 }

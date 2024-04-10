@@ -34,14 +34,8 @@ async def history_route(request: Request):
     # {카메라 이름: {id: 1, model: object-detection ...}}의 형태
     data = history.selected_date(date_request)
 
-    if data:
-        response_data = SelectedDateResponse(
-            response_data=data
-        )
+    response_data = SelectedDateResponse(
+        response_data=data
+    )
 
-        return response_data
-
-    else:
-        logging.info("There is any data in dictionary...")
-
-        return None
+    return response_data

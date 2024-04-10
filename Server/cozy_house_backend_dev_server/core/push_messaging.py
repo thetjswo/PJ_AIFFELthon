@@ -14,7 +14,7 @@ class PushMessaging:
         if cls._credentials is None:
             # TODO: 로컬 환경에 맞게 절대주소로 변경
             cls._credentials = credentials.Certificate(
-                '/Users/seullee/Documents/STUDY-AI/AIFFEL/Aiffelthon/R_PJ_AIFFELthon/Server/cozy_house_backend_dev_server/resources/certs/cozy-house-1ecc7-firebase-adminsdk-tcckc-6f8d4bb07f.json')
+                './resources/certs/cozy-house-1ecc7-firebase-adminsdk-tcckc-6f8d4bb07f.json')
         return cls._credentials
 
     @classmethod
