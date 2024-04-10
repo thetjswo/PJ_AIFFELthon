@@ -10,3 +10,7 @@ def get_by_user_id(user_id, selected_date) -> None:
 
 def get_thumbnail_path_by_id(video_id):
     return session.query(CCTVVideos).filter(CCTVVideos.id == video_id).first()
+
+
+def get_video_info_by_id(video_id):
+    return session.query(CCTVVideos, CCTVDevices.cctv_name).join(CCTVDevices, CCTVVideos.cctv_id == CCTVDevices.id).filter(CCTVVideos.id == video_id).first()

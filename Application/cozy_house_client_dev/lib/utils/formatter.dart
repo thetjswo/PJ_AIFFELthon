@@ -59,3 +59,31 @@ class JsonFormatter {
     return decoded_json;
   }
 }
+
+class TimeFormatter {
+  difference_formatter(saved_time) {
+    DateTime now = DateTime.now();
+    Duration difference = now.difference(saved_time);
+
+    String timeAgo = '';
+
+    if (difference.inDays > 365) {
+      int years = (difference.inDays / 365).floor();
+      timeAgo = '$years 년 전';
+    } else if (difference.inDays > 30) {
+      int months = (difference.inDays / 30).floor();
+      timeAgo = '$months 개월 전';
+    } else if (difference.inDays > 0) {
+      timeAgo = '${difference.inDays} 일 전';
+    } else if (difference.inHours > 0) {
+      timeAgo = '${difference.inHours} 시간 전';
+    } else if (difference.inMinutes > 0) {
+      timeAgo = '${difference.inMinutes} 분 전';
+    } else {
+      timeAgo = '방금 전';
+    }
+
+    print('영상이 업로드된 시간: $timeAgo');
+    return timeAgo;
+  }
+}

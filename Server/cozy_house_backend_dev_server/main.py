@@ -6,6 +6,7 @@ from api.auth import router as user_router
 from api.history import router as history_router
 from api.policy import router as policy_router
 from api.monitor import router as monitor_router
+from api.action import router as action_router
 
 
 # before server start
@@ -38,6 +39,7 @@ app.include_router(user_router, prefix="/auth")
 app.include_router(history_router, prefix="/history")
 app.include_router(policy_router, prefix="/policy")
 app.include_router(monitor_router, prefix="/monitor")
+app.include_router(action_router, prefix="/action")
 
 if __name__ == "__main__":
     import uvicorn

@@ -45,7 +45,7 @@ class HistoryPageState extends State<HistoryPage> {
           for (var logPair in logs) {
             var log = logPair['log']; // 이미지 및 로그 데이터가 들어있는 로그 딕셔너리
 
-            var record = Record(log['message'], DateTime.parse(log['created_at']), cameraName, log['type'], logPair['image']);
+            var record = Record(log['message'], DateTime.parse(log['created_at']), cameraName, log['type'], logPair['image'], log['video_id']);
             // 이미지 데이터와 함께 Record 객체를 생성하여 _records 리스트에 추가
             _records.add(record);
           }
@@ -84,7 +84,7 @@ class HistoryPageState extends State<HistoryPage> {
                 ),
                 IconButton(
                   icon: Icon(Icons.calendar_today),
-                  onPressed: () {
+                  onPressed: () async {
                     _selectDate(context);
                   },
                 ),
@@ -101,7 +101,7 @@ class HistoryPageState extends State<HistoryPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  ActionPage(context: context)),
+                                  ActionPage(context: context, video_id: record.video_id)),
                         );
                       },
                       child: _buildRecordItem(record),
@@ -141,7 +141,7 @@ class HistoryPageState extends State<HistoryPage> {
             for (var logPair in logs) {
               var log = logPair['log']; // 이미지 및 로그 데이터가 들어있는 로그 딕셔너리
 
-              var record = Record(log['message'], DateTime.parse(log['created_at']), cameraName, log['type'], logPair['image']);
+              var record = Record(log['message'], DateTime.parse(log['created_at']), cameraName, log['type'], logPair['image'], log['video_id']);
               // 이미지 데이터와 함께 Record 객체를 생성하여 _records 리스트에 추가
               _records.add(record);
             }
@@ -228,6 +228,7 @@ class Record {
   final String camera;
   final String type;
   final String image;
+  final int video_id;
 
-  Record(this.event, this.time, this.camera, this.type, this.image);
+  Record(this.event, this.time, this.camera, this.type, this.image, this.video_id);
 }

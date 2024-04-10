@@ -1,5 +1,3 @@
-import logging
-import os.path
 from datetime import datetime
 
 from db.dao.cctv_videos_dao import get_thumbnail_path_by_id
@@ -8,7 +6,7 @@ from db.dao.users_dao import get_only_user_id
 
 
 # 선택한 날짜 영상 조회
-from utils import read_image_file
+from utils import convert_file_to_binary
 
 
 def selected_date(param):
@@ -26,10 +24,9 @@ def selected_date(param):
         cctv_name = log_tuple[1]  # 튜플의 두 번째 요소는 CCTV 장치 이름
 
         video_info = get_thumbnail_path_by_id(log.video_id)
-        print(video_info)
 
-        file_path = '.'+video_info.cap_path+video_info.file_name+'.jpg'
-        encoded_file = read_image_file(file_path)
+        file_path = video_info.cap_path+video_info.file_name+'.jpg'
+        encoded_file = convert_file_to_binary(file_path)
 
         # 딕셔너리에 CCTV 이름이 이미 있는지 확인하고 없으면 빈 리스트로 초기화
         if cctv_name not in data:
@@ -40,7 +37,7 @@ def selected_date(param):
         data[cctv_name].append(image_log_pair)
 
     # 결과 출력
-    logging.info(f'list of event logs: ${data}')
+    # logging.info(f'list of event logs: ${data}')
 
     for camera in data:
         for log_pair in data[camera]:

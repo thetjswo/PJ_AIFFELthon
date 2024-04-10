@@ -135,6 +135,16 @@ class _SignInState extends State<LoginPage> {
                               onPressed: () async {
                                 if (formKey.currentState!.validate()) {
                                   try {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false, // 사용자가 다이얼로그 외부를 탭하여 닫을 수 없도록 함
+                                      builder: (BuildContext context) {
+                                        return Center(
+                                          child: CircularProgressIndicator(), // 로딩 표시기 표시
+                                        );
+                                      },
+                                    );
+
                                     final credential = await FirebaseAuth
                                         .instance
                                         .signInWithEmailAndPassword(
@@ -167,13 +177,20 @@ class _SignInState extends State<LoginPage> {
                                             .setData(key, value.toString());
                                       }
 
-                                      await Navigator.pushReplacement(
-                                        context,
-                                        // 스플래시 화면으로 이동
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SplashPage()),
-                                      );
+                                      // await Navigator.pushReplacement(
+                                      //   context,
+                                      //   // 스플래시 화면으로 이동
+                                      //   MaterialPageRoute(
+                                      //       builder: (context) =>
+                                      //           const SplashPage()),
+                                      // );
+                                      Future.delayed(const Duration(seconds: 3), () {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          // 로그인 화면으로 이동
+                                          MaterialPageRoute(builder: (context) => const MainApp()),
+                                        );
+                                      });
                                     } else {
                                       ModalPopUp
                                           .showSignInFailedEmailVerification(
