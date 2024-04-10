@@ -248,36 +248,3 @@ class _SignInState extends State<LoginPage> {
     );
   }
 }
-
-class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});
-
-  @override
-  _SplashPageState createState() => _SplashPageState();
-}
-
-class _SplashPageState extends State<SplashPage> {
-  @override
-  void initState() {
-    super.initState();
-
-    // 데이터 로드 완료 후 Splash 화면이 3초 간 표시된 후 화면 이동
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        // 로그인 화면으로 이동
-        MaterialPageRoute(builder: (context) => const MainApp()),
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-}
