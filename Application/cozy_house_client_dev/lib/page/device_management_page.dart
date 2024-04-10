@@ -69,7 +69,7 @@ class DeviceManagementPage extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(20, 30, 20, 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Camera01', // TODO: 기기 이름 불러오기
