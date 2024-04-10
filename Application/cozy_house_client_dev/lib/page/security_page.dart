@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'dart:math';
 import 'package:cozy_house_client_dev/api/websocket.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
@@ -27,10 +30,29 @@ class _SecurityPageState extends State<SecurityPage>
   bool _isConnected = false;
 
   bool _toggleState = false;
-  bool _defaultState = true; // DB에 데이터 없는 상태(앱 첫 실행 상태)
+  final bool _defaultState = true; // DB에 데이터 없는 상태(앱 첫 실행 상태)
   bool _firstToggle = false; // 첫 번째 토글 여부를 추적
 
   late String _uid;
+  List<String> imagePaths = [
+    'assets/images/icon/security_img_green.png', // 초록 이미지
+    'assets/images/icon/security_img_red.png', // 빨강 이미지
+  ];
+
+  List<ui.Image> rawImages = [];
+
+  _SecurityPageState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      List<ui.Image> newImages = [];
+
+      newImages.add(await _loadImage(imagePaths[0]));
+      newImages.add(await _loadImage(imagePaths[1]));
+
+      setState(() {
+        rawImages = newImages;
+      });
+    });
+  }
 
   @override
   void initState() {
@@ -119,7 +141,6 @@ class _SecurityPageState extends State<SecurityPage>
             colors: [
               Colors.white,
               Color(0xFFE0E0E0),
-              // Colors.grey,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -142,7 +163,7 @@ class _SecurityPageState extends State<SecurityPage>
                           fontSize: 36, // 설정 가능한 폰트 사이즈
                         ),
                       ),
-                      SizedBox(height: 15), // 2번과 3번 사이의 줄간 간격
+                      SizedBox(height: 10), // 2번과 3번 사이의 줄간 간격
                       Text(
                         'SMART HOME SECURITY',
                         style: Styles.textStyle(
@@ -242,10 +263,11 @@ class _SecurityPageState extends State<SecurityPage>
                       return CustomPaint(
                         size: Size(170, 170), // 원 크기를 조절
                         painter: MyPainter(
-                          _animation.value,
-                          170,
-                          _firstToggle,
-                          _defaultState,
+                          animationValue: _animation.value,
+                          circleSize: 170,
+                          firstToggle: _firstToggle,
+                          defaultState: _defaultState,
+                          rawImages: rawImages,
                         ), // 크기 조절
                       );
                     },
@@ -254,12 +276,14 @@ class _SecurityPageState extends State<SecurityPage>
               ),
               Expanded(
                 flex: 3, // 비율에 따른 section 배정
-                child: Container(
-                  width: double.infinity, // Expanded 위젯의 가로 크기를 꽉 채우게 설정
-                  height: double.infinity,
-                  child: Image.asset(
-                    'assets/images/icon/camera_img2.png',
-                    fit: BoxFit.contain,
+                child: Center(
+                  child: SizedBox(
+                    width: 1080,
+                    height: 434,
+                    child: Image.asset(
+                      'assets/images/icon/camera_img2.png',
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
@@ -270,39 +294,43 @@ class _SecurityPageState extends State<SecurityPage>
     );
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  Future<ui.Image> _loadImage(String imagePath) async {
+    final ByteData data = await rootBundle.load(imagePath);
+    final Uint8List uint8List = data.buffer.asUint8List();
+    final ui.Codec codec = await ui.instantiateImageCodec(uint8List);
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+    return frameInfo.image;
   }
 }
 
+// 토글 위젯
 class MyPainter extends CustomPainter {
   final double animationValue;
   final double circleSize; // 원의 크기를 나타내는 변수 추가
-  final bool firstToggle; // 첫 번째 토글 여부를 나타내는 변수 추가
-  final bool defaultState; // 앱 첫 실행 상태를 나타내는 변수
+  final bool firstToggle;
+  final bool defaultState;
+  final List<ui.Image> rawImages;
 
-  MyPainter(
-    this.animationValue,
-    this.circleSize,
-    this.firstToggle,
-    this.defaultState,
-  );
+  MyPainter({
+    required this.animationValue,
+    required this.circleSize,
+    required this.firstToggle,
+    required this.defaultState,
+    required this.rawImages,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
       ..strokeWidth = 5.0
-      ..style = PaintingStyle.fill // 원 내부 채우기
+      ..style = PaintingStyle.fill
       ..color = firstToggle
-          ? Color(0xFFC8E6C9).withOpacity(0.3) // Toggled ON, 초록색
-          : Color(0xFFFFCDD2).withOpacity(0.3); // Toggled OFF, 빨간색
+          ? Color(0xFFC8E6C9).withOpacity(0.3)
+          : Color(0xFFFFCDD2).withOpacity(0.3);
 
-    // 원 그리기
     canvas.drawCircle(
-      Offset(size.width / 2, size.height / 2), // 원의 중심점
-      circleSize / 2, // circleSize를 사용하여 원의 크기 조절
+      Offset(size.width / 2, size.height / 2),
+      size.width * 0.35, // Adjust the circle size as needed
       paint,
     );
 
@@ -327,42 +355,32 @@ class MyPainter extends CustomPainter {
       paint,
     );
 
-    // // 원 내부 이미지 추가
-    // if (firstToggle) {
-    //   drawImage(canvas, size, 'assets/images/icon/security_img_green.png');
-    // } else {
-    //   drawImage(canvas, size, 'assets/images/icon/security_img_red.png');
-    // }
+    // 토글 색상별 집 이미지 추가
+    if (rawImages.isNotEmpty) {
+      if (firstToggle) {
+        _drawImage(canvas, size, rawImages[0]);
+      } else {
+        _drawImage(canvas, size, rawImages[1]);
+      }
+    }
   }
 
-  void drawImage(Canvas canvas, Size size, String imagePath) {
-    final ImageStream stream =
-        AssetImage(imagePath).resolve(ImageConfiguration.empty);
-    stream.addListener(
-        ImageStreamListener((ImageInfo info, bool synchronousCall) {
-      // 이미지의 원래 너비와 높이
-      double imageWidth = info.image!.width.toDouble();
-      double imageHeight = info.image!.height.toDouble();
+  void _drawImage(Canvas canvas, Size size, ui.Image image) {
+    final double imageWidth = image.width.toDouble();
+    final double imageHeight = image.height.toDouble();
+    final double desiredWidth = size.width * 0.5;
+    final double desiredHeight = (desiredWidth * imageHeight) / imageWidth;
 
-      // 이미지의 원하는 너비 (현재 캔버스의 너비의 절반)
-      final double desiredWidth = size.width * 0.5;
-
-      // 이미지의 원하는 높이를 원래 비율을 유지하면서 계산
-      final double desiredHeight = (desiredWidth * imageHeight) / imageWidth;
-
-      // 이미지 크기 조정
-      canvas.drawImageRect(
-        info.image!,
-        Rect.fromLTRB(0, 0, imageWidth, imageHeight), // 원본 이미지 크기 지정
-        Rect.fromCenter(
-          center:
-              Offset(size.width / 2, size.height / 2), // 캔버스의 중앙을 기준으로 중심점 설정
-          width: desiredWidth,
-          height: desiredHeight,
-        ),
-        Paint(),
-      );
-    }));
+    canvas.drawImageRect(
+      image,
+      Rect.fromLTRB(0, 0, imageWidth, imageHeight),
+      Rect.fromCenter(
+        center: Offset(size.width / 2, size.height / 2),
+        width: desiredWidth,
+        height: desiredHeight,
+      ),
+      Paint(),
+    );
   }
 
   @override

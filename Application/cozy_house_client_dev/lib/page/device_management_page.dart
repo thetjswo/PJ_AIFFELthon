@@ -73,7 +73,7 @@ class DeviceManagementPage extends StatelessWidget {
             children: [
               Text(
                 'Camera01', // TODO: 기기 이름 불러오기
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.start,
                 style: TextStyle(
                     fontSize: 18,
                     height: 1.2,
