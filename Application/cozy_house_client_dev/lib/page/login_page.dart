@@ -246,8 +246,6 @@ class _SplashPageState extends State<SplashPage> {
 
     // 데이터 로드 완료 후 Splash 화면이 3초 간 표시된 후 화면 이동
     Future.delayed(const Duration(seconds: 3), () {
-      // splash 종료 후,
-      FlutterNativeSplash.remove();
       Navigator.pushReplacement(
         context,
         // 로그인 화면으로 이동
@@ -258,10 +256,10 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Image.asset('assets/images/icon/ic_splash.png'),
+        child: CircularProgressIndicator(),
       ),
     );
   }
