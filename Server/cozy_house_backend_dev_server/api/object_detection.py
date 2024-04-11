@@ -47,12 +47,14 @@ async def object_detection_with_tracking(websocket: WebSocket):
     object_detection_running = False
     current_user_uid = ''
     push_yn = False
+    video_cnt = 0
     
     # 객체 감지 루프
     async def object_detection_loop():
         nonlocal object_detection_running  # global 변수 사용 설정
         nonlocal current_user_uid
         nonlocal push_yn
+        nonlocal video_cnt
         
         # Load the YOLOv8 model - object detection
         model = YOLO('yolov8n.pt')
@@ -86,7 +88,7 @@ async def object_detection_with_tracking(websocket: WebSocket):
         # TODO: DB 저장 위치 연결
         # 임시 저장위치 
         video_folder_path = "../resources/videos"
-        thumbnail_folder_path = "../resources/thumbnail"
+        thumbnail_folder_path = "../resources/thumbnails"
         
         # 비디오 저장 위치 없으면 폴더 생성
         if not os.path.exists(video_folder_path):
@@ -117,15 +119,15 @@ async def object_detection_with_tracking(websocket: WebSocket):
                 # 사람이 감지되면
                 if human_tracking[0].boxes.id is not None:
                     print("Human detected!")
-                    
                     human_frame_count += 1
                     print("human_frame_count:", human_frame_count)
                     
                     # 사람이 처음 감지되었다면, 녹화 시작
                     if not human_detected:
                         human_detected = True
-                        current_time = datetime.now().strftime("%d_%H%M%S")
-                        file_name = f"real_time_detec_{current_time}"
+                        print("video cnt: ", video_cnt)
+                        # current_time = datetime.now().strftime("%d_")
+                        file_name = f"real_time_detec_11_{video_cnt}"
                         video_saving = cv2.VideoWriter(os.path.join(video_folder_path, f'{file_name}.mp4'),
                                                 cv2.VideoWriter_fourcc(*'mp4v'),
                                                 fps,
@@ -137,8 +139,8 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         
                         # 사람 감지되자마자 첫프레임 저장
                         cv2.imwrite(save_image_path, frame)
-                        print('saved first frame to thumbnail!')
-                        
+                        print('saved first frame to thumbnail!: ', video_cnt)
+
                         # TODO : 3초 뒤 프레임 섬네일로 저장 기능 구현
                         # if human_frame_count == 3:
                         #     print('saved 3rd frame to thumbnail!')
@@ -179,14 +181,11 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         if recognition_duration >= 20:
                             print(f"Object with track ID {track_id} recognized for {recognition_duration} seconds.")
                             
-                            # TODO: push 메세지 요청
                             # 해당 사람에 대한 푸시 알림 전송
                             if push_yn == False:
                                 # uid를 통해 해당 사용자의 fcm 토큰 조회
                                 user_id = get_only_user_id(current_user_uid)
                                 user_push_id = get_push_id(user_id)
-                                
-                                # fcm 토큰에 해당하는 단말기로 푸쉬 알림 전송 (일단 Caution 상태 푸시 전송)
                                 push = PushMessaging()
                                 push.caution_push(user_push_id)
                                 push_yn = True
@@ -200,14 +199,15 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         print("Human disappered!")
                         human_disappeared_time = time.time()  # 사라진 시간(human_disappeared_time) 기록
                         human_detected = False           # human_detected 변수 False로 수정
-                        human_frame_count = 0            # 프레임 카운트 초기화
+                        human_frame_count = 0    # 프레임 카운트 초기화
         
                 # 사람이 사라지고 2초가 지난뒤에  
                 if human_disappeared_time and (time.time() - human_disappeared_time >= 2):
                     video_saving.release() # 영상 저장객체 해제
+                    video_cnt += 1
                     human_disappeared_time = None # 사람 사라진 시간 변수(human_disappeared_time) 초기화
                     push_yn = False # 푸시알림 변수 초기화
-
+                    
             await asyncio.sleep(0.001)  # 다른 작업에 CPU 리소스를 할당하기 위해 잠시 대기
         
         cap.release()
