@@ -81,9 +81,10 @@ async def object_detection_with_tracking(websocket: WebSocket):
             print("Camera open failed!")
             sys.exit()
         
+        # TODO: 화면크기 조정
         w, h = (int(cap.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, cv2.CAP_PROP_FRAME_HEIGHT))
-        # fps = 30 # 초당 프레임 30 for most webcams
-        fps = cap.get(cv2.CAP_PROP_FPS) # 재생속도 테스트용
+        fps = 10 # 초당 프레임 30 for most webcams
+        # fps = cap.get(cv2.CAP_PROP_FPS) # 재생속도 테스트용
         
         # TODO: DB 저장 위치 연결
         # 임시 저장위치 
@@ -127,7 +128,7 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         human_detected = True
                         print("video cnt: ", video_cnt)
                         # current_time = datetime.now().strftime("%d_")
-                        file_name = f"real_time_detec_11_{video_cnt}"
+                        file_name = f"real_time_detec_14_{video_cnt}"
                         video_saving = cv2.VideoWriter(os.path.join(video_folder_path, f'{file_name}.mp4'),
                                                 cv2.VideoWriter_fourcc(*'mp4v'),
                                                 fps,
@@ -201,8 +202,8 @@ async def object_detection_with_tracking(websocket: WebSocket):
                         human_detected = False           # human_detected 변수 False로 수정
                         human_frame_count = 0    # 프레임 카운트 초기화
         
-                # 사람이 사라지고 2초가 지난뒤에  
-                if human_disappeared_time and (time.time() - human_disappeared_time >= 2):
+                # 사람이 사라지고 0.1초가 지난뒤에  
+                if human_disappeared_time and (time.time() - human_disappeared_time >= 0.1):
                     video_saving.release() # 영상 저장객체 해제
                     video_cnt += 1
                     human_disappeared_time = None # 사람 사라진 시간 변수(human_disappeared_time) 초기화
@@ -235,6 +236,8 @@ async def object_detection_with_tracking(websocket: WebSocket):
             except WebSocketDisconnect:  # 일정시간 이후 데이터 안오면 연결해제
                 print("Client Disconnected!")
                 break
+            
+            await asyncio.sleep(0.001)
 
     # 모든 루프 실행
     await asyncio.gather(
