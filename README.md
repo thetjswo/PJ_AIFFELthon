@@ -87,10 +87,10 @@
 - 사용자가 능동적으로 상황을 주도할 수 있는 이 앱은 범죄에 대한 불안감을 해소하고, 집을 편안한 휴식 공간으로 만드는 것을 목표로 합니다.
 
 
+**[앱 미리보기]**
 
+<p align="center"> <a href="https://youtu.be/8i5wmdSj_r0"> <img src="http://img.youtube.com/vi/8i5wmdSj_r0/0.jpg" alt="Video Label"> </a> </p>
 
-
-[![Video Label](http://img.youtube.com/vi/8i5wmdSj_r0/0.jpg)](https://youtu.be/8i5wmdSj_r0)
 
 <p align="right">(<a href="#readme-top">위로</a>)</p>
 
