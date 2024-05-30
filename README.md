@@ -113,7 +113,7 @@
 <!-- CONTACT -->
 ## Contact
 
-* 포근한 집 [email](hello.cozy.house@gmail.com) - hello.cozy.house@gmail.com
+* 포근한 집 [email](cozyhouse247@gmail.com) - cozyhouse247@gmail.com
 
 * Project Link - [https://github.com/thetjswo/PJ_AIFFELthon](https://github.com/thetjswo/PJ_AIFFELthon)
  
